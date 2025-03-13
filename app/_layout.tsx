@@ -12,8 +12,14 @@ import History from './screens/History';
 import DatabaseDebugScreen from './screens/DatabaseDebugScreen'; // Import the debug screen
 import NewWorkoutPlanScreen from './screens/NewWorkoutPlanScreen'; // Import the new screen
 
+// Create the stack navigator for the Profile and Debug screens
+export type WorkoutStackParamList = {
+  WorkoutHome: undefined; // No parameters for this screen
+  NewWorkoutPlan: undefined; // No parameters for this screen
+};
+
 // Create the stack navigator for the Workout and NewWorkoutPlan screens
-const WorkoutStack = createStackNavigator();
+const WorkoutStack = createStackNavigator<WorkoutStackParamList>();
 
 function WorkoutStackNavigator() {
   return (
