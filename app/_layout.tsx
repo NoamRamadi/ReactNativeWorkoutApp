@@ -11,6 +11,7 @@ import Workout from './screens/Workout';
 import History from './screens/History';
 import DatabaseDebugScreen from './screens/DatabaseDebugScreen'; // Import the debug screen
 import NewWorkoutPlanScreen from './screens/NewWorkoutPlanScreen'; // Import the new screen
+import SelectExerciseScreen from './screens/SelectExerciseScreen'; // Import the new screen
 
 // Create the stack navigator for the Profile and Debug screens
 export type WorkoutStackParamList = {
@@ -26,6 +27,7 @@ function WorkoutStackNavigator() {
     <WorkoutStack.Navigator>
       <WorkoutStack.Screen name="WorkoutHome" component={Workout} options={{ title: 'Workout Plans' }} />
       <WorkoutStack.Screen name="NewWorkoutPlan" component={NewWorkoutPlanScreen} options={{ title: 'Create New Workout Plan' }} />
+      <WorkoutStack.Screen name="SelectExercise" component={SelectExerciseScreen} options={{ title: 'Select Exercises' }} />
     </WorkoutStack.Navigator>
   );
 }

@@ -1,11 +1,21 @@
+import { useNavigation } from 'expo-router';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
 export default function NewWorkoutPlanScreen() {
+    // Navigate to the SelectExerciseScreen
+
+
+    const navigation = useNavigation();
+    const handleAddExercise = () => {
+        navigation.navigate('SelectExercise');
+      };
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create New Workout Plan</Text>
       <Text>This is where you can create and save a new workout plan.</Text>
+      <Button title="Add Exercise" onPress={handleAddExercise} />
     </View>
   );
 }
