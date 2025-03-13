@@ -17,6 +17,7 @@ import SelectExerciseScreen from './screens/SelectExerciseScreen'; // Import the
 export type WorkoutStackParamList = {
   WorkoutHome: undefined; // No parameters for this screen
   NewWorkoutPlan: undefined; // No parameters for this screen
+  SelectExercise: undefined
 };
 
 // Create the stack navigator for the Workout and NewWorkoutPlan screens

@@ -156,9 +156,8 @@ export default function ExerciseListBase({ isSelectable = false, onSelectExercis
             onPress={() => handleExercisePress(item.exercise_id)}
           >
             <Text style={styles.exerciseName}>{item.name}</Text>
-            <Text>Body Part: {item.body_part}</Text>
-            <Text>Equipment: {item.equipment}</Text>
-            <Text>Instruction: {item.instruction}</Text>
+            <Text>{item.body_part}</Text>
+            
           </TouchableOpacity>
         )}
         ListEmptyComponent={<Text>No exercises found in the database.</Text>}

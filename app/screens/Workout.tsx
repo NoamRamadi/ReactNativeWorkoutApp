@@ -5,8 +5,8 @@ import { WorkoutStackParamList } from '../_layout'; // Import the type definitio
 import { StackNavigationProp } from '@react-navigation/stack'; // Import StackNavigationProp
 
 export default function Workout() {
-  type ProfileScreenNavigationProp = StackNavigationProp<WorkoutStackParamList, 'WorkoutHome'>;
-  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  type WorkoutNavigationProp = StackNavigationProp<WorkoutStackParamList, 'WorkoutHome'>;
+  const navigation = useNavigation<WorkoutNavigationProp>();
   
   return (
     <View style={styles.container}>

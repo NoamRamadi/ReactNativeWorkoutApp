@@ -1,12 +1,14 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from 'expo-router';
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
+import { WorkoutStackParamList } from '../_layout';
 
 export default function NewWorkoutPlanScreen() {
     // Navigate to the SelectExerciseScreen
+    type WorkoutNavigationProp = StackNavigationProp<WorkoutStackParamList, 'WorkoutHome'>;
+    const navigation = useNavigation<WorkoutNavigationProp>();
 
-
-    const navigation = useNavigation();
     const handleAddExercise = () => {
         navigation.navigate('SelectExercise');
       };

@@ -16,7 +16,6 @@ export default function SelectExerciseScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Select Exercises</Text>
       <ExerciseListBase isSelectable={true} onSelectExercise={handleSelectExercise} />
 
       {/* Display Selected Exercises */}
