@@ -44,7 +44,7 @@ export default function RootLayout() {
         },
         tabBarActiveTintColor: '#007bff',
         tabBarInactiveTintColor: 'gray',
-        headerShown: false, // Hide the header for all tabs
+        headerShown: true, // Unide the header for all tabs
       })}
     >
       {/* Define the tabs */}
