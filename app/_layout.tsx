@@ -10,6 +10,19 @@ import Exercises from './screens/Exercises';
 import Workout from './screens/Workout';
 import History from './screens/History';
 import DatabaseDebugScreen from './screens/DatabaseDebugScreen'; // Import the debug screen
+import NewWorkoutPlanScreen from './screens/NewWorkoutPlanScreen'; // Import the new screen
+
+// Create the stack navigator for the Workout and NewWorkoutPlan screens
+const WorkoutStack = createStackNavigator();
+
+function WorkoutStackNavigator() {
+  return (
+    <WorkoutStack.Navigator>
+      <WorkoutStack.Screen name="WorkoutHome" component={Workout} options={{ title: 'Workout Plans' }} />
+      <WorkoutStack.Screen name="NewWorkoutPlan" component={NewWorkoutPlanScreen} options={{ title: 'Create New Workout Plan' }} />
+    </WorkoutStack.Navigator>
+  );
+}
 
 // Create the stack navigator for the Profile and Debug screens
 export type ProfileStackParamList = {
@@ -70,7 +83,7 @@ export default function RootLayout() {
       <Tab.Screen name="Profile" component={ProfileStackNavigator} />
       <Tab.Screen name="Measure" component={Measure} />
       <Tab.Screen name="Exercises" component={Exercises} />
-      <Tab.Screen name="Workout" component={Workout} />
+      <Tab.Screen name="Workout" component={WorkoutStackNavigator} />
       <Tab.Screen name="History" component={History} />
     </Tab.Navigator>
   );

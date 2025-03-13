@@ -1,11 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Workout() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Workout Plans Page</Text>
-      <Text>This is where the user's workout plans will be displayed.</Text>
+      <Text style={styles.title}>Workout Plans</Text>
+      <Text>This is where your workout plans will be listed.</Text>
+
+      {/* Create New Workout Plan Button */}
+      <Button
+        title="Create New Workout Plan"
+        onPress={() => navigation.navigate('NewWorkoutPlan')}
+      />
     </View>
   );
 }
