@@ -1,11 +1,17 @@
+import { debugDatabase } from '@/src/database';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
 export default function Profile() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile Page</Text>
       <Text>This is where the user profile will be displayed.</Text>
+      {/* Debug Button */}
+      <Button
+        title="Debug Database"
+        onPress={() => debugDatabase()}
+      />
     </View>
   );
 }

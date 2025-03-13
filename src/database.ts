@@ -70,3 +70,26 @@ export const fetchQuery = async (query: string, params: any[] = []): Promise<any
     throw error;
   }
 };
+
+
+/**
+ * Debugging: Log the contents of the database tables.
+ */
+export const debugDatabase = async () => {
+  if (Platform.OS === 'web') {
+    console.warn('Debugging the database is not supported on the web.');
+    return;
+  }
+
+  try {
+    const users = await fetchQuery('SELECT * FROM Users;');
+    console.log('Users in the database:\n\n', users);
+
+    // Add more tables here as needed
+    // Example:
+    // const workouts = await fetchQuery('SELECT * FROM Workouts;');
+    // console.log('Workouts in the database:', workouts);
+  } catch (error) {
+    console.error('Error debugging database:', error);
+  }
+};
