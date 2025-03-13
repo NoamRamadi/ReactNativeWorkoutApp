@@ -1,4 +1,5 @@
 import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -8,6 +9,24 @@ import Measure from './screens/Measure';
 import Exercises from './screens/Exercises';
 import Workout from './screens/Workout';
 import History from './screens/History';
+import DatabaseDebugScreen from './screens/DatabaseDebugScreen'; // Import the debug screen
+
+// Create the stack navigator for the Profile and Debug screens
+export type ProfileStackParamList = {
+  ProfileHome: undefined; // No parameters for this screen
+  DatabaseDebug: undefined; // No parameters for this screen
+};
+
+const ProfileStack = createStackNavigator<ProfileStackParamList>();
+
+function ProfileStackNavigator() {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen name="ProfileHome" component={Profile} options={{ title: 'Profile' }} />
+      <ProfileStack.Screen name="DatabaseDebug" component={DatabaseDebugScreen} options={{ title: 'Database Debug' }} />
+    </ProfileStack.Navigator>
+  );
+}
 
 // Create the bottom tab navigator
 const Tab = createBottomTabNavigator();
@@ -44,11 +63,11 @@ export default function RootLayout() {
         },
         tabBarActiveTintColor: '#007bff',
         tabBarInactiveTintColor: 'gray',
-        headerShown: true, // Unide the header for all tabs
+        headerShown: false, // Hide the header for all tabs
       })}
     >
       {/* Define the tabs */}
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Profile" component={ProfileStackNavigator} />
       <Tab.Screen name="Measure" component={Measure} />
       <Tab.Screen name="Exercises" component={Exercises} />
       <Tab.Screen name="Workout" component={Workout} />
