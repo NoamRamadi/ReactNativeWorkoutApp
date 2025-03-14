@@ -1,4 +1,4 @@
-import { debugDatabase } from '@/src/database';
+import { debugDatabase } from '@/src/database/database';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';

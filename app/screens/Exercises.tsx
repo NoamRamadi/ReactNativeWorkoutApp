@@ -8,7 +8,7 @@ import {
   TextInput,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { initDatabase, addSampleExercises, fetchExercises } from '../../src/database';
+import { initDatabase, addSampleExercises, fetchExercises } from '../../src/database/database';
 
 export default function ExercisesScreen() {
   const [exercises, setExercises] = useState<any[]>([]);

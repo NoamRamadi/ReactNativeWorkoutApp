@@ -4,14 +4,15 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 // Import screens
-import Profile from './screens/Profile';
-import Measure from './screens/Measure';
+import Profile from './profile/ProfileScreen';
+import Measure from './measure/MeasureScreen';
 import Exercises from './screens/Exercises';
-import Workout from './screens/Workout';
-import History from './screens/History';
-import DatabaseDebugScreen from './screens/DatabaseDebugScreen'; // Import the debug screen
-import NewWorkoutPlanScreen from './screens/NewWorkoutPlanScreen'; // Import the new screen
-import SelectExerciseScreen from './screens/SelectExerciseScreen'; // Import the new screen
+import Workout from './workout/WorkoutScreen';
+import History from './history/HistoryScreen';
+import DatabaseDebugScreen from './debug/DatabaseDebugScreen'; // Import the debug screen
+import NewWorkoutPlanScreen from './workout/NewWorkoutPlanScreen'; // Import the new screen
+import SelectExerciseScreen from './exercises/SelectExerciseScreen'; // Import the new screen
+import ExercisesScreen from './screens/Exercises';
 
 // Create the stack navigator for the Profile and Debug screens
 export type WorkoutStackParamList = {
@@ -91,7 +92,7 @@ export default function RootLayout() {
       {/* Define the tabs */}
       <Tab.Screen name="Profile" component={ProfileStackNavigator} />
       <Tab.Screen name="Measure" component={Measure} />
-      <Tab.Screen name="Exercises" component={Exercises} />
+      <Tab.Screen name="Exercises" component={ExercisesScreen} />
       <Tab.Screen name="Workout" component={WorkoutStackNavigator} />
       <Tab.Screen name="History" component={History} />
     </Tab.Navigator>

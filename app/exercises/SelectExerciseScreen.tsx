@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
-import ExerciseListBase from '../components/ExerciseListBase';
+import ExerciseListBase from './components/ExerciseListBase';
 
 export default function SelectExerciseScreen() {
   const [selectedExercises, setSelectedExercises] = useState<number[]>([]);
