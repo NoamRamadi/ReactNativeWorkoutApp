@@ -6,13 +6,13 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 // Import screens
 import Profile from './profile/ProfileScreen';
 import Measure from './measure/MeasureScreen';
-import Exercises from './screens/Exercises';
+
 import Workout from './workout/WorkoutScreen';
 import History from './history/HistoryScreen';
 import DatabaseDebugScreen from './debug/DatabaseDebugScreen'; // Import the debug screen
 import NewWorkoutPlanScreen from './workout/NewWorkoutPlanScreen'; // Import the new screen
 import SelectExerciseScreen from './exercises/SelectExerciseScreen'; // Import the new screen
-import ExercisesScreen from './screens/Exercises';
+import ExercisesScreen from './exercises/ExerciseScreen';
 
 // Create the stack navigator for the Profile and Debug screens
 export type WorkoutStackParamList = {
