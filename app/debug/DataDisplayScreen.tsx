@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { initDatabase, executeQuery, fetchQuery } from '../../src/database/database';
+//import { initDatabase, executeQuery, fetchQuery } from '../../src/database/database';
+import { initDatabase, executeQuery, fetchQuery } from '@/src/database'; 
 
 export default function DataDisplayScreen() {
   const [users, setUsers] = useState<any[]>([]);

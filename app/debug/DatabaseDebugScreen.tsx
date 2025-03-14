@@ -8,7 +8,9 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
-import { fetchQuery, executeQuery } from '../../src/database/database';
+//import { fetchQuery, executeQuery } from '../../src/database/database';
+import { fetchQuery, executeQuery } from '@/src/database'; 
+
 
 export default function DatabaseDebugScreen() {
   const [exercises, setExercises] = useState<any[]>([]);

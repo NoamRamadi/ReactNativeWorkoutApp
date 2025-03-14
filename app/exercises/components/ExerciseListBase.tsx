@@ -8,8 +8,9 @@ import {
   TextInput,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { initDatabase, addSampleExercises, fetchExercises } from '../../../src/database/database';
-
+//import { initDatabase, addSampleExercises, fetchExercises } from '../../../src/database/database';
+//import { initDatabase, addSampleExercises, fetchExercises } from '@../../../src/database';
+import { initDatabase, addSampleExercises, fetchExercises  } from '@/src/database';
 interface ExerciseListBaseProps {
   isSelectable?: boolean; // Determines if exercises can be selected
   onSelectExercise?: (exerciseId: number, isSelected: boolean) => void; // Callback for selection
