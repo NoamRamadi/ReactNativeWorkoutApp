@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import ExerciseListBase from './components/ExerciseListBase';
+import { useNavigation } from '@react-navigation/native';
+import { useNewWorkoutContext } from '../../src/context/NewWorkoutContext';
 
 export default function SelectExerciseScreen() {
-  const [selectedExercises, setSelectedExercises] = useState<number[]>([]);
+  const navigation = useNavigation();
+  const { selectedExercises, addExercise } = useNewWorkoutContext();
 
   // Handle exercise selection
-  const handleSelectExercise = (exerciseId: number, isSelected: boolean) => {
-    if (isSelected) {
-      setSelectedExercises((prev) => [...prev, exerciseId]);
-    } else {
-      setSelectedExercises((prev) => prev.filter((id) => id !== exerciseId));
-    }
+  const handleSelectExercise = (exerciseId: number) => {
+    addExercise(exerciseId); // Add the exercise every time it's clicked
+  };
+
+  // Navigate back to NewWorkoutPlanScreen
+  const handleSaveSelectedExercises = () => {
+    navigation.goBack();
   };
 
   return (
@@ -22,14 +26,16 @@ export default function SelectExerciseScreen() {
       <View style={styles.selectedContainer}>
         <Text>Selected Exercises:</Text>
         {selectedExercises.length > 0 ? (
-          selectedExercises.map((id) => <Text key={id}>Exercise ID: {id}</Text>)
+          selectedExercises.map((entry, index) => (
+            <Text key={index}>Exercise ID: {entry.exerciseId}</Text>
+          ))
         ) : (
           <Text>No exercises selected.</Text>
         )}
       </View>
 
-      {/* Save Button (Placeholder) */}
-      <Button title="Save Selected Exercises" onPress={() => alert('Save functionality not implemented yet')} />
+      {/* Save Button */}
+      <Button title="Save Selected Exercises" onPress={handleSaveSelectedExercises} />
     </View>
   );
 }
@@ -38,11 +44,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
   },
   selectedContainer: {
     marginTop: 16,

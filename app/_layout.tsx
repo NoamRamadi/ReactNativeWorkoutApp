@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 // Import screens
 import Profile from './profile/ProfileScreen';
 import Measure from './measure/MeasureScreen';
-
+import { NewWorkoutProvider } from '../src/context/NewWorkoutContext';
 import Workout from './workout/WorkoutScreen';
 import History from './history/HistoryScreen';
 import DatabaseDebugScreen from './debug/DatabaseDebugScreen'; // Import the debug screen
@@ -26,11 +26,13 @@ const WorkoutStack = createStackNavigator<WorkoutStackParamList>();
 
 function WorkoutStackNavigator() {
   return (
+    <NewWorkoutProvider>
     <WorkoutStack.Navigator>
       <WorkoutStack.Screen name="WorkoutHome" component={Workout} options={{ title: 'Workout Plans' }} />
       <WorkoutStack.Screen name="NewWorkoutPlan" component={NewWorkoutPlanScreen} options={{ title: 'Create New Workout Plan' }} />
       <WorkoutStack.Screen name="SelectExercise" component={SelectExerciseScreen} options={{ title: 'Select Exercises' }} />
     </WorkoutStack.Navigator>
+    </NewWorkoutProvider>
   );
 }
 
