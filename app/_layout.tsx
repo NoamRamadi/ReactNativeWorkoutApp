@@ -7,10 +7,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Profile from './features/profile/ProfileScreen';
 import Measure from './features/measure/MeasureScreen';
 import { NewWorkoutProvider } from '../src/context/NewWorkoutContext';
-import Workout from './workout/WorkoutScreen';
+import Workout from './features/workout/WorkoutScreen';
 import History from './features/history/HistoryScreen';
 import DatabaseDebugScreen from './debug/DatabaseDebugScreen'; // Import the debug screen
-import NewWorkoutPlanScreen from './workout/NewWorkoutPlanScreen'; // Import the new screen
+import NewWorkoutPlanScreen from './features/workout/NewWorkoutPlanScreen'; // Import the new screen
 import SelectExerciseScreen from './features/exercises/SelectExerciseScreen'; // Import the new screen
 import ExercisesScreen from './features/exercises/ExerciseScreen';
 

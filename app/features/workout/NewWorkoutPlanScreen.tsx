@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Button, TextInput, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { executeQuery } from '../../../src/database/queries';
 import { useNewWorkoutContext } from '../../../src/context/NewWorkoutContext';
+import ExerciseEntry from './components/ExerciseEntry';
 
 export default function NewWorkoutPlanScreen() {
   const navigation = useNavigation();
   const { workoutName, setWorkoutName, selectedExercises, clearSelectedExercises } =
     useNewWorkoutContext();
+
+  // State to track completed sets
+  const [completedSets, setCompletedSets] = useState<Record<string, boolean>>({});
 
   // Save the workout plan to the database
   const handleSaveWorkoutPlan = async () => {
@@ -42,6 +46,14 @@ export default function NewWorkoutPlanScreen() {
     }
   };
 
+  // Handle marking a set as complete
+  const handleMarkComplete = (index: number) => {
+    setCompletedSets((prev) => ({
+      ...prev,
+      [index]: !prev[index], // Toggle completion status
+    }));
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create New Workout Plan</Text>
@@ -62,9 +74,31 @@ export default function NewWorkoutPlanScreen() {
           data={selectedExercises}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => (
-            <Text>
-              Exercise ID: {item.exerciseId} - Reps/Sets: {item.repetitions || 'N/A'}/{item.sets || 'N/A'}
-            </Text>
+            <View style={styles.exerciseContainer}>
+              <Text style={styles.exerciseName}>Exercise ID: {item.exerciseId}</Text>
+
+              {/* Table Headers */}
+              <View style={styles.headerRow}>
+                <Text style={styles.headerCell}>Set</Text>
+                <Text style={styles.headerCell}>Previous</Text>
+                <Text style={styles.headerCell}>Reps</Text>
+                <Text style={styles.headerCell}>KG</Text>
+                <Text style={styles.headerCell}>V</Text>
+              </View>
+
+              {/* Table Rows */}
+              {[1, 2, 3].map((setNumber) => (
+                <ExerciseEntry
+                  key={setNumber}
+                  setNumber={setNumber}
+                  previous="None" // Replace with actual previous data if available
+                  reps={10} // Replace with actual reps
+                  kg={20} // Replace with actual weight
+                  onMarkComplete={() => handleMarkComplete(index)}
+                  isCompleted={!!completedSets[index]}
+                />
+              ))}
+            </View>
           )}
         />
       ) : (
@@ -100,5 +134,27 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     marginBottom: 16,
+  },
+  exerciseContainer: {
+    marginBottom: 16,
+  },
+  exerciseName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  headerCell: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
