@@ -4,15 +4,15 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 // Import screens
-import Profile from './profile/ProfileScreen';
-import Measure from './measure/MeasureScreen';
+import Profile from './features/profile/ProfileScreen';
+import Measure from './features/measure/MeasureScreen';
 import { NewWorkoutProvider } from '../src/context/NewWorkoutContext';
 import Workout from './workout/WorkoutScreen';
-import History from './history/HistoryScreen';
+import History from './features/history/HistoryScreen';
 import DatabaseDebugScreen from './debug/DatabaseDebugScreen'; // Import the debug screen
 import NewWorkoutPlanScreen from './workout/NewWorkoutPlanScreen'; // Import the new screen
-import SelectExerciseScreen from './exercises/SelectExerciseScreen'; // Import the new screen
-import ExercisesScreen from './exercises/ExerciseScreen';
+import SelectExerciseScreen from './features/exercises/SelectExerciseScreen'; // Import the new screen
+import ExercisesScreen from './features/exercises/ExerciseScreen';
 
 // Create the stack navigator for the Profile and Debug screens
 export type WorkoutStackParamList = {

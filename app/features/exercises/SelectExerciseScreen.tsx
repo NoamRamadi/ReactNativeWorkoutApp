@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import ExerciseListBase from './components/ExerciseListBase';
 import { useNavigation } from '@react-navigation/native';
-import { useNewWorkoutContext } from '../../src/context/NewWorkoutContext';
+import { useNewWorkoutContext } from '../../../src/context/NewWorkoutContext';
 
 export default function SelectExerciseScreen() {
   const navigation = useNavigation();

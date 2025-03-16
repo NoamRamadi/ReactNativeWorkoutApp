@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button, TextInput, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { executeQuery } from '../../src/database/queries';
-import { useNewWorkoutContext } from '../../src/context/NewWorkoutContext';
+import { executeQuery } from '../../../src/database/queries';
+import { useNewWorkoutContext } from '../../../src/context/NewWorkoutContext';
 
 export default function NewWorkoutPlanScreen() {
   const navigation = useNavigation();
