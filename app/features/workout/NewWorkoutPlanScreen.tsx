@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Button, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { executeQuery } from '../../../src/database/queries';
 import { useNewWorkoutContext } from '../../../src/context/NewWorkoutContext';
-import ExerciseEntry from './components/ExerciseEntry';
+import CustomKeyboard from './components/CustomKeyboard';
 
 export default function NewWorkoutPlanScreen() {
   const navigation = useNavigation();
-  const { workoutName, setWorkoutName, selectedExercises, clearSelectedExercises } =
+  const { workoutName, setWorkoutName, selectedExercises, clearSelectedExercises, updateSetDetails } =
     useNewWorkoutContext();
 
-  // State to track completed sets
-  const [completedSets, setCompletedSets] = useState<Record<string, boolean>>({});
+  // State for custom keyboard
+  const [focusedInput, setFocusedInput] = useState<{ exerciseIndex: number; setIndex: number; field: 'reps' | 'kg' } | null>(null);
 
   // Save the workout plan to the database
   const handleSaveWorkoutPlan = async () => {
@@ -31,10 +31,12 @@ export default function NewWorkoutPlanScreen() {
 
       // Insert selected exercises into the WorkoutPlanExercises table
       for (const entry of selectedExercises) {
-        await executeQuery(
-          `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id) VALUES (?, ?);`,
-          [workoutPlanId, entry.exerciseId]
-        );
+        for (const set of entry.sets) {
+          await executeQuery(
+            `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id, reps, kg) VALUES (?, ?, ?, ?);`,
+            [workoutPlanId, entry.exerciseId, set.reps, set.kg]
+          );
+        }
       }
 
       alert('Workout plan saved successfully!');
@@ -44,14 +46,6 @@ export default function NewWorkoutPlanScreen() {
       console.error('Error saving workout plan:', error);
       alert('Failed to save workout plan. Please try again.');
     }
-  };
-
-  // Handle marking a set as complete
-  const handleMarkComplete = (index: number) => {
-    setCompletedSets((prev) => ({
-      ...prev,
-      [index]: !prev[index], // Toggle completion status
-    }));
   };
 
   return (
@@ -75,28 +69,47 @@ export default function NewWorkoutPlanScreen() {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => (
             <View style={styles.exerciseContainer}>
-              <Text style={styles.exerciseName}>Exercise ID: {item.exerciseId}</Text>
+              <Text style={styles.exerciseName}>Exercise: {item.name}</Text>
 
               {/* Table Headers */}
               <View style={styles.headerRow}>
                 <Text style={styles.headerCell}>Set</Text>
-                <Text style={styles.headerCell}>Previous</Text>
                 <Text style={styles.headerCell}>Reps</Text>
                 <Text style={styles.headerCell}>KG</Text>
                 <Text style={styles.headerCell}>V</Text>
               </View>
 
               {/* Table Rows */}
-              {[1, 2, 3].map((setNumber) => (
-                <ExerciseEntry
-                  key={setNumber}
-                  setNumber={setNumber}
-                  previous="None" // Replace with actual previous data if available
-                  reps={10} // Replace with actual reps
-                  kg={20} // Replace with actual weight
-                  onMarkComplete={() => handleMarkComplete(index)}
-                  isCompleted={!!completedSets[index]}
-                />
+              {item.sets.map((set, setIndex) => (
+                <View key={setIndex} style={styles.row}>
+                  <Text style={styles.cell}>{setIndex + 1}</Text>
+                  <TouchableOpacity
+  onPress={() => setFocusedInput({ exerciseIndex: index, setIndex, field: 'reps' })}
+  style={styles.inputWrapper} // Add a wrapper style for layout consistency
+>
+  <TextInput
+    style={styles.inputCell}
+    value={set.reps}
+    editable={false} // Disable direct editing
+    placeholder="Reps"
+  />
+</TouchableOpacity>
+
+<TouchableOpacity
+  onPress={() => setFocusedInput({ exerciseIndex: index, setIndex, field: 'kg' })}
+  style={styles.inputWrapper} // Add a wrapper style for layout consistency
+>
+  <TextInput
+    style={styles.inputCell}
+    value={set.kg}
+    editable={false} // Disable direct editing
+    placeholder="KG"
+  />
+</TouchableOpacity>
+                  <TouchableOpacity onPress={() => {}}>
+                    <Text style={styles.vSymbol}>{set.isCompleted ? '✔' : '○'}</Text>
+                  </TouchableOpacity>
+                </View>
               ))}
             </View>
           )}
@@ -108,6 +121,19 @@ export default function NewWorkoutPlanScreen() {
       {/* Buttons */}
       <Button title="Add Exercise" onPress={() => navigation.navigate('SelectExercise')} />
       <Button title="Save Workout Plan" onPress={handleSaveWorkoutPlan} />
+
+      {/* Custom Keyboard */}
+      {focusedInput && (
+        <CustomKeyboard
+          onKeyPress={(key) => {
+            if (focusedInput) {
+              const { exerciseIndex, setIndex, field } = focusedInput;
+              updateSetDetails(exerciseIndex, setIndex, field, key); // Update the field
+             }
+          }}
+          onClose={() => setFocusedInput(null)}
+        />
+      )}
     </View>
   );
 }
@@ -156,5 +182,37 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  cell: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 14,
+  },
+  inputWrapper: {
+    flex: 1,
+    justifyContent: 'center', // Center the TextInput vertically
+  },
+  inputCell: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 14,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 4,
+  },
+  vSymbol: {
+    fontSize: 16,
+    color: '#aaa',
+    textAlign: 'center',
+    width: '100%',
   },
 });

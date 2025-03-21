@@ -5,7 +5,7 @@ import { debugDatabase } from '@/src/database';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
-import { ProfileStackParamList } from '../../_layout'; // Import the type definition
+import { ProfileStackParamList } from '../_layout'; // Import the type definition
 import { StackNavigationProp } from '@react-navigation/stack'; // Import StackNavigationProp
 
 // Define the type for the navigation prop
