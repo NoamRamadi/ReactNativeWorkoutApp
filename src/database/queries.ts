@@ -58,3 +58,15 @@ export const fetchExercises = async (): Promise<any[]> => {
     throw error;
   }
 };
+
+export const getAllWorkoutPlans = async () => {
+  try {
+    // Query the database for all workout plans
+    const db = await dbPromise;
+    const result = await db?.getAllAsync('SELECT * FROM WorkoutPlans;');
+    return result || [] ;
+  } catch (error) {
+    console.error('Error fetching workout plans:', error);
+    throw error;
+  }
+};
