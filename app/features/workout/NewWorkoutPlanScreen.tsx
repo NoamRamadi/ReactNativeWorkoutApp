@@ -112,10 +112,23 @@ export default function NewWorkoutPlanScreen() {
 
                 {/* Table Headers */}
                 <View style={styles.headerRow}>
-                  <Text style={styles.headerCell}>Set</Text>
-                  <Text style={styles.headerCell}>Reps</Text>
-                  <Text style={styles.headerCell}>KG</Text>
-                  <Text style={styles.headerCell}>V</Text>
+                  <Text style={[styles.headerCell, styles.setColumnHeader]}>
+                    Set
+                  </Text>
+                  <Text
+                    style={[styles.headerCell, styles.previousColumnHeader]}
+                  >
+                    Previous
+                  </Text>
+                  <Text style={[styles.headerCell, styles.repsColumnHeader]}>
+                    Reps
+                  </Text>
+                  <Text style={[styles.headerCell, styles.kgColumnHeader]}>
+                    KG
+                  </Text>
+                  <Text style={[styles.headerCell, styles.vColumnHeader]}>
+                    V
+                  </Text>
                 </View>
 
                 {/* Table Rows */}
@@ -134,7 +147,15 @@ export default function NewWorkoutPlanScreen() {
                     )}
                   >
                     <View style={styles.row}>
-                      <Text style={styles.cell}>{setIndex + 1}</Text>
+                      <Text style={[styles.cell, styles.setColumn]}>
+                        {setIndex + 1}
+                      </Text>
+                      <TouchableOpacity
+                        style={[styles.previousColumn]}
+                        onPress={() => {}}
+                      >
+                        <Text>{"place holder"}</Text>
+                      </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() =>
                           setFocusedInput({
@@ -143,10 +164,10 @@ export default function NewWorkoutPlanScreen() {
                             field: "reps",
                           })
                         }
-                        style={styles.inputWrapper}
+                        style={[styles.inputWrapper, styles.kgColumn]}
                       >
                         <TextInput
-                          style={styles.inputCell}
+                          style={[styles.inputCell]}
                           value={set.reps}
                           editable={false}
                           placeholder="Reps"
@@ -164,14 +185,17 @@ export default function NewWorkoutPlanScreen() {
                         style={styles.inputWrapper}
                       >
                         <TextInput
-                          style={styles.inputCell}
+                          style={[styles.inputCell]}
                           value={set.kg}
                           editable={false}
                           placeholder="KG"
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => {}}>
-                        <Text style={styles.vSymbol}>
+                      <TouchableOpacity
+                        style={[styles.vColumn]}
+                        onPress={() => {}}
+                      >
+                        <Text style={[styles.vSymbol]}>
                           {set.isCompleted ? "✔" : "○"}
                         </Text>
                       </TouchableOpacity>
@@ -252,7 +276,6 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
   },
   headerCell: {
-    flex: 1,
     textAlign: "center",
     fontSize: 14,
     fontWeight: "bold",
@@ -260,20 +283,20 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
     backgroundColor: "#fff",
   },
   cell: {
-    flex: 1,
     textAlign: "center",
     fontSize: 14,
   },
   inputWrapper: {
-    flex: 1,
+    flex: 3,
     justifyContent: "center",
+    alignItems: "center",
   },
   inputCell: {
     flex: 1,
@@ -283,6 +306,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     padding: 4,
+    width: "95%",
   },
   vSymbol: {
     fontSize: 16,
@@ -301,5 +325,46 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  setColumn: {
+    width: "15%", // 10% of the width
+    justifyContent: "center",
+  },
+  previousColumn: {
+    width: "20%", // 10% of the width
+    justifyContent: "center",
+  },
+  repsColumn: {
+    width: "25%", // 30% of the width
+    justifyContent: "center",
+  },
+  kgColumn: {
+    width: "25%", // 30% of the width
+    justifyContent: "center",
+  },
+  vColumn: {
+    width: "15%", // 20% of the width
+    justifyContent: "center",
+  },
+
+  setColumnHeader: {
+    width: "15%", // 10% of the width
+    justifyContent: "center",
+  },
+  previousColumnHeader: {
+    width: "20%", // 10% of the width
+    justifyContent: "center",
+  },
+  repsColumnHeader: {
+    width: "25%", // 30% of the width
+    justifyContent: "center",
+  },
+  kgColumnHeader: {
+    width: "25%", // 30% of the width
+    justifyContent: "center",
+  },
+  vColumnHeader: {
+    width: "15%", // 20% of the width
+    justifyContent: "center",
   },
 });
