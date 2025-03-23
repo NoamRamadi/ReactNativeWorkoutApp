@@ -15,9 +15,15 @@ import { useNavigation } from "@react-navigation/native";
 import { executeQuery } from "../../../src/database/queries";
 import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
 import CustomKeyboard from "./components/CustomKeyboard";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { WorkoutStackParamList } from "@/app/_layout";
 
 export default function NewWorkoutPlanScreen() {
-  const navigation = useNavigation();
+  type WorkoutNavigationProp = StackNavigationProp<
+    WorkoutStackParamList,
+    "WorkoutHome"
+  >;
+  const navigation = useNavigation<WorkoutNavigationProp>();
   const {
     workoutName,
     setWorkoutName,

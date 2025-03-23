@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { WorkoutStackParamList } from "../_layout"; // Import the type definition
+import { WorkoutStackParamList } from "../../_layout"; // Import the type definition
 import { StackNavigationProp } from "@react-navigation/stack"; // Import StackNavigationProp
 
 export default function Workout() {
