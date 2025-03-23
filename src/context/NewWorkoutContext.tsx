@@ -20,6 +20,8 @@ interface NewWorkoutContextType {
     value: string
   ) => void;
   clearSelectedExercises: () => void;
+  removeExercise: (index: number) => void;
+  addSet: (exerciseIndex: number) => void;
 }
 
 // Create the context
