@@ -21,6 +21,7 @@ export default function NewWorkoutPlanScreen() {
     selectedExercises,
     clearSelectedExercises,
     updateSetDetails,
+    addSet,
   } = useNewWorkoutContext();
 
   // State for custom keyboard
@@ -142,6 +143,10 @@ export default function NewWorkoutPlanScreen() {
                   </TouchableOpacity>
                 </View>
               ))}
+              <Button
+                title="Add Set"
+                onPress={() => addSet(index)} // Add a new set for this exercise
+              />
             </View>
           )}
         />

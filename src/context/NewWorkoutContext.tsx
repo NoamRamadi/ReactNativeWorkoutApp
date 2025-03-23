@@ -81,6 +81,20 @@ export const NewWorkoutProvider: React.FC<{ children: React.ReactNode }> = ({
     setSelectedExercises([]);
   };
 
+  const addSet = (exerciseIndex: number) => {
+    setSelectedExercises((prev) => {
+      const updatedExercises = [...prev];
+      if (updatedExercises[exerciseIndex]) {
+        updatedExercises[exerciseIndex].sets.push({
+          reps: "", // Empty reps
+          kg: "", // Empty kg
+          isCompleted: false,
+        });
+      }
+      return updatedExercises;
+    });
+  };
+
   return (
     <NewWorkoutContext.Provider
       value={{
@@ -91,6 +105,7 @@ export const NewWorkoutProvider: React.FC<{ children: React.ReactNode }> = ({
         removeExercise,
         updateSetDetails,
         clearSelectedExercises,
+        addSet,
       }}
     >
       {children}
