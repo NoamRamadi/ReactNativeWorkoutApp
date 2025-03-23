@@ -7,7 +7,10 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useNavigation } from "@react-navigation/native";
 import { executeQuery } from "../../../src/database/queries";
 import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
@@ -22,6 +25,7 @@ export default function NewWorkoutPlanScreen() {
     clearSelectedExercises,
     updateSetDetails,
     addSet,
+    deleteSet,
   } = useNewWorkoutContext();
 
   // State for custom keyboard
@@ -66,114 +70,145 @@ export default function NewWorkoutPlanScreen() {
     }
   };
 
+  const handleDeleteSet = (exerciseIndex: number, setIndex: number) => {
+    Alert.alert(
+      "Delete Set",
+      "Are you sure you want to delete this set?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          onPress: () => deleteSet(exerciseIndex, setIndex),
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create New Workout Plan</Text>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Create New Workout Plan</Text>
 
-      {/* Input for Workout Plan Name */}
-      <Text style={styles.label}>Workout Plan Name:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter workout plan name"
-        value={workoutName}
-        onChangeText={setWorkoutName}
-      />
+        {/* Input for Workout Plan Name */}
+        <Text style={styles.label}>Workout Plan Name:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter workout plan name"
+          value={workoutName}
+          onChangeText={setWorkoutName}
+        />
 
-      {/* Display Selected Exercises */}
-      <Text style={styles.label}>Selected Exercises:</Text>
-      {selectedExercises.length > 0 ? (
-        <FlatList
-          data={selectedExercises}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item, index }) => (
-            <View style={styles.exerciseContainer}>
-              <Text style={styles.exerciseName}>Exercise: {item.name}</Text>
+        {/* Display Selected Exercises */}
+        <Text style={styles.label}>Selected Exercises:</Text>
+        {selectedExercises.length > 0 ? (
+          <FlatList
+            data={selectedExercises}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) => (
+              <View style={styles.exerciseContainer}>
+                <Text style={styles.exerciseName}>Exercise: {item.name}</Text>
 
-              {/* Table Headers */}
-              <View style={styles.headerRow}>
-                <Text style={styles.headerCell}>Set</Text>
-                <Text style={styles.headerCell}>Reps</Text>
-                <Text style={styles.headerCell}>KG</Text>
-                <Text style={styles.headerCell}>V</Text>
-              </View>
-
-              {/* Table Rows */}
-              {item.sets.map((set, setIndex) => (
-                <View key={setIndex} style={styles.row}>
-                  <Text style={styles.cell}>{setIndex + 1}</Text>
-                  <TouchableOpacity
-                    onPress={() =>
-                      setFocusedInput({
-                        exerciseIndex: index,
-                        setIndex,
-                        field: "reps",
-                      })
-                    }
-                    style={styles.inputWrapper} // Add a wrapper style for layout consistency
-                  >
-                    <TextInput
-                      style={styles.inputCell}
-                      value={set.reps}
-                      editable={false} // Disable direct editing
-                      placeholder="Reps"
-                    />
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={() =>
-                      setFocusedInput({
-                        exerciseIndex: index,
-                        setIndex,
-                        field: "kg",
-                      })
-                    }
-                    style={styles.inputWrapper} // Add a wrapper style for layout consistency
-                  >
-                    <TextInput
-                      style={styles.inputCell}
-                      value={set.kg}
-                      editable={false} // Disable direct editing
-                      placeholder="KG"
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => {}}>
-                    <Text style={styles.vSymbol}>
-                      {set.isCompleted ? "✔" : "○"}
-                    </Text>
-                  </TouchableOpacity>
+                {/* Table Headers */}
+                <View style={styles.headerRow}>
+                  <Text style={styles.headerCell}>Set</Text>
+                  <Text style={styles.headerCell}>Reps</Text>
+                  <Text style={styles.headerCell}>KG</Text>
+                  <Text style={styles.headerCell}>V</Text>
                 </View>
-              ))}
-              <Button
-                title="Add Set"
-                onPress={() => addSet(index)} // Add a new set for this exercise
-              />
-            </View>
-          )}
-        />
-      ) : (
-        <Text>No exercises selected yet.</Text>
-      )}
 
-      {/* Buttons */}
-      <Button
-        title="Add Exercise"
-        onPress={() => navigation.navigate("SelectExercise")}
-      />
-      <Button title="Save Workout Plan" onPress={handleSaveWorkoutPlan} />
+                {/* Table Rows */}
+                {item.sets.map((set, setIndex) => (
+                  <ReanimatedSwipeable
+                    key={setIndex}
+                    friction={2}
+                    rightThreshold={40}
+                    renderRightActions={() => (
+                      <TouchableOpacity
+                        onPress={() => handleDeleteSet(index, setIndex)}
+                        style={styles.deleteAction}
+                      >
+                        <Text style={styles.deleteActionText}>Delete</Text>
+                      </TouchableOpacity>
+                    )}
+                  >
+                    <View style={styles.row}>
+                      <Text style={styles.cell}>{setIndex + 1}</Text>
+                      <TouchableOpacity
+                        onPress={() =>
+                          setFocusedInput({
+                            exerciseIndex: index,
+                            setIndex,
+                            field: "reps",
+                          })
+                        }
+                        style={styles.inputWrapper}
+                      >
+                        <TextInput
+                          style={styles.inputCell}
+                          value={set.reps}
+                          editable={false}
+                          placeholder="Reps"
+                        />
+                      </TouchableOpacity>
 
-      {/* Custom Keyboard */}
-      {focusedInput && (
-        <CustomKeyboard
-          onKeyPress={(key) => {
-            if (focusedInput) {
-              const { exerciseIndex, setIndex, field } = focusedInput;
-              updateSetDetails(exerciseIndex, setIndex, field, key); // Update the field
-            }
-          }}
-          onClose={() => setFocusedInput(null)}
+                      <TouchableOpacity
+                        onPress={() =>
+                          setFocusedInput({
+                            exerciseIndex: index,
+                            setIndex,
+                            field: "kg",
+                          })
+                        }
+                        style={styles.inputWrapper}
+                      >
+                        <TextInput
+                          style={styles.inputCell}
+                          value={set.kg}
+                          editable={false}
+                          placeholder="KG"
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => {}}>
+                        <Text style={styles.vSymbol}>
+                          {set.isCompleted ? "✔" : "○"}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </ReanimatedSwipeable>
+                ))}
+
+                {/* Add Set Button */}
+                <Button title="Add Set" onPress={() => addSet(index)} />
+              </View>
+            )}
+          />
+        ) : (
+          <Text>No exercises selected yet.</Text>
+        )}
+
+        {/* Buttons */}
+        <Button
+          title="Add Exercise"
+          onPress={() => navigation.navigate("SelectExercise")}
         />
-      )}
-    </View>
+        <Button title="Save Workout Plan" onPress={handleSaveWorkoutPlan} />
+
+        {/* Custom Keyboard */}
+        {focusedInput && (
+          <CustomKeyboard
+            onKeyPress={(key) => {
+              if (focusedInput) {
+                const { exerciseIndex, setIndex, field } = focusedInput;
+                updateSetDetails(exerciseIndex, setIndex, field, key);
+              }
+            }}
+            onClose={() => setFocusedInput(null)}
+          />
+        )}
+      </View>
+    </GestureHandlerRootView>
   );
 }
 
@@ -229,6 +264,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
+    backgroundColor: "#fff",
   },
   cell: {
     flex: 1,
@@ -237,7 +273,7 @@ const styles = StyleSheet.create({
   },
   inputWrapper: {
     flex: 1,
-    justifyContent: "center", // Center the TextInput vertically
+    justifyContent: "center",
   },
   inputCell: {
     flex: 1,
@@ -253,5 +289,17 @@ const styles = StyleSheet.create({
     color: "#aaa",
     textAlign: "center",
     width: "100%",
+  },
+  deleteAction: {
+    backgroundColor: "#ff4d4d", // Red background
+    justifyContent: "center",
+    alignItems: "center",
+    width: 100,
+    height: "100%",
+  },
+  deleteActionText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

@@ -97,6 +97,17 @@ export const NewWorkoutProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
+  const deleteSet = (exerciseIndex: number, setIndex: number) => {
+    setSelectedExercises((prev) => {
+      const updatedExercises = [...prev];
+      if (updatedExercises[exerciseIndex]) {
+        // Remove the set at the specified index
+        updatedExercises[exerciseIndex].sets.splice(setIndex, 1);
+      }
+      return updatedExercises;
+    });
+  };
+
   return (
     <NewWorkoutContext.Provider
       value={{
@@ -108,6 +119,7 @@ export const NewWorkoutProvider: React.FC<{ children: React.ReactNode }> = ({
         updateSetDetails,
         clearSelectedExercises,
         addSet,
+        deleteSet,
       }}
     >
       {children}
