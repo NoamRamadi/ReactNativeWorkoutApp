@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { executeQuery } from "../../../src/database/queries";
 import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
 import CustomKeyboard from "./components/CustomKeyboard";
@@ -40,6 +40,42 @@ export default function NewWorkoutPlanScreen() {
     setIndex: number;
     field: "reps" | "kg";
   } | null>(null);
+
+  // Reset workout data when navigating back
+  // Handle "Discard Changes" confirmation before leaving
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      // Check if there are unsaved changes
+      if (workoutName.trim() || selectedExercises.length > 0) {
+        e.preventDefault(); // Prevent navigation
+
+        // Show confirmation dialog
+        Alert.alert(
+          "Discard Workout Plan?",
+          "You have unsaved changes. Are you sure you want to discard this workout plan?",
+          [
+            { text: "Cancel", style: "cancel", onPress: () => {} }, // Do nothing
+            {
+              text: "Discard",
+              style: "destructive",
+              onPress: () => {
+                setWorkoutName(""); // Reset workout name
+                clearSelectedExercises(); // Clear selected exercises
+                navigation.dispatch(e.data.action); // Continue navigation
+              },
+            },
+          ],
+          { cancelable: true }
+        );
+      } else {
+        // No unsaved changes, reset data silently
+        setWorkoutName("");
+        clearSelectedExercises();
+      }
+    });
+
+    return unsubscribe; // Cleanup the listener on unmount
+  }, [navigation, workoutName, selectedExercises]);
 
   // Save the workout plan to the database
   const handleSaveWorkoutPlan = async () => {
