@@ -87,8 +87,8 @@ export default function NewWorkoutPlanScreen() {
 
       // Insert the workout plan into the database
       const workoutPlanInsertResult = await executeQuery(
-        `INSERT INTO WorkoutPlans (name) VALUES (?);`,
-        [workoutName]
+        `INSERT INTO WorkoutPlans (plan_name, user_id) VALUES (?, ?);`,
+        [workoutName, 1]
       );
 
       const workoutPlanId = workoutPlanInsertResult.insertId;
@@ -97,8 +97,8 @@ export default function NewWorkoutPlanScreen() {
       for (const entry of selectedExercises) {
         for (const set of entry.sets) {
           await executeQuery(
-            `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id, reps, kg) VALUES (?, ?, ?, ?);`,
-            [workoutPlanId, entry.exerciseId, set.reps, set.kg]
+            `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id) VALUES (?, ?);`,
+            [workoutPlanId, entry.exerciseId]
           );
         }
       }

@@ -42,6 +42,30 @@ export const initDatabase = async () => {
       );
     `);
 
+    // Create WorkoutPlans table
+    await db?.execAsync(`
+      CREATE TABLE IF NOT EXISTS WorkoutPlans (
+        workout_plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        plan_name TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES Users (user_id)
+      );
+    `);
+
+    // Create WorkoutPlanExercises table
+    await db?.execAsync(`
+      CREATE TABLE IF NOT EXISTS WorkoutPlanExercises (
+        workout_plan_exercise_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        workout_plan_id INTEGER NOT NULL,
+        exercise_id INTEGER NOT NULL,
+        display_order INTEGER NOT NULL DEFAULT 1,
+        FOREIGN KEY (workout_plan_id) REFERENCES WorkoutPlans (workout_plan_id),
+        FOREIGN KEY (exercise_id) REFERENCES Exercis
+      );
+    `);
+
     console.log('Database initialized');
   } catch (error) {
     console.error('Error initializing database:', error);

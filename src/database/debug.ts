@@ -18,6 +18,9 @@ export const debugDatabase = async () => {
     // Fetch and log exercises
     const exercises = await fetchQuery('SELECT * FROM Exercises;');
     console.log('Exercises in the database:\n\n', exercises);
+
+    const workoutPlans = await fetchQuery('SELECT * FROM WorkoutPlans;');
+    console.log('workoutPlans in the database:\n\n', workoutPlans);
   } catch (error) {
     console.error('Error debugging database:', error);
   }
