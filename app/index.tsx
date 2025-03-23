@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import React from "react";
+import { View, Text, Button, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -10,11 +10,11 @@ export default function ProfilePage() {
       <Text style={styles.title}>Welcome to Your Profile Page</Text>
       <Button
         title="Go to Data Display Page"
-        onPress={() => router.push('/screens/DataDisplayScreen')}
+        onPress={() => router.push("/screens/DataDisplayScreen")}
       />
       <Button
         title="Add a New User"
-        onPress={() => router.push('/screens/WriteToDB')}
+        onPress={() => router.push("/screens/WriteToDB")}
       />
     </View>
   );
@@ -23,14 +23,14 @@ export default function ProfilePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

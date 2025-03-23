@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 interface ExerciseEntryProps {
   setNumber: number;
@@ -12,7 +12,7 @@ interface ExerciseEntryProps {
 
 export default function ExerciseEntry({
   setNumber,
-  previous = 'None',
+  previous = "None",
   reps,
   kg,
   onMarkComplete,
@@ -35,7 +35,7 @@ export default function ExerciseEntry({
       {/* V Symbol (Mark Complete) */}
       <TouchableOpacity onPress={onMarkComplete} style={styles.cell}>
         <Text style={[styles.vSymbol, isCompleted && styles.completed]}>
-          {isCompleted ? '✔' : '○'}
+          {isCompleted ? "✔" : "○"}
         </Text>
       </TouchableOpacity>
     </View>
@@ -44,23 +44,23 @@ export default function ExerciseEntry({
 
 const styles = StyleSheet.create({
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
   cell: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 14,
   },
   vSymbol: {
     fontSize: 16,
-    color: '#aaa',
+    color: "#aaa",
   },
   completed: {
-    color: '#28a745', // Green color for completed sets
+    color: "#28a745", // Green color for completed sets
   },
 });

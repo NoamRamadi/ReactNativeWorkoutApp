@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 //import { initDatabase, executeQuery, fetchQuery } from '../../src/database/database';
-import { initDatabase, executeQuery, fetchQuery } from '@/src/database'; 
+import { initDatabase, executeQuery, fetchQuery } from "@/src/database";
 
 export default function DataDisplayScreen() {
   const [users, setUsers] = useState<any[]>([]);
@@ -12,16 +12,16 @@ export default function DataDisplayScreen() {
       await initDatabase();
 
       // Add a test user if the table is empty
-      const existingUsers = await fetchQuery('SELECT * FROM Users;');
+      const existingUsers = await fetchQuery("SELECT * FROM Users;");
       if (existingUsers.length === 0) {
         await executeQuery(
           `INSERT INTO Users (username, email, password_hash) VALUES (?, ?, ?);`,
-          ['test_user', 'test@example.com', 'hashed_password']
+          ["test_user", "test@example.com", "hashed_password"]
         );
       }
 
       // Fetch all users
-      const result = await fetchQuery('SELECT * FROM Users;');
+      const result = await fetchQuery("SELECT * FROM Users;");
       setUsers(result);
     };
 
@@ -54,14 +54,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   userCard: {
     padding: 12,
     marginVertical: 4,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     borderRadius: 8,
   },
 });

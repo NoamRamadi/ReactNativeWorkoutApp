@@ -1,23 +1,40 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, FlatList, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { executeQuery } from '../../../src/database/queries';
-import { useNewWorkoutContext } from '../../../src/context/NewWorkoutContext';
-import CustomKeyboard from './components/CustomKeyboard';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { executeQuery } from "../../../src/database/queries";
+import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
+import CustomKeyboard from "./components/CustomKeyboard";
 
 export default function NewWorkoutPlanScreen() {
   const navigation = useNavigation();
-  const { workoutName, setWorkoutName, selectedExercises, clearSelectedExercises, updateSetDetails } =
-    useNewWorkoutContext();
+  const {
+    workoutName,
+    setWorkoutName,
+    selectedExercises,
+    clearSelectedExercises,
+    updateSetDetails,
+  } = useNewWorkoutContext();
 
   // State for custom keyboard
-  const [focusedInput, setFocusedInput] = useState<{ exerciseIndex: number; setIndex: number; field: 'reps' | 'kg' } | null>(null);
+  const [focusedInput, setFocusedInput] = useState<{
+    exerciseIndex: number;
+    setIndex: number;
+    field: "reps" | "kg";
+  } | null>(null);
 
   // Save the workout plan to the database
   const handleSaveWorkoutPlan = async () => {
     try {
       if (!workoutName.trim()) {
-        alert('Please enter a name for the workout plan.');
+        alert("Please enter a name for the workout plan.");
         return;
       }
 
@@ -39,12 +56,12 @@ export default function NewWorkoutPlanScreen() {
         }
       }
 
-      alert('Workout plan saved successfully!');
+      alert("Workout plan saved successfully!");
       clearSelectedExercises(); // Clear selected exercises after saving
       navigation.goBack(); // Navigate back after saving
     } catch (error) {
-      console.error('Error saving workout plan:', error);
-      alert('Failed to save workout plan. Please try again.');
+      console.error("Error saving workout plan:", error);
+      alert("Failed to save workout plan. Please try again.");
     }
   };
 
@@ -84,30 +101,44 @@ export default function NewWorkoutPlanScreen() {
                 <View key={setIndex} style={styles.row}>
                   <Text style={styles.cell}>{setIndex + 1}</Text>
                   <TouchableOpacity
-  onPress={() => setFocusedInput({ exerciseIndex: index, setIndex, field: 'reps' })}
-  style={styles.inputWrapper} // Add a wrapper style for layout consistency
->
-  <TextInput
-    style={styles.inputCell}
-    value={set.reps}
-    editable={false} // Disable direct editing
-    placeholder="Reps"
-  />
-</TouchableOpacity>
+                    onPress={() =>
+                      setFocusedInput({
+                        exerciseIndex: index,
+                        setIndex,
+                        field: "reps",
+                      })
+                    }
+                    style={styles.inputWrapper} // Add a wrapper style for layout consistency
+                  >
+                    <TextInput
+                      style={styles.inputCell}
+                      value={set.reps}
+                      editable={false} // Disable direct editing
+                      placeholder="Reps"
+                    />
+                  </TouchableOpacity>
 
-<TouchableOpacity
-  onPress={() => setFocusedInput({ exerciseIndex: index, setIndex, field: 'kg' })}
-  style={styles.inputWrapper} // Add a wrapper style for layout consistency
->
-  <TextInput
-    style={styles.inputCell}
-    value={set.kg}
-    editable={false} // Disable direct editing
-    placeholder="KG"
-  />
-</TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      setFocusedInput({
+                        exerciseIndex: index,
+                        setIndex,
+                        field: "kg",
+                      })
+                    }
+                    style={styles.inputWrapper} // Add a wrapper style for layout consistency
+                  >
+                    <TextInput
+                      style={styles.inputCell}
+                      value={set.kg}
+                      editable={false} // Disable direct editing
+                      placeholder="KG"
+                    />
+                  </TouchableOpacity>
                   <TouchableOpacity onPress={() => {}}>
-                    <Text style={styles.vSymbol}>{set.isCompleted ? '✔' : '○'}</Text>
+                    <Text style={styles.vSymbol}>
+                      {set.isCompleted ? "✔" : "○"}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               ))}
@@ -119,7 +150,10 @@ export default function NewWorkoutPlanScreen() {
       )}
 
       {/* Buttons */}
-      <Button title="Add Exercise" onPress={() => navigation.navigate('SelectExercise')} />
+      <Button
+        title="Add Exercise"
+        onPress={() => navigation.navigate("SelectExercise")}
+      />
       <Button title="Save Workout Plan" onPress={handleSaveWorkoutPlan} />
 
       {/* Custom Keyboard */}
@@ -129,7 +163,7 @@ export default function NewWorkoutPlanScreen() {
             if (focusedInput) {
               const { exerciseIndex, setIndex, field } = focusedInput;
               updateSetDetails(exerciseIndex, setIndex, field, key); // Update the field
-             }
+            }
           }}
           onClose={() => setFocusedInput(null)}
         />
@@ -145,17 +179,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 8,
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
@@ -166,53 +200,53 @@ const styles = StyleSheet.create({
   },
   exerciseName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
   headerCell: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   cell: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 14,
   },
   inputWrapper: {
     flex: 1,
-    justifyContent: 'center', // Center the TextInput vertically
+    justifyContent: "center", // Center the TextInput vertically
   },
   inputCell: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 14,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 4,
     padding: 4,
   },
   vSymbol: {
     fontSize: 16,
-    color: '#aaa',
-    textAlign: 'center',
-    width: '100%',
+    color: "#aaa",
+    textAlign: "center",
+    width: "100%",
   },
 });

@@ -1,24 +1,24 @@
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Import screens
-import Profile from './features/profile/ProfileScreen';
-import Measure from './features/measure/MeasureScreen';
-import { NewWorkoutProvider } from '../src/context/NewWorkoutContext';
-import Workout from './features/workout/WorkoutScreen';
-import History from './features/history/HistoryScreen';
-import DatabaseDebugScreen from './debug/DatabaseDebugScreen'; // Import the debug screen
-import NewWorkoutPlanScreen from './features/workout/NewWorkoutPlanScreen'; // Import the new screen
-import SelectExerciseScreen from './features/exercises/SelectExerciseScreen'; // Import the new screen
-import ExercisesScreen from './features/exercises/ExerciseScreen';
+import Profile from "./features/profile/ProfileScreen";
+import Measure from "./features/measure/MeasureScreen";
+import { NewWorkoutProvider } from "../src/context/NewWorkoutContext";
+import Workout from "./features/workout/WorkoutScreen";
+import History from "./features/history/HistoryScreen";
+import DatabaseDebugScreen from "./debug/DatabaseDebugScreen"; // Import the debug screen
+import NewWorkoutPlanScreen from "./features/workout/NewWorkoutPlanScreen"; // Import the new screen
+import SelectExerciseScreen from "./features/exercises/SelectExerciseScreen"; // Import the new screen
+import ExercisesScreen from "./features/exercises/ExerciseScreen";
 
 // Create the stack navigator for the Profile and Debug screens
 export type WorkoutStackParamList = {
   WorkoutHome: undefined; // No parameters for this screen
   NewWorkoutPlan: undefined; // No parameters for this screen
-  SelectExercise: undefined
+  SelectExercise: undefined;
 };
 
 // Create the stack navigator for the Workout and NewWorkoutPlan screens
@@ -27,11 +27,23 @@ const WorkoutStack = createStackNavigator<WorkoutStackParamList>();
 function WorkoutStackNavigator() {
   return (
     <NewWorkoutProvider>
-    <WorkoutStack.Navigator>
-      <WorkoutStack.Screen name="WorkoutHome" component={Workout} options={{ title: 'Workout Plans' }} />
-      <WorkoutStack.Screen name="NewWorkoutPlan" component={NewWorkoutPlanScreen} options={{ title: 'Create New Workout Plan' }} />
-      <WorkoutStack.Screen name="SelectExercise" component={SelectExerciseScreen} options={{ title: 'Select Exercises' }} />
-    </WorkoutStack.Navigator>
+      <WorkoutStack.Navigator>
+        <WorkoutStack.Screen
+          name="WorkoutHome"
+          component={Workout}
+          options={{ title: "Workout Plans" }}
+        />
+        <WorkoutStack.Screen
+          name="NewWorkoutPlan"
+          component={NewWorkoutPlanScreen}
+          options={{ title: "Create New Workout Plan" }}
+        />
+        <WorkoutStack.Screen
+          name="SelectExercise"
+          component={SelectExerciseScreen}
+          options={{ title: "Select Exercises" }}
+        />
+      </WorkoutStack.Navigator>
     </NewWorkoutProvider>
   );
 }
@@ -47,8 +59,16 @@ const ProfileStack = createStackNavigator<ProfileStackParamList>();
 function ProfileStackNavigator() {
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen name="ProfileHome" component={Profile} options={{ title: 'Profile' }} />
-      <ProfileStack.Screen name="DatabaseDebug" component={DatabaseDebugScreen} options={{ title: 'Database Debug' }} />
+      <ProfileStack.Screen
+        name="ProfileHome"
+        component={Profile}
+        options={{ title: "Profile" }}
+      />
+      <ProfileStack.Screen
+        name="DatabaseDebug"
+        component={DatabaseDebugScreen}
+        options={{ title: "Database Debug" }}
+      />
     </ProfileStack.Navigator>
   );
 }
@@ -61,33 +81,35 @@ export default function RootLayout() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
-          let iconName = '';
+          let iconName = "";
 
           // Assign icons based on the route name
           switch (route.name) {
-            case 'Profile':
-              iconName = 'account-circle';
+            case "Profile":
+              iconName = "account-circle";
               break;
-            case 'Measure':
-              iconName = 'ruler';
+            case "Measure":
+              iconName = "ruler";
               break;
-            case 'Exercises':
-              iconName = 'dumbbell';
+            case "Exercises":
+              iconName = "dumbbell";
               break;
-            case 'Workout':
-              iconName = 'calendar-clock';
+            case "Workout":
+              iconName = "calendar-clock";
               break;
-            case 'History':
-              iconName = 'history';
+            case "History":
+              iconName = "history";
               break;
             default:
-              iconName = 'help-circle';
+              iconName = "help-circle";
           }
 
-          return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
+          return (
+            <MaterialCommunityIcons name={iconName} size={size} color={color} />
+          );
         },
-        tabBarActiveTintColor: '#007bff',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: "#007bff",
+        tabBarInactiveTintColor: "gray",
         headerShown: false, // Hide the header for all tabs
       })}
     >

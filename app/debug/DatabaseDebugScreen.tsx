@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,24 +7,23 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
 //import { fetchQuery, executeQuery } from '../../src/database/database';
-import { fetchQuery, executeQuery } from '@/src/database'; 
-
+import { fetchQuery, executeQuery } from "@/src/database";
 
 export default function DatabaseDebugScreen() {
   const [exercises, setExercises] = useState<any[]>([]);
-  const [newExerciseName, setNewExerciseName] = useState('');
-  const [newBodyPart, setNewBodyPart] = useState('');
-  const [newEquipment, setNewEquipment] = useState('');
+  const [newExerciseName, setNewExerciseName] = useState("");
+  const [newBodyPart, setNewBodyPart] = useState("");
+  const [newEquipment, setNewEquipment] = useState("");
 
   // Fetch exercises from the database
   const loadExercises = async () => {
     try {
-      const result = await fetchQuery('SELECT * FROM Exercises;');
+      const result = await fetchQuery("SELECT * FROM Exercises;");
       setExercises(result);
     } catch (error) {
-      console.error('Error fetching exercises:', error);
+      console.error("Error fetching exercises:", error);
     }
   };
 
@@ -35,7 +34,7 @@ export default function DatabaseDebugScreen() {
   // Add a new exercise
   const addExercise = async () => {
     if (!newExerciseName || !newBodyPart || !newEquipment) {
-      alert('Please fill in all fields.');
+      alert("Please fill in all fields.");
       return;
     }
 
@@ -47,26 +46,28 @@ export default function DatabaseDebugScreen() {
         `,
         [newExerciseName, newBodyPart, newEquipment]
       );
-      setNewExerciseName('');
-      setNewBodyPart('');
-      setNewEquipment('');
+      setNewExerciseName("");
+      setNewBodyPart("");
+      setNewEquipment("");
       loadExercises(); // Refresh the list
-      alert('Exercise added successfully!');
+      alert("Exercise added successfully!");
     } catch (error) {
-      console.error('Error adding exercise:', error);
-      alert('Failed to add exercise.');
+      console.error("Error adding exercise:", error);
+      alert("Failed to add exercise.");
     }
   };
 
   // Delete an exercise
   const deleteExercise = async (exerciseId: number) => {
     try {
-      await executeQuery('DELETE FROM Exercises WHERE exercise_id = ?;', [exerciseId]);
+      await executeQuery("DELETE FROM Exercises WHERE exercise_id = ?;", [
+        exerciseId,
+      ]);
       loadExercises(); // Refresh the list
-      alert('Exercise deleted successfully!');
+      alert("Exercise deleted successfully!");
     } catch (error) {
-      console.error('Error deleting exercise:', error);
-      alert('Failed to delete exercise.');
+      console.error("Error deleting exercise:", error);
+      alert("Failed to delete exercise.");
     }
   };
 
@@ -122,13 +123,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   input: {
     height: 50,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 10,
@@ -138,12 +139,12 @@ const styles = StyleSheet.create({
   exerciseCard: {
     padding: 12,
     marginVertical: 4,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     borderRadius: 8,
   },
   exerciseName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
 });
