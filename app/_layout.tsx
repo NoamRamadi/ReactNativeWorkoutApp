@@ -13,12 +13,14 @@ import DatabaseDebugScreen from "./debug/DatabaseDebugScreen"; // Import the deb
 import NewWorkoutPlanScreen from "./features/workout/NewWorkoutPlanScreen"; // Import the new screen
 import SelectExerciseScreen from "./features/exercises/SelectExerciseScreen"; // Import the new screen
 import ExercisesScreen from "./features/exercises/ExerciseScreen";
+import WorkoutPlanDetails from "./features/workout/WorkoutPlanDetails";
 
 // Create the stack navigator for the Profile and Debug screens
 export type WorkoutStackParamList = {
   WorkoutHome: undefined; // No parameters for this screen
   NewWorkoutPlan: undefined; // No parameters for this screen
   SelectExercise: undefined;
+  WorkoutPlanDetails: { planId: number };
 };
 
 // Create the stack navigator for the Workout and NewWorkoutPlan screens
@@ -37,6 +39,10 @@ function WorkoutStackNavigator() {
           name="NewWorkoutPlan"
           component={NewWorkoutPlanScreen}
           options={{ title: "Create New Workout Plan" }}
+        />
+        <WorkoutStack.Screen
+          name="WorkoutPlanDetails"
+          component={WorkoutPlanDetails}
         />
         <WorkoutStack.Screen
           name="SelectExercise"

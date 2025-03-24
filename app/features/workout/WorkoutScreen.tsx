@@ -43,7 +43,11 @@ export default function Workout() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Workout Plans</Text>
-
+      {/* Create New Workout Plan Button */}
+      <Button
+        title="Create New Workout Plan"
+        onPress={() => navigation.navigate("NewWorkoutPlan")}
+      />
       {/* Display List of Workout Plans */}
       {workoutPlans.length > 0 ? (
         <FlatList
@@ -52,7 +56,11 @@ export default function Workout() {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.workoutPlanItem}
-              onPress={() => console.log("click")}
+              onPress={() =>
+                navigation.navigate("WorkoutPlanDetails", {
+                  planId: item.workout_plan_id,
+                })
+              }
             >
               <Text style={styles.workoutPlanName}>{item.plan_name}</Text>
               <Text style={styles.workoutPlanDetails}>
@@ -64,12 +72,6 @@ export default function Workout() {
       ) : (
         <Text>No workout plans available. Create one now!</Text>
       )}
-
-      {/* Create New Workout Plan Button */}
-      <Button
-        title="Create New Workout Plan"
-        onPress={() => navigation.navigate("NewWorkoutPlan")}
-      />
     </View>
   );
 }
