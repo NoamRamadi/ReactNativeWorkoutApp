@@ -37,7 +37,7 @@ export const debugDatabase = async () => {
     console.log("WorkoutSessions in the database:\n\n", WorkoutSessions);
 
     const WorkoutSessionExercises = await fetchQuery(
-      "SELECT * WorkoutSessionExercises;"
+      "SELECT * FROM WorkoutSessionExercises;"
     );
     console.log(
       "WorkoutSessionExercises in the database:\n\n",
