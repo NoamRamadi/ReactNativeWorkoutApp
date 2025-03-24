@@ -88,17 +88,36 @@ export default function NewWorkoutPlanScreen() {
       // Insert the workout plan into the database
       const workoutPlanInsertResult = await executeQuery(
         `INSERT INTO WorkoutPlans (plan_name, user_id) VALUES (?, ?);`,
-        [workoutName, 1]
+        [workoutName, 1] // Replace `1` with the actual user ID if available
       );
 
       const workoutPlanId = workoutPlanInsertResult.insertId;
 
-      // Insert selected exercises into the WorkoutPlanExercises table
-      for (const entry of selectedExercises) {
-        for (const set of entry.sets) {
+      // Insert selected exercises and their sets into the database
+      for (const [exerciseIndex, entry] of selectedExercises.entries()) {
+        // Insert the exercise into WorkoutPlanExercises with display_order
+        const workoutPlanExerciseInsertResult = await executeQuery(
+          `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id, display_order) VALUES (?, ?, ?);`,
+          [workoutPlanId, entry.exerciseId, exerciseIndex + 1]
+        );
+
+        const workoutPlanExerciseId = workoutPlanExerciseInsertResult.insertId;
+
+        // Insert sets for the exercise into WorkoutPlanSets
+        for (const [setIndex, set] of entry.sets.entries()) {
           await executeQuery(
-            `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id) VALUES (?, ?);`,
-            [workoutPlanId, entry.exerciseId]
+            `INSERT INTO WorkoutPlanSets (
+              workout_plan_exercise_id,
+              set_number,
+              weight,
+              reps
+            ) VALUES (?, ?, ?, ?);`,
+            [
+              workoutPlanExerciseId,
+              setIndex + 1, // Set number
+              set.kg !== "" ? parseFloat(set.kg) : null, // Handle empty kg
+              set.reps !== "" ? parseInt(set.reps) : null, // Handle empty reps
+            ]
           );
         }
       }
