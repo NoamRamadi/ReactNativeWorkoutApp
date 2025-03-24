@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { executeQuery } from "../../../src/database/queries";
 import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
 import CustomKeyboard from "./components/CustomKeyboard";
@@ -41,10 +41,15 @@ export default function NewWorkoutPlanScreen() {
     field: "reps" | "kg";
   } | null>(null);
 
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
   // Reset workout data when navigating back
   // Handle "Discard Changes" confirmation before leaving
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      // If the user is saving, allow navigation without confirmation
+      if (isSaving) return;
+
       // Check if there are unsaved changes
       if (workoutName.trim() || selectedExercises.length > 0) {
         e.preventDefault(); // Prevent navigation
@@ -75,7 +80,7 @@ export default function NewWorkoutPlanScreen() {
     });
 
     return unsubscribe; // Cleanup the listener on unmount
-  }, [navigation, workoutName, selectedExercises]);
+  }, [navigation, workoutName, selectedExercises, isSaving]);
 
   // Save the workout plan to the database
   const handleSaveWorkoutPlan = async () => {
@@ -84,6 +89,9 @@ export default function NewWorkoutPlanScreen() {
         alert("Please enter a name for the workout plan.");
         return;
       }
+
+      // Set the saving flag to true
+      setIsSaving(true);
 
       // Insert the workout plan into the database
       const workoutPlanInsertResult = await executeQuery(
@@ -128,6 +136,9 @@ export default function NewWorkoutPlanScreen() {
     } catch (error) {
       console.error("Error saving workout plan:", error);
       alert("Failed to save workout plan. Please try again.");
+    } finally {
+      // Reset the saving flag after saving is complete
+      setIsSaving(false);
     }
   };
 
