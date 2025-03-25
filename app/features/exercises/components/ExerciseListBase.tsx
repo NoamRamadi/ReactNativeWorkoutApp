@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,24 +6,33 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
-} from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+} from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 //import { initDatabase, addSampleExercises, fetchExercises } from '../../../src/database/database';
 //import { initDatabase, addSampleExercises, fetchExercises } from '@../../../src/database';
-import { initDatabase, addSampleExercises, fetchExercises  } from '@/src/database';
+import {
+  initDatabase,
+  addSampleExercises,
+  fetchExercises,
+} from "@/src/database";
 interface ExerciseListBaseProps {
   isSelectable?: boolean; // Determines if exercises can be selected
   onSelectExercise?: (exerciseId: number, isSelected: boolean) => void; // Callback for selection
 }
 
-export default function ExerciseListBase({ isSelectable = false, onSelectExercise }: ExerciseListBaseProps) {
+export default function ExerciseListBase({
+  isSelectable = false,
+  onSelectExercise,
+}: ExerciseListBaseProps) {
   const [exercises, setExercises] = useState<any[]>([]);
   const [allExercises, setAllExercises] = useState<any[]>([]);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isSortMenuVisible, setIsSortMenuVisible] = useState(false);
-  const [sortOption, setSortOption] = useState<'name' | 'body_part'>('name');
-  const [selectedExercises, setSelectedExercises] = useState<Set<number>>(new Set()); // Tracks selected exercises
+  const [sortOption, setSortOption] = useState<"name" | "body_part">("name");
+  const [selectedExercises, setSelectedExercises] = useState<Set<number>>(
+    new Set()
+  ); // Tracks selected exercises
 
   useEffect(() => {
     const initializeAndFetchExercises = async () => {
@@ -34,7 +43,7 @@ export default function ExerciseListBase({ isSelectable = false, onSelectExercis
         setExercises(result);
         setAllExercises(result);
       } catch (error) {
-        console.error('Error initializing or fetching exercises:', error);
+        console.error("Error initializing or fetching exercises:", error);
       }
     };
 
@@ -54,20 +63,20 @@ export default function ExerciseListBase({ isSelectable = false, onSelectExercis
   const toggleSearch = () => {
     setIsSearchVisible(!isSearchVisible);
     if (!isSearchVisible) {
-      setSearchQuery('');
+      setSearchQuery("");
       setExercises(allExercises);
     }
   };
 
   // Sort exercises based on the selected option
-  const handleSort = (option: 'name' | 'body_part') => {
+  const handleSort = (option: "name" | "body_part") => {
     setSortOption(option);
     setIsSortMenuVisible(false);
 
     const sortedExercises = [...exercises].sort((a, b) => {
-      if (option === 'name') {
+      if (option === "name") {
         return a.name.localeCompare(b.name);
-      } else if (option === 'body_part') {
+      } else if (option === "body_part") {
         return a.body_part.localeCompare(b.body_part);
       }
       return 0;
@@ -100,7 +109,7 @@ export default function ExerciseListBase({ isSelectable = false, onSelectExercis
           {/* Search Button */}
           <TouchableOpacity onPress={toggleSearch} style={styles.iconButton}>
             <MaterialCommunityIcons
-              name={isSearchVisible ? 'close' : 'magnify'}
+              name={isSearchVisible ? "close" : "magnify"}
               size={24}
               color="#007bff"
             />
@@ -121,13 +130,13 @@ export default function ExerciseListBase({ isSelectable = false, onSelectExercis
         <View style={styles.sortMenu}>
           <TouchableOpacity
             style={styles.sortMenuItem}
-            onPress={() => handleSort('name')}
+            onPress={() => handleSort("name")}
           >
             <Text>Sort by Name</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.sortMenuItem}
-            onPress={() => handleSort('body_part')}
+            onPress={() => handleSort("body_part")}
           >
             <Text>Sort by Body Part</Text>
           </TouchableOpacity>
@@ -152,13 +161,14 @@ export default function ExerciseListBase({ isSelectable = false, onSelectExercis
           <TouchableOpacity
             style={[
               styles.exerciseCard,
-              isSelectable && selectedExercises.has(item.exercise_id) && styles.selectedExercise,
+              isSelectable &&
+                selectedExercises.has(item.exercise_id) &&
+                styles.selectedExercise,
             ]}
             onPress={() => handleExercisePress(item.exercise_id)}
           >
             <Text style={styles.exerciseName}>{item.name}</Text>
             <Text>{item.body_part}</Text>
-            
           </TouchableOpacity>
         )}
         ListEmptyComponent={<Text>No exercises found in the database.</Text>}
@@ -173,17 +183,17 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   buttonsContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 16,
   },
   iconButton: {
@@ -191,43 +201,43 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
     marginBottom: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   sortMenu: {
-    position: 'absolute',
+    position: "absolute",
     top: 50,
     right: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
     elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    //shadowColor: '#000',
+    //shadowOffset: { width: 0, height: 2 },
+    //shadowOpacity: 0.2,
+    //shadowRadius: 4,
     zIndex: 10,
   },
   sortMenuItem: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
   exerciseCard: {
     padding: 12,
     marginVertical: 4,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     borderRadius: 8,
   },
   selectedExercise: {
-    backgroundColor: '#d1e7dd', // Light green background for selected exercises
+    backgroundColor: "#d1e7dd", // Light green background for selected exercises
   },
   exerciseName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
 });

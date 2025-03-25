@@ -29,6 +29,11 @@ export default function Profile() {
         title="Go to Database Debug Screen"
         onPress={() => navigation.navigate("DatabaseDebug")} // Now works without errors
       />
+
+      <Button
+        title="Debug: Database Manager"
+        onPress={() => navigation.navigate("DatabaseManager")}
+      />
     </View>
   );
 }

@@ -14,7 +14,11 @@ import NewWorkoutPlanScreen from "./features/workout/NewWorkoutPlanScreen"; // I
 import SelectExerciseScreen from "./features/exercises/SelectExerciseScreen"; // Import the new screen
 import ExercisesScreen from "./features/exercises/ExerciseScreen";
 import WorkoutPlanDetails from "./features/workout/WorkoutPlanDetails";
+import DatabaseManager from "./debug/DatabaseManager";
+import { LogBox } from "react-native";
 
+// Suppress the specific warning
+LogBox.ignoreLogs(["props.pointerEvents is deprecated"]);
 // Create the stack navigator for the Profile and Debug screens
 export type WorkoutStackParamList = {
   WorkoutHome: undefined; // No parameters for this screen
@@ -58,6 +62,7 @@ function WorkoutStackNavigator() {
 export type ProfileStackParamList = {
   ProfileHome: undefined; // No parameters for this screen
   DatabaseDebug: undefined; // No parameters for this screen
+  DatabaseManager: undefined;
 };
 
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
@@ -74,6 +79,11 @@ function ProfileStackNavigator() {
         name="DatabaseDebug"
         component={DatabaseDebugScreen}
         options={{ title: "Database Debug" }}
+      />
+      <ProfileStack.Screen
+        name="DatabaseManager"
+        component={DatabaseManager}
+        options={{ title: "Database Manager" }}
       />
     </ProfileStack.Navigator>
   );
