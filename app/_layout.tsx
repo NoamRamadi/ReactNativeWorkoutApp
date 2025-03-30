@@ -16,6 +16,9 @@ import ExercisesScreen from "./features/exercises/ExerciseScreen";
 import WorkoutPlanDetails from "./features/workout/WorkoutPlanDetails";
 import DatabaseManager from "./debug/DatabaseManager";
 import { LogBox } from "react-native";
+import { FloatingBannerProvider } from "@/src/context/FloatingBannerContext";
+import FloatingBanner from "@/src/components/FloatingBanner";
+import ActiveWorkoutScreen from "./features/workout/ActiveWorkoutScreen";
 
 // Suppress the specific warning
 LogBox.ignoreLogs(["props.pointerEvents is deprecated"]);
@@ -25,6 +28,7 @@ export type WorkoutStackParamList = {
   NewWorkoutPlan: undefined; // No parameters for this screen
   SelectExercise: undefined;
   WorkoutPlanDetails: { planId: number };
+  ActiveWorkout: undefined;
 };
 
 // Create the stack navigator for the Workout and NewWorkoutPlan screens
@@ -52,6 +56,11 @@ function WorkoutStackNavigator() {
           name="SelectExercise"
           component={SelectExerciseScreen}
           options={{ title: "Select Exercises" }}
+        />
+        <WorkoutStack.Screen
+          name="ActiveWorkout"
+          component={ActiveWorkoutScreen}
+          options={{ title: "Active Workout" }}
         />
       </WorkoutStack.Navigator>
     </NewWorkoutProvider>
@@ -94,47 +103,54 @@ const Tab = createBottomTabNavigator();
 
 export default function RootLayout() {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName = "";
+    <FloatingBannerProvider>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size }) => {
+            let iconName = "";
 
-          // Assign icons based on the route name
-          switch (route.name) {
-            case "Profile":
-              iconName = "account-circle";
-              break;
-            case "Measure":
-              iconName = "ruler";
-              break;
-            case "Exercises":
-              iconName = "dumbbell";
-              break;
-            case "Workout":
-              iconName = "calendar-clock";
-              break;
-            case "History":
-              iconName = "history";
-              break;
-            default:
-              iconName = "help-circle";
-          }
+            // Assign icons based on the route name
+            switch (route.name) {
+              case "Profile":
+                iconName = "account-circle";
+                break;
+              case "Measure":
+                iconName = "ruler";
+                break;
+              case "Exercises":
+                iconName = "dumbbell";
+                break;
+              case "Workout":
+                iconName = "calendar-clock";
+                break;
+              case "History":
+                iconName = "history";
+                break;
+              default:
+                iconName = "help-circle";
+            }
 
-          return (
-            <MaterialCommunityIcons name={iconName} size={size} color={color} />
-          );
-        },
-        tabBarActiveTintColor: "#007bff",
-        tabBarInactiveTintColor: "gray",
-        headerShown: false, // Hide the header for all tabs
-      })}
-    >
-      {/* Define the tabs */}
-      <Tab.Screen name="Profile" component={ProfileStackNavigator} />
-      <Tab.Screen name="Measure" component={Measure} />
-      <Tab.Screen name="Exercises" component={ExercisesScreen} />
-      <Tab.Screen name="Workout" component={WorkoutStackNavigator} />
-      <Tab.Screen name="History" component={History} />
-    </Tab.Navigator>
+            return (
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={color}
+              />
+            );
+          },
+          tabBarActiveTintColor: "#007bff",
+          tabBarInactiveTintColor: "gray",
+          headerShown: false, // Hide the header for all tabs
+        })}
+      >
+        {/* Define the tabs */}
+        <Tab.Screen name="Profile" component={ProfileStackNavigator} />
+        <Tab.Screen name="Measure" component={Measure} />
+        <Tab.Screen name="Exercises" component={ExercisesScreen} />
+        <Tab.Screen name="Workout" component={WorkoutStackNavigator} />
+        <Tab.Screen name="History" component={History} />
+      </Tab.Navigator>
+      <FloatingBanner />
+    </FloatingBannerProvider>
   );
 }

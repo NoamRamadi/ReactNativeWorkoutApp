@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { View, Text, StyleSheet, FlatList, Button } from "react-native";
+import {
+  NavigationProp,
+  ParamListBase,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { WorkoutStackParamList } from "../../_layout";
 import { getWorkoutPlanDetails } from "../../../src/database/queries";
 
@@ -12,7 +18,7 @@ type WorkoutPlanDetailsRouteProp = RouteProp<
 export default function WorkoutPlanDetails() {
   const route = useRoute<WorkoutPlanDetailsRouteProp>();
   const { planId } = route.params;
-
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   // State to hold the workout plan details
   //const [workoutPlan, setWorkoutPlan] = useState<any[]>([]); // Expecting an array
   const [workoutPlan, setWorkoutPlan] = useState<any>(null);
@@ -63,6 +69,11 @@ export default function WorkoutPlanDetails() {
             <Text>Equipment: {item.equipment}</Text>
           </View>
         )}
+      />
+      {/* Start Workout Button */}
+      <Button
+        title="START WORKOUT"
+        onPress={() => navigation.navigate("ActiveWorkout")}
       />
     </View>
   );
