@@ -30,11 +30,15 @@ export default function FloatingBanner() {
 const styles = StyleSheet.create({
   banner: {
     position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#ff4d4d",
-    padding: 12,
-    borderRadius: 8,
+    bottom: 45, // Adjust this value to position it above the bottom tabs
+    left: 0, // Stretch to the left edge of the screen
+    right: 0, // Stretch to the right edge of the screen
+    height: 50, // Set a fixed height for the banner
+    backgroundColor: "#4169e1",
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderTopColor: "#fff",
     elevation: 5, // For Android shadow
     shadowColor: "#000", // For iOS shadow
     shadowOffset: { width: 0, height: 2 },
