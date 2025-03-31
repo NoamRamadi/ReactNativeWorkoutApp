@@ -61,7 +61,7 @@ export default function WorkoutPlanDetails() {
       {/* Display Exercises in the Workout Plan */}
       <FlatList
         data={workoutPlan}
-        keyExtractor={(item) => item.exercise_id.toString()} // Use exercise_id as the key
+        keyExtractor={(item, index) => `${item.exercise_id}-${index}`} // Ensure unique keys
         renderItem={({ item }) => (
           <View style={styles.exerciseContainer}>
             <Text style={styles.exerciseName}>{item.exercise_name}</Text>
