@@ -1,13 +1,24 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import ExerciseListBase from "./components/ExerciseListBase";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
+import { useWorkoutContext } from "../../../src/context/WorkoutContext";
 import { fetchQuery } from "../../../src/database/queries";
 
 export default function SelectExerciseScreen() {
   const navigation = useNavigation();
-  const { addExercise } = useNewWorkoutContext();
+  const route = useRoute();
+  const { source } = (route.params as { source?: any }) || {};
+
+  // Use the appropriate context based on the source
+  const newWorkoutContext = useNewWorkoutContext();
+  const workoutContext = useWorkoutContext();
+
+  const isFromNewWorkoutPlan = source === "NewWorkoutPlan";
+  const { addExercise } = isFromNewWorkoutPlan
+    ? newWorkoutContext
+    : workoutContext;
 
   // Handle exercise selection
   const handleSelectExercise = async (exerciseId: number) => {
@@ -26,7 +37,7 @@ export default function SelectExerciseScreen() {
     }
   };
 
-  // Navigate back to NewWorkoutPlanScreen
+  // Navigate back to the appropriate screen
   const handleSaveSelectedExercises = () => {
     navigation.goBack();
   };

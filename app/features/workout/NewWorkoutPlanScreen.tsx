@@ -16,13 +16,20 @@ import { executeQuery } from "../../../src/database/queries";
 import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
 import CustomKeyboard from "./components/CustomKeyboard";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { WorkoutStackParamList } from "@/app/_layout";
+//import { WorkoutStackParamList } from "@/app/_layout";
 
 export default function NewWorkoutPlanScreen() {
+  type WorkoutStackParamList = {
+    WorkoutHome: undefined;
+    SelectExercise: { source: string }; // Add this line
+    // ... other screens in your stack
+  };
+
   type WorkoutNavigationProp = StackNavigationProp<
     WorkoutStackParamList,
     "WorkoutHome"
   >;
+
   const navigation = useNavigation<WorkoutNavigationProp>();
   const {
     workoutName,
@@ -287,7 +294,9 @@ export default function NewWorkoutPlanScreen() {
         {/* Buttons */}
         <Button
           title="Add Exercise"
-          onPress={() => navigation.navigate("SelectExercise")}
+          onPress={() =>
+            navigation.navigate("SelectExercise", { source: "NewWorkoutPlan" })
+          }
         />
         <Button title="Save Workout Plan" onPress={handleSaveWorkoutPlan} />
 

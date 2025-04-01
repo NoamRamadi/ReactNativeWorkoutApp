@@ -12,7 +12,7 @@ import {
 import { useFloatingBanner } from "../../../src/context/FloatingBannerContext";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { WorkoutStackParamList } from "../../_layout"; // Adjust the import path as needed
+//import { WorkoutStackParamList } from "../../_layout"; // Adjust the import path as needed
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useNewWorkoutContext } from "@/src/context/NewWorkoutContext";
@@ -21,10 +21,21 @@ import CustomKeyboard from "./components/CustomKeyboard";
 import { useWorkoutContext } from "@/src/context/WorkoutContext";
 
 // Define the type for the navigation prop
+// type ActiveWorkoutScreenNavigationProp = StackNavigationProp<
+//   WorkoutStackParamList,
+//   "ActiveWorkout"
+// >;
+
 type ActiveWorkoutScreenNavigationProp = StackNavigationProp<
   WorkoutStackParamList,
   "ActiveWorkout"
 >;
+
+type WorkoutStackParamList = {
+  ActiveWorkout: undefined; // or whatever params it takes
+  SelectExercise: { source: string }; // Add this line
+  // ... other screens in your workout stack
+};
 
 interface ExerciseEntry {
   exerciseId: number;
@@ -37,7 +48,17 @@ export default function ActiveWorkoutScreen() {
   const navigation = useNavigation<ActiveWorkoutScreenNavigationProp>();
   const { showBanner } = useFloatingBanner();
   const { activeWorkout } = useWorkoutContext();
-  console.log(activeWorkout);
+
+  //   const {
+  //     workoutName,
+  //     setWorkoutName,
+  //     selectedExercises,
+  //     clearSelectedExercises,
+  //     updateSetDetails,
+  //     addSet,
+  //     deleteSet,
+  //   } = useNewWorkoutContext();
+
   const {
     workoutName,
     setWorkoutName,
@@ -46,7 +67,7 @@ export default function ActiveWorkoutScreen() {
     updateSetDetails,
     addSet,
     deleteSet,
-  } = useNewWorkoutContext();
+  } = useWorkoutContext();
 
   // Minimize the screen to a floating banner and navigate back to the start of the stack
   const minimizeToBanner = () => {
@@ -299,7 +320,9 @@ export default function ActiveWorkoutScreen() {
         {/* Buttons */}
         <Button
           title="Add Exercise"
-          onPress={() => navigation.navigate("SelectExercise")}
+          onPress={() =>
+            navigation.navigate("SelectExercise", { source: "ActiveWorkout" })
+          }
         />
         <Button title="Save Workout Plan" onPress={handleSaveWorkoutPlan} />
 

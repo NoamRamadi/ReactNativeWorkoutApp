@@ -1,9 +1,30 @@
 import React, { createContext, useContext, useState } from "react";
 
+// Define the shape of an exercise entry
+interface ExerciseEntry {
+  exerciseId: number;
+  name: string; // Add exercise name
+  sets: { reps: string; kg: string; isCompleted: boolean }[]; // Store sets with user inputs
+}
+
 // Define the shape of the workout context
 interface WorkoutContextType {
   activeWorkout: any | null; // Replace `any` with a proper type if possible
   setActiveWorkout: (workout: any) => void; // Replace `any` with a proper type if possible
+  workoutName: string;
+  setWorkoutName: (name: string) => void;
+  selectedExercises: ExerciseEntry[];
+  addExercise: (exerciseId: number, name: string) => void;
+  updateSetDetails: (
+    exerciseIndex: number,
+    setIndex: number,
+    field: "reps" | "kg",
+    value: string
+  ) => void;
+  clearSelectedExercises: () => void;
+  removeExercise: (index: number) => void;
+  addSet: (exerciseIndex: number) => void;
+  deleteSet: (exerciseIndex: number, setIndex: number) => void;
 }
 
 // Create the context
@@ -25,9 +46,97 @@ export const WorkoutProvider = ({
   children: React.ReactNode;
 }) => {
   const [activeWorkout, setActiveWorkout] = useState<any | null>(null); // Replace `any` with a proper type
+  const [workoutName, setWorkoutName] = useState<string>("");
+  const [selectedExercises, setSelectedExercises] = useState<ExerciseEntry[]>(
+    []
+  );
+
+  // Add an exercise to the selected list
+  const addExercise = (exerciseId: number, name: string) => {
+    setSelectedExercises((prev) => [
+      ...prev,
+      { exerciseId, name, sets: [{ reps: "", kg: "", isCompleted: false }] }, // Start with one set
+    ]);
+  };
+
+  // Update reps or kg for a specific set
+  const updateSetDetails = (
+    exerciseIndex: number,
+    setIndex: number,
+    field: "reps" | "kg",
+    value: string
+  ) => {
+    setSelectedExercises((prev) => {
+      const updatedExercises = [...prev];
+      if (updatedExercises[exerciseIndex]) {
+        const currentValue =
+          updatedExercises[exerciseIndex].sets[setIndex][field] || "";
+
+        if (value === "delete") {
+          // Remove the last character
+          updatedExercises[exerciseIndex].sets[setIndex][field] =
+            currentValue.slice(0, -1);
+        } else {
+          // Append the new value
+          updatedExercises[exerciseIndex].sets[setIndex][field] =
+            currentValue + value;
+        }
+      }
+      return updatedExercises;
+    });
+  };
+
+  // Remove an exercise from the selected list by index
+  const removeExercise = (index: number) => {
+    setSelectedExercises((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Clear all selected exercises
+  const clearSelectedExercises = () => {
+    setSelectedExercises([]);
+  };
+
+  const addSet = (exerciseIndex: number) => {
+    setSelectedExercises((prev) => {
+      const updatedExercises = [...prev];
+      if (updatedExercises[exerciseIndex]) {
+        updatedExercises[exerciseIndex].sets.push({
+          reps: "", // Empty reps
+          kg: "", // Empty kg
+          isCompleted: false,
+        });
+      }
+      return updatedExercises;
+    });
+  };
+
+  const deleteSet = (exerciseIndex: number, setIndex: number) => {
+    setSelectedExercises((prev) => {
+      const updatedExercises = [...prev];
+      if (updatedExercises[exerciseIndex]) {
+        // Remove the set at the specified index
+        updatedExercises[exerciseIndex].sets.splice(setIndex, 1);
+      }
+      return updatedExercises;
+    });
+  };
 
   return (
-    <WorkoutContext.Provider value={{ activeWorkout, setActiveWorkout }}>
+    <WorkoutContext.Provider
+      value={{
+        activeWorkout,
+        workoutName,
+        setActiveWorkout,
+        setWorkoutName,
+        selectedExercises,
+        addExercise,
+        removeExercise,
+        updateSetDetails,
+        clearSelectedExercises,
+        addSet,
+        deleteSet,
+      }}
+    >
       {children}
     </WorkoutContext.Provider>
   );
