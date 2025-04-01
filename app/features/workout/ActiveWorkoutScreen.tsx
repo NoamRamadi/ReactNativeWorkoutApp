@@ -18,6 +18,7 @@ import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeabl
 import { useNewWorkoutContext } from "@/src/context/NewWorkoutContext";
 import { executeQuery } from "@/src/database";
 import CustomKeyboard from "./components/CustomKeyboard";
+import { useWorkoutContext } from "@/src/context/WorkoutContext";
 
 // Define the type for the navigation prop
 type ActiveWorkoutScreenNavigationProp = StackNavigationProp<
@@ -35,7 +36,8 @@ export default function ActiveWorkoutScreen() {
   // Use the typed navigation object
   const navigation = useNavigation<ActiveWorkoutScreenNavigationProp>();
   const { showBanner } = useFloatingBanner();
-
+  const { activeWorkout } = useWorkoutContext();
+  console.log(activeWorkout);
   const {
     workoutName,
     setWorkoutName,
@@ -180,6 +182,7 @@ export default function ActiveWorkoutScreen() {
       <View>
         <Button title="Minimize" onPress={minimizeToBanner} />
       </View>
+      <Text>{activeWorkout[0].plan_name}</Text>
       <View style={styles.container}>
         {/* Display Selected Exercises */}
 

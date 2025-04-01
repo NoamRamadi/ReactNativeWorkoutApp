@@ -7,8 +7,9 @@ import {
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
-import { WorkoutStackParamList } from "../../_layout";
 import { getWorkoutPlanDetails } from "../../../src/database/queries";
+import { useWorkoutContext } from "../../../src/context/WorkoutContext";
+import { WorkoutStackParamList } from "@/app/_layout";
 
 type WorkoutPlanDetailsRouteProp = RouteProp<
   WorkoutStackParamList,
@@ -19,8 +20,9 @@ export default function WorkoutPlanDetails() {
   const route = useRoute<WorkoutPlanDetailsRouteProp>();
   const { planId } = route.params;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const { setActiveWorkout } = useWorkoutContext(); // Access the workout context
+
   // State to hold the workout plan details
-  //const [workoutPlan, setWorkoutPlan] = useState<any[]>([]); // Expecting an array
   const [workoutPlan, setWorkoutPlan] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -53,6 +55,12 @@ export default function WorkoutPlanDetails() {
   // Extract the plan name from the first object in the array
   const planName = workoutPlan[0]?.plan_name;
 
+  // Function to handle starting the workout
+  const handleStartWorkout = () => {
+    setActiveWorkout(workoutPlan); // Load the workout plan into the context
+    navigation.navigate("ActiveWorkout"); // Navigate to the Active Workout screen
+  };
+
   return (
     <View style={styles.container}>
       {/* Display the workout plan name */}
@@ -71,10 +79,7 @@ export default function WorkoutPlanDetails() {
         )}
       />
       {/* Start Workout Button */}
-      <Button
-        title="START WORKOUT"
-        onPress={() => navigation.navigate("ActiveWorkout")}
-      />
+      <Button title="START WORKOUT" onPress={handleStartWorkout} />
     </View>
   );
 }

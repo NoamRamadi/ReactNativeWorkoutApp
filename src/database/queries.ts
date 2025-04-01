@@ -93,7 +93,8 @@ export const getWorkoutPlanDetails = async (planId: number) => {
     e.equipment,
     wps.set_number,
     wps.weight AS planned_weight,
-    wps.reps AS planned_reps
+    wps.reps AS planned_reps,
+    wpe.display_order
 FROM 
     WorkoutPlans wp
 JOIN 
