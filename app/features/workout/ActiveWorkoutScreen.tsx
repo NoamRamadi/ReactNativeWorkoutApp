@@ -12,7 +12,6 @@ import {
 import { useFloatingBanner } from "../../../src/context/FloatingBannerContext";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-//import { WorkoutStackParamList } from "../../_layout"; // Adjust the import path as needed
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useNewWorkoutContext } from "@/src/context/NewWorkoutContext";
@@ -51,83 +50,87 @@ export default function ActiveWorkoutScreen() {
   // Populate the selectedExercises state with activeWorkout data
   useEffect(() => {
     if (activeWorkout && activeWorkout.length > 0) {
-      // Clear any existing exercises
-      clearSelectedExercises();
+      // Only populate the state if selectedExercises is empty
+      if (selectedExercises.length === 0) {
+        // Clear any existing exercises
+        clearSelectedExercises();
 
-      // Group exercises by exercise_id and display_order
-      const groupedExercises = activeWorkout.reduce(
-        (
-          acc: any[],
-          row: {
-            exercise_id: any;
-            exercise_name: any;
-            set_number: any;
-            planned_weight: any;
-            planned_reps: any;
-            display_order: any;
-          }
-        ) => {
-          const {
-            exercise_id,
-            exercise_name,
-            set_number,
-            planned_weight,
-            planned_reps,
-            display_order,
-          } = row;
+        // Group exercises by exercise_id and display_order
+        const groupedExercises = activeWorkout.reduce(
+          (
+            acc: any[],
+            row: {
+              exercise_id: any;
+              exercise_name: any;
+              set_number: any;
+              planned_weight: any;
+              planned_reps: any;
+              display_order: any;
+            }
+          ) => {
+            const {
+              exercise_id,
+              exercise_name,
+              set_number,
+              planned_weight,
+              planned_reps,
+              display_order,
+            } = row;
 
-          const uniqueKey = `${exercise_id}-${display_order}`;
+            const uniqueKey = `${exercise_id}-${display_order}`;
 
-          let exerciseEntry = acc.find((ex) => ex.uniqueKey === uniqueKey);
-          if (!exerciseEntry) {
-            exerciseEntry = {
-              uniqueKey,
-              exerciseId: exercise_id,
-              name: exercise_name,
-              displayOrder: display_order,
-              sets: [],
-            };
-            acc.push(exerciseEntry);
-          }
+            let exerciseEntry = acc.find((ex) => ex.uniqueKey === uniqueKey);
+            if (!exerciseEntry) {
+              exerciseEntry = {
+                uniqueKey,
+                exerciseId: exercise_id,
+                name: exercise_name,
+                displayOrder: display_order,
+                sets: [],
+              };
+              acc.push(exerciseEntry);
+            }
 
-          if (set_number) {
-            exerciseEntry.sets.push({
-              reps: planned_reps?.toString() || "",
-              kg: planned_weight?.toString() || "",
-              isCompleted: false,
+            if (set_number) {
+              exerciseEntry.sets.push({
+                reps: planned_reps?.toString() || "",
+                kg: planned_weight?.toString() || "",
+                isCompleted: false,
+              });
+            }
+
+            return acc;
+          },
+          []
+        );
+
+        // Populate the context with the grouped exercises
+        let currentExerciseIndex = -1; // Track the current exercise index
+        groupedExercises.forEach(
+          (exercise: { exerciseId: number; name: string; sets: any[] }) => {
+            currentExerciseIndex++; // Increment the index for each exercise
+            addExercise(exercise.exerciseId, exercise.name);
+
+            exercise.sets.forEach((set, setIndex) => {
+              addSet(currentExerciseIndex); // Use the tracked index
+              updateSetDetails(
+                currentExerciseIndex,
+                setIndex,
+                "reps",
+                set.reps
+              );
+              updateSetDetails(currentExerciseIndex, setIndex, "kg", set.kg);
             });
           }
-
-          return acc;
-        },
-        []
-      );
-
-      // Populate the context with the grouped exercises
-      let currentExerciseIndex = -1; // Track the current exercise index
-      groupedExercises.forEach(
-        (exercise: { exerciseId: number; name: string; sets: any[] }) => {
-          currentExerciseIndex++; // Increment the index for each exercise
-
-          addExercise(exercise.exerciseId, exercise.name);
-
-          exercise.sets.forEach((set, setIndex) => {
-            addSet(currentExerciseIndex); // Use the tracked index
-            updateSetDetails(currentExerciseIndex, setIndex, "reps", set.reps);
-            updateSetDetails(currentExerciseIndex, setIndex, "kg", set.kg);
-          });
-        }
-      );
+        );
+      }
     }
   }, [activeWorkout]);
 
   // Minimize the screen to a floating banner and navigate back to the start of the stack
   const minimizeToBanner = () => {
-    // Set state immediately and use functional update
     setIsMinimizing((prev) => true);
-
-    // Show banner immediately
-    showBanner();
+    showBanner(); // Show the floating banner
 
     // Add a small delay to ensure state updates
     setTimeout(() => {
