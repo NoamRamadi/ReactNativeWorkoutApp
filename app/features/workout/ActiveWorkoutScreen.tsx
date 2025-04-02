@@ -20,12 +20,6 @@ import { executeQuery } from "@/src/database";
 import CustomKeyboard from "./components/CustomKeyboard";
 import { useWorkoutContext } from "@/src/context/WorkoutContext";
 
-// Define the type for the navigation prop
-// type ActiveWorkoutScreenNavigationProp = StackNavigationProp<
-//   WorkoutStackParamList,
-//   "ActiveWorkout"
-// >;
-
 type ActiveWorkoutScreenNavigationProp = StackNavigationProp<
   WorkoutStackParamList,
   "ActiveWorkout"
@@ -36,12 +30,6 @@ type WorkoutStackParamList = {
   SelectExercise: { source: string }; // Add this line
   // ... other screens in your workout stack
 };
-
-interface ExerciseEntry {
-  exerciseId: number;
-  name: string; // Add exercise name
-  sets: { reps: string; kg: string; isCompleted: boolean }[]; // Store sets with user inputs
-}
 
 export default function ActiveWorkoutScreen() {
   // Use the typed navigation object
