@@ -30,7 +30,7 @@ export default function WorkoutPlanDetails() {
     const fetchWorkoutPlanDetails = async () => {
       try {
         const plan = await getWorkoutPlanDetails(planId);
-        console.log("Fetched Plan:", plan); // Debugging: Log the fetched data
+        //console.log("Fetched Plan:", plan); // Debugging: Log the fetched data
         setWorkoutPlan(plan); // Update state with the fetched plan
       } catch (error) {
         console.error("Failed to fetch workout plan details:", error);

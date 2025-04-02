@@ -48,17 +48,7 @@ export default function ActiveWorkoutScreen() {
   const navigation = useNavigation<ActiveWorkoutScreenNavigationProp>();
   const { showBanner } = useFloatingBanner();
   const { activeWorkout } = useWorkoutContext();
-
-  //   const {
-  //     workoutName,
-  //     setWorkoutName,
-  //     selectedExercises,
-  //     clearSelectedExercises,
-  //     updateSetDetails,
-  //     addSet,
-  //     deleteSet,
-  //   } = useNewWorkoutContext();
-
+  //console.log(activeWorkout);
   const {
     workoutName,
     setWorkoutName,
@@ -67,7 +57,98 @@ export default function ActiveWorkoutScreen() {
     updateSetDetails,
     addSet,
     deleteSet,
+    addExercise,
   } = useWorkoutContext();
+
+  // Populate the selectedExercises state with activeWorkout data
+  useEffect(() => {
+    if (activeWorkout && activeWorkout.length > 0) {
+      console.log("Active Workout Data:", activeWorkout); // Debug log
+
+      // Clear any existing exercises
+      clearSelectedExercises();
+
+      // Group exercises by exercise_id and display_order
+      const groupedExercises = activeWorkout.reduce(
+        (
+          acc: any[],
+          row: {
+            exercise_id: any;
+            exercise_name: any;
+            set_number: any;
+            planned_weight: any;
+            planned_reps: any;
+            display_order: any;
+          }
+        ) => {
+          const {
+            exercise_id,
+            exercise_name,
+            set_number,
+            planned_weight,
+            planned_reps,
+            display_order,
+          } = row;
+
+          const uniqueKey = `${exercise_id}-${display_order}`;
+
+          let exerciseEntry = acc.find((ex) => ex.uniqueKey === uniqueKey);
+          if (!exerciseEntry) {
+            exerciseEntry = {
+              uniqueKey,
+              exerciseId: exercise_id,
+              name: exercise_name,
+              displayOrder: display_order,
+              sets: [],
+            };
+            acc.push(exerciseEntry);
+          }
+
+          if (set_number) {
+            exerciseEntry.sets.push({
+              reps: planned_reps?.toString() || "",
+              kg: planned_weight?.toString() || "",
+              isCompleted: false,
+            });
+          }
+
+          return acc;
+        },
+        []
+      );
+
+      console.log("Grouped Exercises:", groupedExercises); // Debug log
+
+      // Populate the context with the grouped exercises
+      let currentExerciseIndex = -1; // Track the current exercise index
+      groupedExercises.forEach(
+        (exercise: { exerciseId: number; name: string; sets: any[] }) => {
+          currentExerciseIndex++; // Increment the index for each exercise
+          console.log("Adding Exercise:", {
+            exerciseId: exercise.exerciseId,
+            name: exercise.name,
+            currentExerciseIndex,
+          });
+          addExercise(exercise.exerciseId, exercise.name);
+
+          exercise.sets.forEach((set, setIndex) => {
+            console.log("Adding Set:", {
+              exerciseIndex: currentExerciseIndex,
+              setIndex,
+            });
+            addSet(currentExerciseIndex); // Use the tracked index
+            updateSetDetails(currentExerciseIndex, setIndex, "reps", set.reps);
+            updateSetDetails(currentExerciseIndex, setIndex, "kg", set.kg);
+          });
+        }
+      );
+
+      console.log(
+        "Final Selected Exercises State:",
+        JSON.stringify(selectedExercises, null, 2)
+      ); // Debug log
+    }
+  }, [activeWorkout]);
 
   // Minimize the screen to a floating banner and navigate back to the start of the stack
   const minimizeToBanner = () => {
@@ -211,107 +292,109 @@ export default function ActiveWorkoutScreen() {
           <FlatList
             data={selectedExercises}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <View style={styles.exerciseContainer}>
-                <Text style={styles.exerciseName}>{item.name}</Text>
-
-                {/* Table Headers */}
-                <View style={styles.headerRow}>
-                  <Text style={[styles.headerCell, styles.setColumnHeader]}>
-                    Set
-                  </Text>
-                  <Text
-                    style={[styles.headerCell, styles.previousColumnHeader]}
-                  >
-                    Previous
-                  </Text>
-                  <Text style={[styles.headerCell, styles.repsColumnHeader]}>
-                    Reps
-                  </Text>
-                  <Text style={[styles.headerCell, styles.kgColumnHeader]}>
-                    KG
-                  </Text>
-                  <Text style={[styles.headerCell, styles.vColumnHeader]}>
-                    V
-                  </Text>
+            renderItem={({ item, index }) => {
+              console.log("Rendering Exercise:", item); // Debug log
+              return (
+                <View style={styles.exerciseContainer}>
+                  <Text style={styles.exerciseName}>{item.name}</Text>
+                  {/* Table Headers */}
+                  <View style={styles.headerRow}>
+                    <Text style={[styles.headerCell, styles.setColumnHeader]}>
+                      Set
+                    </Text>
+                    <Text
+                      style={[styles.headerCell, styles.previousColumnHeader]}
+                    >
+                      Previous
+                    </Text>
+                    <Text style={[styles.headerCell, styles.repsColumnHeader]}>
+                      Reps
+                    </Text>
+                    <Text style={[styles.headerCell, styles.kgColumnHeader]}>
+                      KG
+                    </Text>
+                    <Text style={[styles.headerCell, styles.vColumnHeader]}>
+                      V
+                    </Text>
+                  </View>
+                  {/* Table Rows */}
+                  {item.sets.map((set, setIndex) => {
+                    console.log("Rendering Set:", set); // Debug log
+                    return (
+                      <ReanimatedSwipeable
+                        key={setIndex}
+                        friction={2}
+                        rightThreshold={40}
+                        renderRightActions={() => (
+                          <TouchableOpacity
+                            onPress={() => handleDeleteSet(index, setIndex)}
+                            style={styles.deleteAction}
+                          >
+                            <Text style={styles.deleteActionText}>Delete</Text>
+                          </TouchableOpacity>
+                        )}
+                      >
+                        <View style={styles.row}>
+                          <Text style={[styles.cell, styles.setColumn]}>
+                            {setIndex + 1}
+                          </Text>
+                          <TouchableOpacity
+                            style={[styles.previousColumn]}
+                            onPress={() => {}}
+                          >
+                            <Text>{"place holder"}</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() =>
+                              setFocusedInput({
+                                exerciseIndex: index,
+                                setIndex,
+                                field: "reps",
+                              })
+                            }
+                            style={[styles.inputWrapper, styles.kgColumn]}
+                          >
+                            <TextInput
+                              style={[styles.inputCell]}
+                              value={set.reps} // Ensure this is a string
+                              editable={false}
+                              placeholder="Reps"
+                            />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() =>
+                              setFocusedInput({
+                                exerciseIndex: index,
+                                setIndex,
+                                field: "kg",
+                              })
+                            }
+                            style={styles.inputWrapper}
+                          >
+                            <TextInput
+                              style={[styles.inputCell]}
+                              value={set.kg} // Ensure this is a string
+                              editable={false}
+                              placeholder="KG"
+                            />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={[styles.vColumn]}
+                            onPress={() => {}}
+                          >
+                            <Text style={[styles.vSymbol]}>
+                              {set.isCompleted ? "✔" : "○"}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      </ReanimatedSwipeable>
+                    );
+                  })}
+                  {/* Add Set Button */}
+                  <Button title="Add Set" onPress={() => addSet(index)} />
                 </View>
-
-                {/* Table Rows */}
-                {item.sets.map((set, setIndex) => (
-                  <ReanimatedSwipeable
-                    key={setIndex}
-                    friction={2}
-                    rightThreshold={40}
-                    renderRightActions={() => (
-                      <TouchableOpacity
-                        onPress={() => handleDeleteSet(index, setIndex)}
-                        style={styles.deleteAction}
-                      >
-                        <Text style={styles.deleteActionText}>Delete</Text>
-                      </TouchableOpacity>
-                    )}
-                  >
-                    <View style={styles.row}>
-                      <Text style={[styles.cell, styles.setColumn]}>
-                        {setIndex + 1}
-                      </Text>
-                      <TouchableOpacity
-                        style={[styles.previousColumn]}
-                        onPress={() => {}}
-                      >
-                        <Text>{"place holder"}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          setFocusedInput({
-                            exerciseIndex: index,
-                            setIndex,
-                            field: "reps",
-                          })
-                        }
-                        style={[styles.inputWrapper, styles.kgColumn]}
-                      >
-                        <TextInput
-                          style={[styles.inputCell]}
-                          value={set.reps}
-                          editable={false}
-                          placeholder="Reps"
-                        />
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={() =>
-                          setFocusedInput({
-                            exerciseIndex: index,
-                            setIndex,
-                            field: "kg",
-                          })
-                        }
-                        style={styles.inputWrapper}
-                      >
-                        <TextInput
-                          style={[styles.inputCell]}
-                          value={set.kg}
-                          editable={false}
-                          placeholder="KG"
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles.vColumn]}
-                        onPress={() => {}}
-                      >
-                        <Text style={[styles.vSymbol]}>
-                          {set.isCompleted ? "✔" : "○"}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </ReanimatedSwipeable>
-                ))}
-
-                {/* Add Set Button */}
-                <Button title="Add Set" onPress={() => addSet(index)} />
-              </View>
-            )}
+              );
+            }}
           />
         ) : (
           <Text>No exercises selected yet.</Text>
