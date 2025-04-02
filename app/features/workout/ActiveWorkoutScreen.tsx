@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   Alert,
 } from "react-native";
 import { useFloatingBanner } from "../../../src/context/FloatingBannerContext";
-import { useNavigation } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 //import { WorkoutStackParamList } from "../../_layout"; // Adjust the import path as needed
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -36,7 +36,7 @@ export default function ActiveWorkoutScreen() {
   const navigation = useNavigation<ActiveWorkoutScreenNavigationProp>();
   const { showBanner } = useFloatingBanner();
   const { activeWorkout } = useWorkoutContext();
-
+  const [isMinimizing, setIsMinimizing] = useState<boolean>(false);
   const {
     workoutName,
     setWorkoutName,
@@ -123,8 +123,16 @@ export default function ActiveWorkoutScreen() {
 
   // Minimize the screen to a floating banner and navigate back to the start of the stack
   const minimizeToBanner = () => {
-    showBanner(); // Show the floating banner
-    navigation.popToTop(); // Navigate back to the first screen in the stack
+    // Set state immediately and use functional update
+    setIsMinimizing((prev) => true);
+
+    // Show banner immediately
+    showBanner();
+
+    // Add a small delay to ensure state updates
+    setTimeout(() => {
+      navigation.popToTop();
+    }, 50);
   };
 
   const [focusedInput, setFocusedInput] = useState<{
@@ -139,8 +147,8 @@ export default function ActiveWorkoutScreen() {
   // Handle "Discard Changes" confirmation before leaving
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
-      // If the user is saving, allow navigation without confirmation
-      if (isSaving) return;
+      // If the user is saving or minimizing, allow navigation without confirmation
+      if (isSaving || isMinimizing) return;
 
       // Check if there are unsaved changes
       if (workoutName.trim() || selectedExercises.length > 0) {
@@ -166,14 +174,13 @@ export default function ActiveWorkoutScreen() {
         );
       } else {
         // No unsaved changes, reset data silently
-        setWorkoutName("");
+
         clearSelectedExercises();
       }
     });
 
     return unsubscribe; // Cleanup the listener on unmount
-  }, [navigation, workoutName, selectedExercises, isSaving]);
-
+  }, [workoutName, selectedExercises, isSaving, isMinimizing, navigation]);
   // Save the workout plan to the database
   const handleSaveWorkoutPlan = async () => {
     try {
