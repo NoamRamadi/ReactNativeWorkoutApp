@@ -53,7 +53,6 @@ export const WorkoutProvider = ({
 
   // Add an exercise to the selected list
   const addExercise = (exerciseId: number, name: string) => {
-    console.log("Adding Exercise:", { exerciseId, name });
     setSelectedExercises((prev) => [
       ...prev,
       { exerciseId, name, sets: [] }, // Start with one set
@@ -67,12 +66,6 @@ export const WorkoutProvider = ({
     field: "reps" | "kg",
     value: string
   ) => {
-    console.log("Updating Set Details:", {
-      exerciseIndex,
-      setIndex,
-      field,
-      value,
-    });
     setSelectedExercises((prev) => {
       const updatedExercises = [...prev];
       if (updatedExercises[exerciseIndex]) {
@@ -104,7 +97,6 @@ export const WorkoutProvider = ({
   };
 
   const addSet = (exerciseIndex: number) => {
-    console.log("Adding Set:", { exerciseIndex });
     setSelectedExercises((prev) => {
       const updatedExercises = [...prev];
       if (updatedExercises[exerciseIndex]) {

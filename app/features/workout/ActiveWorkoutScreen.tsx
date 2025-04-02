@@ -48,7 +48,7 @@ export default function ActiveWorkoutScreen() {
   const navigation = useNavigation<ActiveWorkoutScreenNavigationProp>();
   const { showBanner } = useFloatingBanner();
   const { activeWorkout } = useWorkoutContext();
-  //console.log(activeWorkout);
+
   const {
     workoutName,
     setWorkoutName,
@@ -63,8 +63,6 @@ export default function ActiveWorkoutScreen() {
   // Populate the selectedExercises state with activeWorkout data
   useEffect(() => {
     if (activeWorkout && activeWorkout.length > 0) {
-      console.log("Active Workout Data:", activeWorkout); // Debug log
-
       // Clear any existing exercises
       clearSelectedExercises();
 
@@ -117,36 +115,21 @@ export default function ActiveWorkoutScreen() {
         []
       );
 
-      console.log("Grouped Exercises:", groupedExercises); // Debug log
-
       // Populate the context with the grouped exercises
       let currentExerciseIndex = -1; // Track the current exercise index
       groupedExercises.forEach(
         (exercise: { exerciseId: number; name: string; sets: any[] }) => {
           currentExerciseIndex++; // Increment the index for each exercise
-          console.log("Adding Exercise:", {
-            exerciseId: exercise.exerciseId,
-            name: exercise.name,
-            currentExerciseIndex,
-          });
+
           addExercise(exercise.exerciseId, exercise.name);
 
           exercise.sets.forEach((set, setIndex) => {
-            console.log("Adding Set:", {
-              exerciseIndex: currentExerciseIndex,
-              setIndex,
-            });
             addSet(currentExerciseIndex); // Use the tracked index
             updateSetDetails(currentExerciseIndex, setIndex, "reps", set.reps);
             updateSetDetails(currentExerciseIndex, setIndex, "kg", set.kg);
           });
         }
       );
-
-      console.log(
-        "Final Selected Exercises State:",
-        JSON.stringify(selectedExercises, null, 2)
-      ); // Debug log
     }
   }, [activeWorkout]);
 
@@ -293,7 +276,6 @@ export default function ActiveWorkoutScreen() {
             data={selectedExercises}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) => {
-              console.log("Rendering Exercise:", item); // Debug log
               return (
                 <View style={styles.exerciseContainer}>
                   <Text style={styles.exerciseName}>{item.name}</Text>
@@ -319,7 +301,6 @@ export default function ActiveWorkoutScreen() {
                   </View>
                   {/* Table Rows */}
                   {item.sets.map((set, setIndex) => {
-                    console.log("Rendering Set:", set); // Debug log
                     return (
                       <ReanimatedSwipeable
                         key={setIndex}
