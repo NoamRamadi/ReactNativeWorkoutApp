@@ -30,8 +30,57 @@ export default function WorkoutPlanDetails() {
     const fetchWorkoutPlanDetails = async () => {
       try {
         const plan = await getWorkoutPlanDetails(planId);
-        //console.log("Fetched Plan:", plan); // Debugging: Log the fetched data
         setWorkoutPlan(plan); // Update state with the fetched plan
+      } catch (error) {
+        console.error("Failed to fetch workout plan details:", error);
+      } finally {
+        setIsLoading(false); // Set loading to false regardless of success or failure
+      }
+    };
+
+    fetchWorkoutPlanDetails();
+  }, [planId]);
+
+  const [groupedExercises, setGroupedExercises] = useState<any[]>([]); // State to hold grouped exercises
+
+  useEffect(() => {
+    const fetchWorkoutPlanDetails = async () => {
+      try {
+        const plan = await getWorkoutPlanDetails(planId);
+        console.log("Fetched Plan:", plan); // Debugging: Log the fetched data
+
+        // Group exercises by exercise_id and display_order
+        const grouped = plan?.length
+          ? plan.reduce((acc: any[], row: any) => {
+              const uniqueKey = `${row.exercise_id}-${row.display_order}`;
+
+              let exerciseEntry = acc.find((ex) => ex.uniqueKey === uniqueKey);
+              if (!exerciseEntry) {
+                exerciseEntry = {
+                  uniqueKey,
+                  exerciseId: row.exercise_id,
+                  name: row.exercise_name,
+                  bodyPart: row.body_part,
+                  equipment: row.equipment,
+                  sets: [], // Initialize an empty array for sets
+                };
+                acc.push(exerciseEntry);
+              }
+
+              // Add the set details to the exercise's sets array
+              if (row.set_number) {
+                exerciseEntry.sets.push({
+                  reps: row.planned_reps?.toString() || "",
+                  kg: row.planned_weight?.toString() || "",
+                });
+              }
+
+              return acc;
+            }, [])
+          : [];
+
+        console.log("\n\nGrouped Exercises:", grouped); // Debugging: Log grouped exercises
+        setGroupedExercises(grouped); // Update the local state with grouped exercises
       } catch (error) {
         console.error("Failed to fetch workout plan details:", error);
       } finally {
@@ -68,13 +117,15 @@ export default function WorkoutPlanDetails() {
 
       {/* Display Exercises in the Workout Plan */}
       <FlatList
-        data={workoutPlan}
-        keyExtractor={(item, index) => `${item.exercise_id}-${index}`} // Ensure unique keys
+        data={groupedExercises}
+        keyExtractor={(item) => item.uniqueKey} // Use the uniqueKey for the key
         renderItem={({ item }) => (
           <View style={styles.exerciseContainer}>
-            <Text style={styles.exerciseName}>{item.exercise_name}</Text>
-            <Text>Body Part: {item.body_part}</Text>
+            <Text style={styles.exerciseName}>{item.name}</Text>
+            <Text>Body Part: {item.bodyPart}</Text>
             <Text>Equipment: {item.equipment}</Text>
+            {/* Optional: Display the number of sets */}
+            <Text>Sets: {item.sets.length}</Text>
           </View>
         )}
       />
