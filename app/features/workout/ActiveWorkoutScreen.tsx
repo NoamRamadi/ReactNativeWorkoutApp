@@ -27,6 +27,7 @@ type ActiveWorkoutScreenNavigationProp = StackNavigationProp<
 type WorkoutStackParamList = {
   ActiveWorkout: undefined; // or whatever params it takes
   SelectExercise: { source: string }; // Add this line
+  WorkoutHome: undefined;
   // ... other screens in your workout stack
 };
 
@@ -36,6 +37,7 @@ export default function ActiveWorkoutScreen() {
   const { showBanner } = useFloatingBanner();
   const { activeWorkout } = useWorkoutContext();
   const [isMinimizing, setIsMinimizing] = useState<boolean>(false);
+  const workoutPlanId = activeWorkout[0]?.workout_plan_id || null;
   const {
     workoutName,
     setWorkoutName,
@@ -46,7 +48,7 @@ export default function ActiveWorkoutScreen() {
     deleteSet,
     addExercise,
   } = useWorkoutContext();
-
+  console.log(activeWorkout);
   // Populate the selectedExercises state with activeWorkout data
   useEffect(() => {
     if (activeWorkout && activeWorkout.length > 0) {
@@ -187,28 +189,43 @@ export default function ActiveWorkoutScreen() {
   // Save the workout plan to the database
   const handleSaveWorkoutPlan = async () => {
     try {
-      if (!workoutName.trim()) {
-        alert("Please enter a name for the workout plan.");
-        return;
-      }
-
       // Set the saving flag to true
       setIsSaving(true);
 
-      // Insert the workout plan into the database
-      const workoutPlanInsertResult = await executeQuery(
-        `INSERT INTO WorkoutPlans (plan_name, user_id) VALUES (?, ?);`,
-        [workoutName, 1] // Replace `1` with the actual user ID if available
-      );
+      // Extract the workoutPlanId from activeWorkout
+      const workoutPlanId = activeWorkout[0]?.workout_plan_id || null;
 
-      const workoutPlanId = workoutPlanInsertResult.insertId;
+      let currentWorkoutPlanId = workoutPlanId;
+
+      // Insert or Update the workout plan in the database
+      if (!currentWorkoutPlanId) {
+        // Insert a new workout plan
+        const workoutPlanInsertResult = await executeQuery(
+          `INSERT INTO WorkoutPlans (plan_name, user_id) VALUES (?, ?);`,
+          [workoutName, 1] // Replace `1` with the actual user ID if available
+        );
+
+        currentWorkoutPlanId = workoutPlanInsertResult.insertId;
+      } else {
+        // Update the existing workout plan
+        await executeQuery(
+          `UPDATE WorkoutPlans SET plan_name = ? WHERE workout_plan_id = ?;`,
+          [workoutName, currentWorkoutPlanId]
+        );
+      }
+
+      // Clear existing exercises and sets for the current workout plan
+      await executeQuery(
+        `DELETE FROM WorkoutPlanExercises WHERE workout_plan_id = ?;`,
+        [currentWorkoutPlanId]
+      );
 
       // Insert selected exercises and their sets into the database
       for (const [exerciseIndex, entry] of selectedExercises.entries()) {
         // Insert the exercise into WorkoutPlanExercises with display_order
         const workoutPlanExerciseInsertResult = await executeQuery(
           `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id, display_order) VALUES (?, ?, ?);`,
-          [workoutPlanId, entry.exerciseId, exerciseIndex + 1]
+          [currentWorkoutPlanId, entry.exerciseId, exerciseIndex + 1]
         );
 
         const workoutPlanExerciseId = workoutPlanExerciseInsertResult.insertId;
@@ -217,11 +234,11 @@ export default function ActiveWorkoutScreen() {
         for (const [setIndex, set] of entry.sets.entries()) {
           await executeQuery(
             `INSERT INTO WorkoutPlanSets (
-                  workout_plan_exercise_id,
-                  set_number,
-                  weight,
-                  reps
-                ) VALUES (?, ?, ?, ?);`,
+              workout_plan_exercise_id,
+              set_number,
+              weight,
+              reps
+            ) VALUES (?, ?, ?, ?);`,
             [
               workoutPlanExerciseId,
               setIndex + 1, // Set number
@@ -234,7 +251,7 @@ export default function ActiveWorkoutScreen() {
 
       alert("Workout plan saved successfully!");
       clearSelectedExercises(); // Clear selected exercises after saving
-      navigation.goBack(); // Navigate back after saving
+      navigation.popToTop(); // Navigate back to the root
     } catch (error) {
       console.error("Error saving workout plan:", error);
       alert("Failed to save workout plan. Please try again.");
@@ -265,7 +282,10 @@ export default function ActiveWorkoutScreen() {
       <View>
         <Button title="Minimize" onPress={minimizeToBanner} />
       </View>
-      <Text>{activeWorkout[0].plan_name}</Text>
+
+      <Text style={styles.label}>Workout Plan Name:</Text>
+      <Text style={styles.label}>{activeWorkout[0].plan_name}</Text>
+
       <View style={styles.container}>
         {/* Display Selected Exercises */}
 
