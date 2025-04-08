@@ -37,6 +37,7 @@ export default function ActiveWorkoutScreen() {
   const { showBanner } = useFloatingBanner();
   const { activeWorkout } = useWorkoutContext();
   const [isMinimizing, setIsMinimizing] = useState<boolean>(false);
+
   const workoutPlanId = activeWorkout[0]?.workout_plan_id || null;
   const {
     workoutName,
@@ -48,7 +49,9 @@ export default function ActiveWorkoutScreen() {
     deleteSet,
     addExercise,
   } = useWorkoutContext();
-  console.log(activeWorkout);
+
+  setWorkoutName(activeWorkout[0].plan_name);
+  //console.log(activeWorkout);
   // Populate the selectedExercises state with activeWorkout data
   useEffect(() => {
     if (activeWorkout && activeWorkout.length > 0) {
