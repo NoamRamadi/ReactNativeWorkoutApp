@@ -9,11 +9,11 @@ interface ExerciseEntry {
 
 // Define the shape of the workout context
 interface WorkoutContextType {
-  activeWorkout: any | null; // Replace `any` with a proper type if possible
-  setActiveWorkout: (workout: any) => void; // Replace `any` with a proper type if possible
+  loadedWorkoutPlan: any | null; // Replace `any` with a proper type if possible
+  setLoadedWorkoutPlan: (workout: any) => void; // Replace `any` with a proper type if possible
   workoutName: string;
   setWorkoutName: (name: string) => void;
-  selectedExercises: ExerciseEntry[];
+  currentWorkoutExercises: ExerciseEntry[];
   addExercise: (exerciseId: number, name: string) => void;
   updateSetDetails: (
     exerciseIndex: number,
@@ -45,15 +45,15 @@ export const WorkoutProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [activeWorkout, setActiveWorkout] = useState<any | null>(null); // Replace `any` with a proper type
+  const [loadedWorkoutPlan, setLoadedWorkoutPlan] = useState<any | null>(null); // Replace `any` with a proper type
   const [workoutName, setWorkoutName] = useState<string>("");
-  const [selectedExercises, setSelectedExercises] = useState<ExerciseEntry[]>(
-    []
-  );
+  const [currentWorkoutExercises, setCurrentWorkoutExercises] = useState<
+    ExerciseEntry[]
+  >([]);
 
   // Add an exercise to the selected list
   const addExercise = (exerciseId: number, name: string) => {
-    setSelectedExercises((prev) => [
+    setCurrentWorkoutExercises((prev) => [
       ...prev,
       { exerciseId, name, sets: [] }, // Start with one set
     ]);
@@ -66,7 +66,7 @@ export const WorkoutProvider = ({
     field: "reps" | "kg",
     value: string
   ) => {
-    setSelectedExercises((prev) => {
+    setCurrentWorkoutExercises((prev) => {
       const updatedExercises = [...prev];
       if (updatedExercises[exerciseIndex]) {
         const currentValue =
@@ -88,16 +88,16 @@ export const WorkoutProvider = ({
 
   // Remove an exercise from the selected list by index
   const removeExercise = (index: number) => {
-    setSelectedExercises((prev) => prev.filter((_, i) => i !== index));
+    setCurrentWorkoutExercises((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Clear all selected exercises
   const clearSelectedExercises = () => {
-    setSelectedExercises([]);
+    setCurrentWorkoutExercises([]);
   };
 
   const addSet = (exerciseIndex: number) => {
-    setSelectedExercises((prev) => {
+    setCurrentWorkoutExercises((prev) => {
       const updatedExercises = [...prev];
       if (updatedExercises[exerciseIndex]) {
         updatedExercises[exerciseIndex].sets.push({
@@ -111,7 +111,7 @@ export const WorkoutProvider = ({
   };
 
   const deleteSet = (exerciseIndex: number, setIndex: number) => {
-    setSelectedExercises((prev) => {
+    setCurrentWorkoutExercises((prev) => {
       const updatedExercises = [...prev];
       if (updatedExercises[exerciseIndex]) {
         // Remove the set at the specified index
@@ -124,11 +124,11 @@ export const WorkoutProvider = ({
   return (
     <WorkoutContext.Provider
       value={{
-        activeWorkout,
+        loadedWorkoutPlan,
         workoutName,
-        setActiveWorkout,
+        setLoadedWorkoutPlan,
         setWorkoutName,
-        selectedExercises,
+        currentWorkoutExercises,
         addExercise,
         removeExercise,
         updateSetDetails,

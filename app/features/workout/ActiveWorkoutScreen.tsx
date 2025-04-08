@@ -19,13 +19,11 @@ import { executeQuery } from "@/src/database";
 import CustomKeyboard from "./components/CustomKeyboard";
 import { useWorkoutContext } from "@/src/context/WorkoutContext";
 
-type ActiveWorkoutScreenNavigationProp = StackNavigationProp<
-  WorkoutStackParamList,
-  "ActiveWorkout"
->;
+type ActiveWorkoutScreenNavigationProp =
+  StackNavigationProp<WorkoutStackParamList>;
 
 type WorkoutStackParamList = {
-  ActiveWorkout: undefined; // or whatever params it takes
+  loadedWorkoutPlan: undefined; // or whatever params it takes
   SelectExercise: { source: string }; // Add this line
   WorkoutHome: undefined;
   // ... other screens in your workout stack
@@ -35,14 +33,14 @@ export default function ActiveWorkoutScreen() {
   // Use the typed navigation object
   const navigation = useNavigation<ActiveWorkoutScreenNavigationProp>();
   const { showBanner } = useFloatingBanner();
-  const { activeWorkout } = useWorkoutContext();
+  //const { loadedWorkoutPlan } = useWorkoutContext();
   const [isMinimizing, setIsMinimizing] = useState<boolean>(false);
 
-  const workoutPlanId = activeWorkout[0]?.workout_plan_id || null;
   const {
     workoutName,
+    loadedWorkoutPlan,
     setWorkoutName,
-    selectedExercises,
+    currentWorkoutExercises,
     clearSelectedExercises,
     updateSetDetails,
     addSet,
@@ -50,18 +48,19 @@ export default function ActiveWorkoutScreen() {
     addExercise,
   } = useWorkoutContext();
 
-  setWorkoutName(activeWorkout[0].plan_name);
+  const workoutPlanId = loadedWorkoutPlan[0]?.workout_plan_id || null;
+  setWorkoutName(loadedWorkoutPlan[0].plan_name);
   //console.log(activeWorkout);
   // Populate the selectedExercises state with activeWorkout data
   useEffect(() => {
-    if (activeWorkout && activeWorkout.length > 0) {
+    if (loadedWorkoutPlan && loadedWorkoutPlan.length > 0) {
       // Only populate the state if selectedExercises is empty
-      if (selectedExercises.length === 0) {
+      if (currentWorkoutExercises.length === 0) {
         // Clear any existing exercises
         clearSelectedExercises();
 
         // Group exercises by exercise_id and display_order
-        const groupedExercises = activeWorkout.reduce(
+        const groupedExercises = loadedWorkoutPlan.reduce(
           (
             acc: any[],
             row: {
@@ -130,7 +129,7 @@ export default function ActiveWorkoutScreen() {
         );
       }
     }
-  }, [activeWorkout]);
+  }, [loadedWorkoutPlan]);
 
   // Minimize the screen to a floating banner and navigate back to the start of the stack
   const minimizeToBanner = () => {
@@ -159,7 +158,7 @@ export default function ActiveWorkoutScreen() {
       if (isSaving || isMinimizing) return;
 
       // Check if there are unsaved changes
-      if (workoutName.trim() || selectedExercises.length > 0) {
+      if (workoutName.trim() || currentWorkoutExercises.length > 0) {
         e.preventDefault(); // Prevent navigation
 
         // Show confirmation dialog
@@ -188,7 +187,13 @@ export default function ActiveWorkoutScreen() {
     });
 
     return unsubscribe; // Cleanup the listener on unmount
-  }, [workoutName, selectedExercises, isSaving, isMinimizing, navigation]);
+  }, [
+    workoutName,
+    currentWorkoutExercises,
+    isSaving,
+    isMinimizing,
+    navigation,
+  ]);
   // Save the workout plan to the database
   const handleSaveWorkoutPlan = async () => {
     try {
@@ -196,7 +201,7 @@ export default function ActiveWorkoutScreen() {
       setIsSaving(true);
 
       // Extract the workoutPlanId from activeWorkout
-      const workoutPlanId = activeWorkout[0]?.workout_plan_id || null;
+      const workoutPlanId = loadedWorkoutPlan[0]?.workout_plan_id || null;
 
       let currentWorkoutPlanId = workoutPlanId;
 
@@ -224,7 +229,7 @@ export default function ActiveWorkoutScreen() {
       );
 
       // Insert selected exercises and their sets into the database
-      for (const [exerciseIndex, entry] of selectedExercises.entries()) {
+      for (const [exerciseIndex, entry] of currentWorkoutExercises.entries()) {
         // Insert the exercise into WorkoutPlanExercises with display_order
         const workoutPlanExerciseInsertResult = await executeQuery(
           `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id, display_order) VALUES (?, ?, ?);`,
@@ -287,14 +292,14 @@ export default function ActiveWorkoutScreen() {
       </View>
 
       <Text style={styles.label}>Workout Plan Name:</Text>
-      <Text style={styles.label}>{activeWorkout[0].plan_name}</Text>
+      <Text style={styles.label}>{loadedWorkoutPlan[0].plan_name}</Text>
 
       <View style={styles.container}>
         {/* Display Selected Exercises */}
 
-        {selectedExercises.length > 0 ? (
+        {currentWorkoutExercises.length > 0 ? (
           <FlatList
-            data={selectedExercises}
+            data={currentWorkoutExercises}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) => {
               return (

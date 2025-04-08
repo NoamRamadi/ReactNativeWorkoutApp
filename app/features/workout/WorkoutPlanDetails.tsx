@@ -20,7 +20,7 @@ export default function WorkoutPlanDetails() {
   const route = useRoute<WorkoutPlanDetailsRouteProp>();
   const { planId } = route.params;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  const { setActiveWorkout } = useWorkoutContext(); // Access the workout context
+  const { setLoadedWorkoutPlan } = useWorkoutContext(); // Access the workout context
 
   // State to hold the workout plan details
   const [workoutPlan, setWorkoutPlan] = useState<any>(null);
@@ -106,7 +106,7 @@ export default function WorkoutPlanDetails() {
 
   // Function to handle starting the workout
   const handleStartWorkout = () => {
-    setActiveWorkout(workoutPlan); // Load the workout plan into the context
+    setLoadedWorkoutPlan(workoutPlan); // Load the workout plan into the context
     navigation.navigate("ActiveWorkout"); // Navigate to the Active Workout screen
   };
 
