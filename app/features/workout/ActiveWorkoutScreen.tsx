@@ -43,6 +43,7 @@ export default function ActiveWorkoutScreen() {
     addSet,
     deleteSet,
     addExercise,
+    removeExercise,
   } = useWorkoutContext();
 
   //setWorkoutName(loadedWorkoutPlan[0].plan_name);
@@ -397,6 +398,11 @@ export default function ActiveWorkoutScreen() {
                   })}
                   {/* Add Set Button */}
                   <Button title="Add Set" onPress={() => addSet(index)} />
+                  {/* Remove Exercise Button */}
+                  <Button
+                    title="Remove Exercise"
+                    onPress={() => removeExercise(index)}
+                  />
                 </View>
               );
             }}
