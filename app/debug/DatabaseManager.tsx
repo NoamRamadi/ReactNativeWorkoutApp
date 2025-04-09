@@ -6,7 +6,6 @@ import {
   Alert,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
 } from "react-native";
 import { executeQuery, fetchQuery } from "../../src/database/queries";
 
@@ -98,9 +97,60 @@ export default function DatabaseManager() {
     }
   };
 
+  // Handle deleting all rows from WorkoutPlanSets
+  const handleDeleteAllWorkoutPlanSets = async () => {
+    try {
+      // Confirm deletion with the user
+      Alert.alert(
+        "Delete All WorkoutPlanSets",
+        "Are you sure you want to delete all data in the WorkoutPlanSets table?",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Delete",
+            style: "destructive",
+            onPress: async () => {
+              // Execute the SQL query to delete all rows
+              await executeQuery(`DELETE FROM WorkoutPlanSets;`, []);
+
+              // Show success message
+              Alert.alert(
+                "Success",
+                "All WorkoutPlanSets data deleted successfully."
+              );
+
+              // Refresh the table data
+              setTables((prevTables) =>
+                prevTables.map((table) =>
+                  table.tableName === "WorkoutPlanSets"
+                    ? { ...table, rows: [] } // Clear the rows for WorkoutPlanSets
+                    : table
+                )
+              );
+            },
+          },
+        ],
+        { cancelable: true }
+      );
+    } catch (error) {
+      console.error("Error deleting all WorkoutPlanSets:", error);
+      Alert.alert("Error", "Failed to delete all WorkoutPlanSets.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Database Manager</Text>
+
+      {/* Add Delete All WorkoutPlanSets Button */}
+      <TouchableOpacity
+        style={styles.deleteAllButton}
+        onPress={handleDeleteAllWorkoutPlanSets}
+      >
+        <Text style={styles.deleteAllButtonText}>
+          Delete All WorkoutPlanSets
+        </Text>
+      </TouchableOpacity>
 
       {/* Display Tables */}
       <FlatList
@@ -156,6 +206,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 16,
   },
+  deleteAllButton: {
+    backgroundColor: "#ff4d4d",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  deleteAllButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
   tableContainer: {
     marginBottom: 16,
     padding: 8,
@@ -176,10 +238,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff4d4d",
     padding: 8,
     borderRadius: 4,
-    marginTop: 8, // Ensures spacing between text and button
-    alignSelf: "flex-start", // Aligns the button to the start for better aesthetics
+    marginTop: 8,
+    alignSelf: "flex-start",
   },
-
   deleteButtonText: {
     color: "#fff",
     fontWeight: "bold",
