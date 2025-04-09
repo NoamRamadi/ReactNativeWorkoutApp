@@ -45,11 +45,12 @@ export default function ActiveWorkoutScreen() {
     addExercise,
   } = useWorkoutContext();
 
-  setWorkoutName(loadedWorkoutPlan[0].plan_name);
+  //setWorkoutName(loadedWorkoutPlan[0].plan_name);
 
   // Populate the currentWorkoutExercises state with activeWorkout data
   useEffect(() => {
     if (loadedWorkoutPlan && loadedWorkoutPlan.length > 0) {
+      setWorkoutName(loadedWorkoutPlan[0].plan_name);
       // Only populate the state if selectedExercises is empty
       if (currentWorkoutExercises.length === 0) {
         // Clear any existing exercises
