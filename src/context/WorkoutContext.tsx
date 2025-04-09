@@ -25,6 +25,7 @@ interface WorkoutContextType {
   removeExercise: (index: number) => void;
   addSet: (exerciseIndex: number) => void;
   deleteSet: (exerciseIndex: number, setIndex: number) => void;
+  toggleSetCompletion: (exerciseIndex: number, setIndex: number) => void;
 }
 
 // Create the context
@@ -121,6 +122,18 @@ export const WorkoutProvider = ({
     });
   };
 
+  const toggleSetCompletion = (exerciseIndex: number, setIndex: number) => {
+    setCurrentWorkoutExercises((prev) => {
+      const updatedExercises = [...prev];
+      if (updatedExercises[exerciseIndex]) {
+        // Toggle the isCompleted value
+        updatedExercises[exerciseIndex].sets[setIndex].isCompleted =
+          !updatedExercises[exerciseIndex].sets[setIndex].isCompleted;
+      }
+      return updatedExercises;
+    });
+  };
+
   return (
     <WorkoutContext.Provider
       value={{
@@ -135,6 +148,7 @@ export const WorkoutProvider = ({
         clearSelectedExercises,
         addSet,
         deleteSet,
+        toggleSetCompletion,
       }}
     >
       {children}

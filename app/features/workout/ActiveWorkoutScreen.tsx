@@ -44,6 +44,7 @@ export default function ActiveWorkoutScreen() {
     deleteSet,
     addExercise,
     removeExercise,
+    toggleSetCompletion,
   } = useWorkoutContext();
 
   //setWorkoutName(loadedWorkoutPlan[0].plan_name);
@@ -321,7 +322,7 @@ export default function ActiveWorkoutScreen() {
                       KG
                     </Text>
                     <Text style={[styles.headerCell, styles.vColumnHeader]}>
-                      V
+                      ✔
                     </Text>
                   </View>
                   {/* Table Rows */}
@@ -340,7 +341,12 @@ export default function ActiveWorkoutScreen() {
                           </TouchableOpacity>
                         )}
                       >
-                        <View style={styles.row}>
+                        <View
+                          style={[
+                            styles.row,
+                            set.isCompleted && { backgroundColor: "#d1e7dd" },
+                          ]}
+                        >
                           <Text style={[styles.cell, styles.setColumn]}>
                             {setIndex + 1}
                           </Text>
@@ -386,11 +392,9 @@ export default function ActiveWorkoutScreen() {
                           </TouchableOpacity>
                           <TouchableOpacity
                             style={[styles.vColumn]}
-                            onPress={() => {}}
+                            onPress={() => toggleSetCompletion(index, setIndex)}
                           >
-                            <Text style={[styles.vSymbol]}>
-                              {set.isCompleted ? "✔" : "○"}
-                            </Text>
+                            <Text style={[styles.vSymbol]}>✔</Text>
                           </TouchableOpacity>
                         </View>
                       </ReanimatedSwipeable>
