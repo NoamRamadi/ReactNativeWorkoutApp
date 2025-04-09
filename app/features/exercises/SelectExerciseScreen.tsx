@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import ExerciseListBase from "./components/ExerciseListBase";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -9,9 +9,8 @@ import { fetchQuery } from "../../../src/database/queries";
 export default function SelectExerciseScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { source } = (route.params as { source?: any }) || {};
+  const { source } = (route.params as { source?: string }) || {};
 
-  // Use the appropriate context based on the source
   const newWorkoutContext = useNewWorkoutContext();
   const workoutContext = useWorkoutContext();
 
@@ -20,32 +19,44 @@ export default function SelectExerciseScreen() {
     ? newWorkoutContext
     : workoutContext;
 
-  // Handle exercise selection
+  const [selectedExercises, setSelectedExercises] = useState<number[]>([]);
+
   const handleSelectExercise = async (exerciseId: number) => {
     try {
-      // Fetch exercise details
-      const exercises = await fetchQuery(
-        "SELECT * FROM Exercises WHERE exercise_id = ?;",
-        [exerciseId]
-      );
-      if (exercises.length > 0) {
-        const { name } = exercises[0];
-        addExercise(exerciseId, name); // Add exercise with its name
+      if (selectedExercises.includes(exerciseId)) {
+        setSelectedExercises((prev) => prev.filter((id) => id !== exerciseId));
+      } else {
+        setSelectedExercises((prev) => [...prev, exerciseId]);
       }
     } catch (error) {
-      console.error("Error fetching exercise details:", error);
+      console.error("Error handling exercise selection:", error);
     }
   };
 
-  // Navigate back to the appropriate screen
-  const handleSaveSelectedExercises = () => {
-    navigation.goBack();
+  const handleSaveSelectedExercises = async () => {
+    try {
+      for (const exerciseId of selectedExercises) {
+        const exercises = await fetchQuery(
+          "SELECT * FROM Exercises WHERE exercise_id = ?;",
+          [exerciseId]
+        );
+        if (exercises.length > 0) {
+          const { name } = exercises[0];
+          addExercise(exerciseId, name);
+        }
+      }
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error saving selected exercises:", error);
+      alert("Failed to save selected exercises. Please try again.");
+    }
   };
 
   return (
     <View style={styles.container}>
       <ExerciseListBase
         isSelectable={true}
+        selectedExercises={selectedExercises}
         onSelectExercise={handleSelectExercise}
       />
       <Button
@@ -61,8 +72,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  selectedContainer: {
-    marginTop: 16,
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
     marginBottom: 16,
   },
 });

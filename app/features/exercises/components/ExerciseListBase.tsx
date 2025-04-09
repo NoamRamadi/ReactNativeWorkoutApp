@@ -17,6 +17,7 @@ import {
 } from "@/src/database";
 interface ExerciseListBaseProps {
   isSelectable?: boolean; // Determines if exercises can be selected
+  selectedExercises?: number[];
   onSelectExercise?: (exerciseId: number, isSelected: boolean) => void; // Callback for selection
 }
 
@@ -104,7 +105,6 @@ export default function ExerciseListBase({
     <View style={styles.container}>
       {/* Header with Title and Buttons */}
       <View style={styles.header}>
-        <Text style={styles.title}>Exercise List</Text>
         <View style={styles.buttonsContainer}>
           {/* Search Button */}
           <TouchableOpacity onPress={toggleSearch} style={styles.iconButton}>
