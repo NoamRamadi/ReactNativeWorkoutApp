@@ -191,48 +191,53 @@ export default function ActiveWorkoutScreen() {
 
   const handleSaveWorkoutPlan = async () => {
     try {
-      // Set the saving flag to true
       setIsSaving(true);
 
-      // Extract the workoutPlanId from activeWorkout
       const workoutPlanId = loadedWorkoutPlan[0]?.workout_plan_id || null;
-
       let currentWorkoutPlanId = workoutPlanId;
 
-      // Insert or Update the workout plan in the database
+      // Insert or Update the workout plan
       if (!currentWorkoutPlanId) {
-        // Insert a new workout plan
         const workoutPlanInsertResult = await executeQuery(
           `INSERT INTO WorkoutPlans (plan_name, user_id) VALUES (?, ?);`,
-          [workoutName, 1] // Replace `1` with the actual user ID if available
+          [workoutName, 1]
         );
-
         currentWorkoutPlanId = workoutPlanInsertResult.insertId;
       } else {
-        // Update the existing workout plan
         await executeQuery(
           `UPDATE WorkoutPlans SET plan_name = ? WHERE workout_plan_id = ?;`,
           [workoutName, currentWorkoutPlanId]
         );
       }
 
-      // Clear existing exercises and sets for the current workout plan
+      // Clear existing data (SQLite-compatible deletion)
+      // First delete related sets
+      await executeQuery(
+        `DELETE FROM WorkoutPlanSets 
+         WHERE workout_plan_exercise_id IN (
+           SELECT workout_plan_exercise_id 
+           FROM WorkoutPlanExercises 
+           WHERE workout_plan_id = ?
+         );`,
+        [currentWorkoutPlanId]
+      );
+
+      // Then delete exercises
       await executeQuery(
         `DELETE FROM WorkoutPlanExercises WHERE workout_plan_id = ?;`,
         [currentWorkoutPlanId]
       );
 
-      // Insert selected exercises and their sets into the database
+      // Insert new exercises and sets
       for (const [exerciseIndex, entry] of currentWorkoutExercises.entries()) {
-        // Insert the exercise into WorkoutPlanExercises with display_order
-        const workoutPlanExerciseInsertResult = await executeQuery(
-          `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id, display_order) VALUES (?, ?, ?);`,
+        const exerciseInsertResult = await executeQuery(
+          `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id, display_order) 
+           VALUES (?, ?, ?);`,
           [currentWorkoutPlanId, entry.exerciseId, exerciseIndex + 1]
         );
 
-        const workoutPlanExerciseId = workoutPlanExerciseInsertResult.insertId;
+        const workoutPlanExerciseId = exerciseInsertResult.insertId;
 
-        // Insert sets for the exercise into WorkoutPlanSets
         for (const [setIndex, set] of entry.sets.entries()) {
           await executeQuery(
             `INSERT INTO WorkoutPlanSets (
@@ -243,22 +248,21 @@ export default function ActiveWorkoutScreen() {
             ) VALUES (?, ?, ?, ?);`,
             [
               workoutPlanExerciseId,
-              setIndex + 1, // Set number
-              set.kg !== "" ? parseFloat(set.kg) : null, // Handle empty kg
-              set.reps !== "" ? parseInt(set.reps) : null, // Handle empty reps
+              setIndex + 1,
+              set.kg !== "" ? parseFloat(set.kg) : null,
+              set.reps !== "" ? parseInt(set.reps) : null,
             ]
           );
         }
       }
 
       alert("Workout plan saved successfully!");
-      clearSelectedExercises(); // Clear selected exercises after saving
-      navigation.popToTop(); // Navigate back to the root
+      clearSelectedExercises();
+      navigation.popToTop();
     } catch (error) {
       console.error("Error saving workout plan:", error);
       alert("Failed to save workout plan. Please try again.");
     } finally {
-      // Reset the saving flag after saving is complete
       setIsSaving(false);
     }
   };
