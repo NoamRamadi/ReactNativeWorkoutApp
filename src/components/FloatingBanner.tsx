@@ -13,10 +13,6 @@ export default function FloatingBanner() {
   // Navigate back to the Active Workout Screen when the banner is clicked
   const handleBannerPress = () => {
     hideBanner(); // Hide the banner
-    console.log(
-      "Navigation State:",
-      JSON.stringify(navigation.getState(), null, 2)
-    );
     navigation.navigate("Workout", { screen: "ActiveWorkout" });
   };
 

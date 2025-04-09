@@ -47,7 +47,6 @@ export default function WorkoutPlanDetails() {
     const fetchWorkoutPlanDetails = async () => {
       try {
         const plan = await getWorkoutPlanDetails(planId);
-        console.log("Fetched Plan:", plan); // Debugging: Log the fetched data
 
         // Group exercises by exercise_id and display_order
         const grouped = plan?.length
@@ -79,7 +78,6 @@ export default function WorkoutPlanDetails() {
             }, [])
           : [];
 
-        console.log("\n\nGrouped Exercises:", grouped); // Debugging: Log grouped exercises
         setGroupedExercises(grouped); // Update the local state with grouped exercises
       } catch (error) {
         console.error("Failed to fetch workout plan details:", error);
