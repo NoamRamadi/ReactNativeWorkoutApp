@@ -39,6 +39,7 @@ export default function NewWorkoutPlanScreen() {
     updateSetDetails,
     addSet,
     deleteSet,
+    removeExercise,
   } = useNewWorkoutContext();
 
   // State for custom keyboard
@@ -139,6 +140,7 @@ export default function NewWorkoutPlanScreen() {
 
       alert("Workout plan saved successfully!");
       clearSelectedExercises(); // Clear selected exercises after saving
+      setWorkoutName("");
       navigation.goBack(); // Navigate back after saving
     } catch (error) {
       console.error("Error saving workout plan:", error);
@@ -284,6 +286,11 @@ export default function NewWorkoutPlanScreen() {
 
                 {/* Add Set Button */}
                 <Button title="Add Set" onPress={() => addSet(index)} />
+                {/* Remove Exercise Button */}
+                <Button
+                  title="Remove Exercise"
+                  onPress={() => removeExercise(index)}
+                />
               </View>
             )}
           />
