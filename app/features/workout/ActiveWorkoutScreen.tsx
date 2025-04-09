@@ -10,11 +10,10 @@ import {
   Alert,
 } from "react-native";
 import { useFloatingBanner } from "../../../src/context/FloatingBannerContext";
-import { StackActions, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import { useNewWorkoutContext } from "@/src/context/NewWorkoutContext";
 import { executeQuery } from "@/src/database";
 import CustomKeyboard from "./components/CustomKeyboard";
 import { useWorkoutContext } from "@/src/context/WorkoutContext";
@@ -30,12 +29,10 @@ type WorkoutStackParamList = {
 };
 
 export default function ActiveWorkoutScreen() {
-  // Use the typed navigation object
   const navigation = useNavigation<ActiveWorkoutScreenNavigationProp>();
   const { showBanner } = useFloatingBanner();
-  //const { loadedWorkoutPlan } = useWorkoutContext();
   const [isMinimizing, setIsMinimizing] = useState<boolean>(false);
-
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const {
     workoutName,
     loadedWorkoutPlan,
@@ -48,10 +45,9 @@ export default function ActiveWorkoutScreen() {
     addExercise,
   } = useWorkoutContext();
 
-  const workoutPlanId = loadedWorkoutPlan[0]?.workout_plan_id || null;
   setWorkoutName(loadedWorkoutPlan[0].plan_name);
-  //console.log(activeWorkout);
-  // Populate the selectedExercises state with activeWorkout data
+
+  // Populate the currentWorkoutExercises state with activeWorkout data
   useEffect(() => {
     if (loadedWorkoutPlan && loadedWorkoutPlan.length > 0) {
       // Only populate the state if selectedExercises is empty
@@ -131,25 +127,6 @@ export default function ActiveWorkoutScreen() {
     }
   }, [loadedWorkoutPlan]);
 
-  // Minimize the screen to a floating banner and navigate back to the start of the stack
-  const minimizeToBanner = () => {
-    setIsMinimizing((prev) => true);
-    showBanner(); // Show the floating banner
-
-    // Add a small delay to ensure state updates
-    setTimeout(() => {
-      navigation.popToTop();
-    }, 50);
-  };
-
-  const [focusedInput, setFocusedInput] = useState<{
-    exerciseIndex: number;
-    setIndex: number;
-    field: "reps" | "kg";
-  } | null>(null);
-
-  const [isSaving, setIsSaving] = useState<boolean>(false);
-
   // Reset workout data when navigating back
   // Handle "Discard Changes" confirmation before leaving
   useEffect(() => {
@@ -194,7 +171,23 @@ export default function ActiveWorkoutScreen() {
     isMinimizing,
     navigation,
   ]);
-  // Save the workout plan to the database
+
+  const minimizeToBanner = () => {
+    setIsMinimizing((prev) => true);
+    showBanner(); // Show the floating banner
+
+    // Add a small delay to ensure state updates
+    setTimeout(() => {
+      navigation.popToTop();
+    }, 50);
+  };
+
+  const [focusedInput, setFocusedInput] = useState<{
+    exerciseIndex: number;
+    setIndex: number;
+    field: "reps" | "kg";
+  } | null>(null);
+
   const handleSaveWorkoutPlan = async () => {
     try {
       // Set the saving flag to true
