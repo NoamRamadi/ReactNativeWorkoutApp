@@ -24,7 +24,7 @@ type WorkoutNavigationProp = StackNavigationProp<
   "WorkoutHome"
 >;
 
-export default function NewWorkoutPlanScreen() {
+export default function WorkoutPlanCreateScreen() {
   const navigation = useNavigation<WorkoutNavigationProp>();
   const {
     workoutName,

@@ -10,7 +10,7 @@ import { NewWorkoutProvider } from "../src/context/NewWorkoutContext";
 //import Workout from "./features/workout/WorkoutScreen";
 import History from "./features/history/HistoryScreen";
 import DatabaseDebugScreen from "./debug/DatabaseDebugScreen"; // Import the debug screen
-import NewWorkoutPlanScreen from "./features/workout/NewWorkoutPlanScreen"; // Import the new screen
+import WorkoutPlanCreateScreen from "./features/workout/WorkoutPlanCreateScreen";
 import SelectExerciseScreen from "./features/exercises/SelectExerciseScreen"; // Import the new screen
 import ExercisesScreen from "./features/exercises/ExerciseScreen";
 import WorkoutPlanDetailsScreen from "./features/workout/WorkoutPlanDetailsScreen";
@@ -48,7 +48,7 @@ function WorkoutStackNavigator() {
           />
           <WorkoutStack.Screen
             name="NewWorkoutPlan"
-            component={NewWorkoutPlanScreen}
+            component={WorkoutPlanCreateScreen}
             options={{ title: "Create New Workout Plan" }}
           />
           <WorkoutStack.Screen
