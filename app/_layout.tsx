@@ -65,7 +65,6 @@ function WorkoutStackNavigator() {
           <WorkoutStack.Screen
             name="ActiveWorkout"
             component={WorkoutExecutionScreen}
-            options={{ title: "Active Workout" }}
           />
         </WorkoutStack.Navigator>
       </WorkoutExecutionProvider>

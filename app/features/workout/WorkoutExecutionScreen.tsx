@@ -54,6 +54,10 @@ export default function WorkoutExecutionScreen() {
   useEffect(() => {
     if (loadedWorkoutPlan && loadedWorkoutPlan.length > 0) {
       setWorkoutName(loadedWorkoutPlan[0].plan_name);
+      // Set the screen title
+      navigation.setOptions({
+        title: loadedWorkoutPlan[0].plan_name,
+      });
       // Only populate the state if selectedExercises is empty
       if (currentWorkoutExercises.length === 0) {
         // Clear any existing exercises
@@ -305,8 +309,6 @@ export default function WorkoutExecutionScreen() {
       <View>
         <Button title="Minimize" onPress={minimizeToBanner} />
       </View>
-      <Text style={styles.label}>{loadedWorkoutPlan[0].plan_name}</Text>
-
       <View style={styles.container}>
         {/* Display Selected Exercises */}
 
