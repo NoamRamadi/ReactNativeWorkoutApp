@@ -306,8 +306,30 @@ export default function WorkoutExecutionScreen() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <View>
-        <Button title="Minimize" onPress={minimizeToBanner} />
+      <View style={styles.topContainer}>
+        <TouchableOpacity
+          style={[styles.topButton, styles.iconButton]}
+          onPress={minimizeToBanner}
+        >
+          <Text style={styles.iconText}>▼</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.topButton} onPress={() => {}}>
+          <Text style={styles.topButtonText}>Countdown</Text>
+        </TouchableOpacity>
+
+        <View style={styles.clockContainer}>
+          <Text style={styles.clockText}>00:00</Text>
+        </View>
+
+        <TouchableOpacity
+          style={[styles.topButton, styles.finishButton]}
+          onPress={() => {}}
+        >
+          <Text style={[styles.topButtonText, styles.finishButtonText]}>
+            FINISH
+          </Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.container}>
         {/* Display Selected Exercises */}
@@ -675,5 +697,54 @@ const styles = StyleSheet.create({
   },
   buttonSpacer: {
     height: 8,
+  },
+  topContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#fff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  topButton: {
+    padding: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "#6B9BFF",
+    backgroundColor: "#fff",
+  },
+  topButtonText: {
+    color: "#6B9BFF",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  clockContainer: {
+    padding: 8,
+    borderRadius: 6,
+    backgroundColor: "#f5f5f5",
+  },
+  clockText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  finishButton: {
+    backgroundColor: "#6B9BFF",
+  },
+  finishButtonText: {
+    color: "#fff",
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 0,
+  },
+  iconText: {
+    fontSize: 20,
+    color: "#6B9BFF",
+    fontWeight: "bold",
   },
 });
