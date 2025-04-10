@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 // Import screens
 import Profile from "./features/profile/ProfileScreen";
 import Measure from "./features/measure/MeasureScreen";
-import { NewWorkoutProvider } from "../src/context/NewWorkoutContext";
+//import { NewWorkoutProvider } from "../src/context/NewWorkoutContext";
 //import Workout from "./features/workout/WorkoutScreen";
 import History from "./features/history/HistoryScreen";
 import DatabaseDebugScreen from "./debug/DatabaseDebugScreen"; // Import the debug screen
@@ -21,6 +21,7 @@ import FloatingBanner from "@/src/components/FloatingBanner";
 import WorkoutExecutionScreen from "./features/workout/WorkoutExecutionScreen";
 import { WorkoutProvider } from "@/src/context/WorkoutContext";
 import WorkoutListScreen from "./features/workout/WorkoutListScreen";
+import { WorkoutCreateProvider } from "../src/context/WorkoutCreateContext";
 
 // Suppress the specific warning
 LogBox.ignoreLogs(["props.pointerEvents is deprecated"]);
@@ -39,7 +40,7 @@ const WorkoutStack = createStackNavigator<WorkoutStackParamList>();
 function WorkoutStackNavigator() {
   return (
     <WorkoutProvider>
-      <NewWorkoutProvider>
+      <WorkoutCreateProvider>
         <WorkoutStack.Navigator>
           <WorkoutStack.Screen
             name="WorkoutHome"
@@ -66,7 +67,7 @@ function WorkoutStackNavigator() {
             options={{ title: "Active Workout" }}
           />
         </WorkoutStack.Navigator>
-      </NewWorkoutProvider>
+      </WorkoutCreateProvider>
     </WorkoutProvider>
   );
 }

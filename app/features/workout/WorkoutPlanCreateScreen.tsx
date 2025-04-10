@@ -13,7 +13,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useNavigation } from "@react-navigation/native";
 import { executeQuery } from "../../../src/database/queries";
-import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
+import { useWorkoutCreateContext } from "../../../src/context/WorkoutCreateContext";
 import CustomKeyboard from "./components/CustomKeyboard";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { WorkoutStackParamList } from "@/src/types/navigation/navigation.types";
@@ -35,7 +35,7 @@ export default function WorkoutPlanCreateScreen() {
     addSet,
     deleteSet,
     removeExercise,
-  } = useNewWorkoutContext();
+  } = useWorkoutCreateContext();
 
   // State for custom keyboard
   const [focusedInput, setFocusedInput] = useState<{

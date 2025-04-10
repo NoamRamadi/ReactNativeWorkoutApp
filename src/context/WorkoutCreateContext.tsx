@@ -26,12 +26,12 @@ interface NewWorkoutContextType {
 }
 
 // Create the context
-const NewWorkoutContext = createContext<NewWorkoutContextType | undefined>(
+const WorkoutCreateContext = createContext<NewWorkoutContextType | undefined>(
   undefined
 );
 
 // Create a provider component
-export const NewWorkoutProvider: React.FC<{ children: React.ReactNode }> = ({
+export const WorkoutCreateProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [workoutName, setWorkoutName] = useState<string>("");
@@ -110,7 +110,7 @@ export const NewWorkoutProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <NewWorkoutContext.Provider
+    <WorkoutCreateContext.Provider
       value={{
         workoutName,
         setWorkoutName,
@@ -124,16 +124,16 @@ export const NewWorkoutProvider: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       {children}
-    </NewWorkoutContext.Provider>
+    </WorkoutCreateContext.Provider>
   );
 };
 
 // Custom hook to use the context
-export const useNewWorkoutContext = () => {
-  const context = useContext(NewWorkoutContext);
+export const useWorkoutCreateContext = () => {
+  const context = useContext(WorkoutCreateContext);
   if (!context) {
     throw new Error(
-      "useNewWorkoutContext must be used within a NewWorkoutProvider"
+      "useWorkoutCreateContext must be used within a WorkoutCreateProvider"
     );
   }
   return context;

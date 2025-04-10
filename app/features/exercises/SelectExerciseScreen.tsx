@@ -2,21 +2,22 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import ExerciseListBase from "./components/ExerciseListBase";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
+//import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
 import { useWorkoutContext } from "../../../src/context/WorkoutContext";
 import { fetchQuery } from "../../../src/database/queries";
+import { useWorkoutCreateContext } from "@/src/context/WorkoutCreateContext";
 
 export default function SelectExerciseScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { source } = (route.params as { source?: string }) || {};
 
-  const newWorkoutContext = useNewWorkoutContext();
+  const workoutCreateContext = useWorkoutCreateContext();
   const workoutContext = useWorkoutContext();
 
   const isFromNewWorkoutPlan = source === "NewWorkoutPlan";
   const { addExercise } = isFromNewWorkoutPlan
-    ? newWorkoutContext
+    ? workoutCreateContext
     : workoutContext;
 
   const [selectedExercises, setSelectedExercises] = useState<number[]>([]);
