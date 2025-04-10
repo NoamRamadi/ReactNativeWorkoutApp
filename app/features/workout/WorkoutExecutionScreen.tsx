@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 16,
+    padding: 5,
   },
   text: {
     fontSize: 24,
@@ -489,11 +489,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   exerciseContainer: {
-    marginBottom: 16,
+    marginBottom: 14,
     borderWidth: 1,
     borderColor: "#e0e0e0",
     borderRadius: 8,
-    padding: 12,
+    padding: 10,
     backgroundColor: "#fff",
     shadowColor: "#000",
     shadowOffset: {
@@ -503,6 +503,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
+    width: "100%",
   },
   exerciseName: {
     fontSize: 18,
