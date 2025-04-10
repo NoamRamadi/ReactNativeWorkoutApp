@@ -417,12 +417,25 @@ export default function WorkoutExecutionScreen() {
                     );
                   })}
                   {/* Add Set Button */}
-                  <Button title="Add Set" onPress={() => addSet(index)} />
-                  {/* Remove Exercise Button */}
-                  <Button
-                    title="Remove Exercise"
-                    onPress={() => removeExercise(index)}
-                  />
+                  <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => addSet(index)}
+                    >
+                      <Text style={styles.buttonText}>Add Set</Text>
+                    </TouchableOpacity>
+                    <View style={styles.buttonSpacer} />
+                    <TouchableOpacity
+                      style={[styles.button, styles.removeButton]}
+                      onPress={() => removeExercise(index)}
+                    >
+                      <Text
+                        style={[styles.buttonText, styles.removeButtonText]}
+                      >
+                        Remove Exercise
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               );
             }}
@@ -635,5 +648,33 @@ const styles = StyleSheet.create({
     borderRightColor: "#ccc",
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
+  },
+  buttonContainer: {
+    flexDirection: "column",
+    alignItems: "stretch",
+    marginTop: 12,
+  },
+  button: {
+    backgroundColor: "#f0f0f0",
+    padding: 8,
+    borderRadius: 6,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+  },
+  removeButton: {
+    backgroundColor: "#fff",
+    borderColor: "#ff6b6b",
+  },
+  buttonText: {
+    color: "#333",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  removeButtonText: {
+    color: "#ff6b6b",
+  },
+  buttonSpacer: {
+    height: 8,
   },
 });
