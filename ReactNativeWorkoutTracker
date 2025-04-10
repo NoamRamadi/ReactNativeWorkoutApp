@@ -1,0 +1,196 @@
+### **Project Documentation for Cursor**
+
+---
+
+#### **1. Project Overview**
+This project is a **React Native fitness application** designed to help users create, manage, and track workout plans. The app allows users to:
+- Create new workout plans by selecting exercises and defining sets (reps, weight, etc.).
+- Track the completion of sets during active workouts.
+- Save workout plans to a local SQLite database.
+- Navigate between different screens to manage exercises, view active workouts, and more.
+
+The app is built using modern React Native libraries, including `react-navigation` for navigation, `react-native-gesture-handler` for swipeable components, and a custom context-based state management system.
+
+---
+
+#### **2. Key Features**
+1. **Workout Plan Creation**:
+   - Users can create a new workout plan by entering a name and selecting exercises.
+   - Each exercise can have multiple sets, with fields for reps, weight, and completion status (`isCompleted`).
+
+2. **Active Workout Tracking**:
+   - During an active workout, users can mark sets as completed (`✔`) or incomplete (`○`).
+   - Swipe-to-delete functionality allows users to remove individual sets.
+
+3. **Database Integration**:
+   - The app uses a SQLite database to store workout plans, exercises, and sets.
+   - Data is structured into three main tables:
+     - **WorkoutPlans**: Stores workout plan metadata (e.g., name, user ID).
+     - **WorkoutPlanExercises**: Links exercises to workout plans and tracks their display order.
+     - **WorkoutPlanSets**: Stores details about each set (e.g., reps, weight, set number).
+
+4. **Navigation**:
+   - The app uses a stack navigator from `@react-navigation/stack` to manage screen transitions.
+   - Key screens include:
+     - **NewWorkoutPlanScreen**: For creating and saving new workout plans.
+     - **ActiveWorkoutScreen**: For tracking and managing active workouts.
+     - **SelectExerciseScreen**: For selecting exercises to add to a workout plan.
+
+5. **Custom Keyboard**:
+   - A custom numeric keyboard is implemented for inputting reps and weight values.
+
+6. **Discard Changes Confirmation**:
+   - Before navigating away from a screen, the app prompts users to confirm if they want to discard unsaved changes.
+
+---
+
+#### **3. Database Schema**
+
+      CREATE TABLE IF NOT EXISTS Users (
+        user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP)
+
+
+      CREATE TABLE IF NOT EXISTS Exercises (
+        exercise_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        body_part TEXT NOT NULL,
+        equipment TEXT NOT NULL,
+        profile_picture TEXT NOT NULL DEFAULT '',
+        form_picture TEXT NOT NULL DEFAULT '',
+        instruction TEXT NOT NULL DEFAULT '')
+   
+      CREATE TABLE IF NOT EXISTS WorkoutPlans (
+        workout_plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        plan_name TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES Users (user_id))
+
+      CREATE TABLE IF NOT EXISTS WorkoutPlanExercises (
+        workout_plan_exercise_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        workout_plan_id INTEGER NOT NULL,
+        exercise_id INTEGER NOT NULL,
+        display_order INTEGER NOT NULL DEFAULT 1,
+        FOREIGN KEY (workout_plan_id) REFERENCES WorkoutPlans (workout_plan_id),
+        FOREIGN KEY (exercise_id) REFERENCES Exercis
+  
+      CREATE TABLE IF NOT EXISTS WorkoutPlanSets (
+        workout_plan_set_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        workout_plan_exercise_id INTEGER NOT NULL,
+        set_number INTEGER NOT NULL,
+        weight REAL,
+        reps INTEGER,
+        type TEXT,
+        FOREIGN KEY (workout_plan_exercise_id) REFERENCES WorkoutPlanExercises (workout_plan_exercise_id))
+      
+      CREATE TABLE IF NOT EXISTS WorkoutSessions (
+        workout_session_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        workout_plan_id INTEGER,
+        date DATE NOT NULL,
+        notes TEXT,
+        duration INTEGER,
+        FOREIGN KEY (user_id) REFERENCES Users (user_id),
+        FOREIGN KEY (workout_plan_id) REFERENCES WorkoutPlans (workout_plan_id))
+
+      CREATE TABLE IF NOT EXISTS WorkoutSessionExercises (
+        workout_session_exercise_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        workout_session_id INTEGER NOT NULL,
+        exercise_id INTEGER NOT NULL,
+        display_order INTEGER NOT NULL DEFAULT 1,
+        FOREIGN KEY (workout_session_id) REFERENCES WorkoutSessions (workout_session_id),
+        FOREIGN KEY (exercise_id) REFERENCES Exercises (exercise_id))
+
+
+      CREATE TABLE IF NOT EXISTS WorkoutSessionSets (
+          workout_session_set_id INTEGER PRIMARY KEY AUTOINCREMENT,
+          workout_session_exercise_id INTEGER NOT NULL,
+          set_number INTEGER NOT NULL,
+          weight_used REAL NOT NULL,
+          reps_completed INTEGER NOT NULL,
+          type TEXT,
+          FOREIGN KEY (workout_session_exercise_id) REFERENCES WorkoutSessionExercises (workout_session_exercise_id))
+
+
+---
+
+#### **4. State Management**
+The app uses React Context (`useWorkoutContext` and `useNewWorkoutContext`) to manage global state. Key state variables include:
+- **workoutName**: The name of the current workout plan.
+- **selectedExercises**: An array of selected exercises, where each exercise contains:
+  - `exerciseId`: The unique ID of the exercise.
+  - `name`: The name of the exercise.
+  - `sets`: An array of sets, where each set contains:
+    - `reps`: Number of repetitions (string).
+    - `kg`: Weight used (string).
+    - `isCompleted`: Boolean indicating whether the set is completed.
+
+Key functions in the context:
+- **addExercise**: Adds an exercise to the `selectedExercises` array.
+- **removeExercise**: Removes an exercise from the `selectedExercises` array.
+- **addSet**: Adds a new set to an exercise.
+- **deleteSet**: Deletes a set from an exercise.
+- **updateSetDetails**: Updates the reps, weight, or completion status of a set.
+- **toggleSetCompletion**: Toggles the `isCompleted` status of a set.
+
+---
+
+#### **5. Navigation Structure**
+The app uses a stack navigator with the following screens:
+- **WorkoutHome**: The main screen where users can start a new workout or view saved plans.
+- **NewWorkoutPlanScreen**: Allows users to create and save new workout plans.
+- **ActiveWorkoutScreen**: Displays the active workout and allows users to track progress.
+- **SelectExerciseScreen**: Lets users select exercises to add to a workout plan.
+
+---
+
+#### **6. Component Breakdown**
+1. **NewWorkoutPlanScreen**:
+   - Handles the creation of new workout plans.
+   - Includes a form for entering the workout name and a list of selected exercises with editable sets.
+
+2. **ActiveWorkoutScreen**:
+   - Displays the active workout plan and allows users to mark sets as completed.
+   - Includes swipe-to-delete functionality for removing sets.
+
+3. **SelectExerciseScreen**:
+   - Displays a list of available exercises.
+   - Users can select exercises to add to the current workout plan.
+
+4. **CustomKeyboard**:
+   - A reusable numeric keyboard component for inputting reps and weight values.
+
+5. **ReanimatedSwipeable**:
+   - Used to implement swipe-to-delete functionality for sets.
+
+---
+
+#### **7. Key Files and Folders**
+- **`src/context/`**:
+  - Contains context providers (`WorkoutContext`, `NewWorkoutContext`) for state management.
+- **`src/database/`**:
+  - Contains database-related functions (`executeQuery`) and schema definitions.
+- **`src/screens/`**:
+  - Contains screen components like `NewWorkoutPlanScreen`, `ActiveWorkoutScreen`, and `SelectExerciseScreen`.
+- **`src/components/`**:
+  - Contains reusable components like `CustomKeyboard` and `ExerciseListBase`.
+
+---
+
+#### **8. Future Enhancements**
+- **Backend Integration**:
+  - Integrate with a backend API to sync workout data across devices.
+- **User Authentication**:
+  - Add user login and registration functionality.
+- **Progress Tracking**:
+  - Implement charts and graphs to visualize workout progress over time.
+- **Push Notifications**:
+  - Notify users about upcoming workouts or incomplete sets.
+
+---
+
