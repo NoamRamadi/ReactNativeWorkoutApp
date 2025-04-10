@@ -655,19 +655,19 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   button: {
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#fff",
     padding: 8,
     borderRadius: 6,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#e0e0e0",
+    borderColor: "#6B9BFF",
   },
   removeButton: {
     backgroundColor: "#fff",
     borderColor: "#ff6b6b",
   },
   buttonText: {
-    color: "#333",
+    color: "#6B9BFF",
     fontSize: 14,
     fontWeight: "500",
   },
