@@ -13,7 +13,7 @@ import { WorkoutStackParamList } from "@/src/types/navigation/navigation.types";
 import { WorkoutPlan } from "@/src/types/workout/workout.types";
 import { getAllWorkoutPlans } from "../../../src/database/queries";
 
-export default function Workout() {
+export default function WorkoutListScreen() {
   type WorkoutNavigationProp = StackNavigationProp<
     WorkoutStackParamList,
     "WorkoutHome"
