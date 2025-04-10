@@ -47,8 +47,6 @@ export default function ActiveWorkoutScreen() {
     toggleSetCompletion,
   } = useWorkoutContext();
 
-  //setWorkoutName(loadedWorkoutPlan[0].plan_name);
-
   // Populate the currentWorkoutExercises state with activeWorkout data
   useEffect(() => {
     if (loadedWorkoutPlan && loadedWorkoutPlan.length > 0) {
