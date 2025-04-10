@@ -16,20 +16,15 @@ import { executeQuery } from "../../../src/database/queries";
 import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
 import CustomKeyboard from "./components/CustomKeyboard";
 import { StackNavigationProp } from "@react-navigation/stack";
-//import { WorkoutStackParamList } from "@/app/_layout";
+import { WorkoutStackParamList } from "@/src/types/navigation/navigation.types";
+import { WorkoutExercise, WorkoutSet } from "@/src/types/workout/workout.types";
+
+type WorkoutNavigationProp = StackNavigationProp<
+  WorkoutStackParamList,
+  "WorkoutHome"
+>;
 
 export default function NewWorkoutPlanScreen() {
-  type WorkoutStackParamList = {
-    WorkoutHome: undefined;
-    SelectExercise: { source: string }; // Add this line
-    // ... other screens in your stack
-  };
-
-  type WorkoutNavigationProp = StackNavigationProp<
-    WorkoutStackParamList,
-    "WorkoutHome"
-  >;
-
   const navigation = useNavigation<WorkoutNavigationProp>();
   const {
     workoutName,
@@ -58,39 +53,35 @@ export default function NewWorkoutPlanScreen() {
       // If the user is saving, allow navigation without confirmation
       if (isSaving) return;
 
-      // Check if there are unsaved changes
       if (workoutName.trim() || selectedExercises.length > 0) {
-        e.preventDefault(); // Prevent navigation
+        e.preventDefault();
 
-        // Show confirmation dialog
         Alert.alert(
           "Discard Workout Plan?",
           "You have unsaved changes. Are you sure you want to discard this workout plan?",
           [
-            { text: "Cancel", style: "cancel", onPress: () => {} }, // Do nothing
+            { text: "Cancel", style: "cancel", onPress: () => {} },
             {
               text: "Discard",
               style: "destructive",
               onPress: () => {
-                setWorkoutName(""); // Reset workout name
-                clearSelectedExercises(); // Clear selected exercises
-                navigation.dispatch(e.data.action); // Continue navigation
+                setWorkoutName("");
+                clearSelectedExercises();
+                navigation.dispatch(e.data.action);
               },
             },
           ],
           { cancelable: true }
         );
       } else {
-        // No unsaved changes, reset data silently
         setWorkoutName("");
         clearSelectedExercises();
       }
     });
 
-    return unsubscribe; // Cleanup the listener on unmount
+    return unsubscribe;
   }, [navigation, workoutName, selectedExercises, isSaving]);
 
-  // Save the workout plan to the database
   const handleSaveWorkoutPlan = async () => {
     try {
       if (!workoutName.trim()) {
@@ -98,10 +89,8 @@ export default function NewWorkoutPlanScreen() {
         return;
       }
 
-      // Set the saving flag to true
       setIsSaving(true);
 
-      // Insert the workout plan into the database
       const workoutPlanInsertResult = await executeQuery(
         `INSERT INTO WorkoutPlans (plan_name, user_id) VALUES (?, ?);`,
         [workoutName, 1] // Replace `1` with the actual user ID if available
@@ -109,9 +98,7 @@ export default function NewWorkoutPlanScreen() {
 
       const workoutPlanId = workoutPlanInsertResult.insertId;
 
-      // Insert selected exercises and their sets into the database
       for (const [exerciseIndex, entry] of selectedExercises.entries()) {
-        // Insert the exercise into WorkoutPlanExercises with display_order
         const workoutPlanExerciseInsertResult = await executeQuery(
           `INSERT INTO WorkoutPlanExercises (workout_plan_id, exercise_id, display_order) VALUES (?, ?, ?);`,
           [workoutPlanId, entry.exerciseId, exerciseIndex + 1]
@@ -130,23 +117,22 @@ export default function NewWorkoutPlanScreen() {
             ) VALUES (?, ?, ?, ?);`,
             [
               workoutPlanExerciseId,
-              setIndex + 1, // Set number
-              set.kg !== "" ? parseFloat(set.kg) : null, // Handle empty kg
-              set.reps !== "" ? parseInt(set.reps) : null, // Handle empty reps
+              setIndex + 1,
+              set.kg !== "" ? parseFloat(set.kg) : null,
+              set.reps !== "" ? parseInt(set.reps) : null,
             ]
           );
         }
       }
 
       alert("Workout plan saved successfully!");
-      clearSelectedExercises(); // Clear selected exercises after saving
+      clearSelectedExercises();
       setWorkoutName("");
-      navigation.goBack(); // Navigate back after saving
+      navigation.goBack();
     } catch (error) {
       console.error("Error saving workout plan:", error);
       alert("Failed to save workout plan. Please try again.");
     } finally {
-      // Reset the saving flag after saving is complete
       setIsSaving(false);
     }
   };
