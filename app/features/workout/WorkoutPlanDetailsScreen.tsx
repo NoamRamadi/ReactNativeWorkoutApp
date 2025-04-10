@@ -8,7 +8,7 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { getWorkoutPlanDetails } from "../../../src/database/queries";
-import { useWorkoutContext } from "../../../src/context/WorkoutContext";
+import { useWorkoutExecutionContext } from "../../../src/context/WorkoutExecutionContext";
 import { WorkoutStackParamList } from "@/src/types/navigation/navigation.types";
 import {
   WorkoutPlan,
@@ -27,7 +27,7 @@ export default function WorkoutPlanDetailsScreen() {
   const route = useRoute<WorkoutPlanDetailsRouteProp>();
   const { planId } = route.params;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  const { setLoadedWorkoutPlan } = useWorkoutContext();
+  const { setLoadedWorkoutPlan } = useWorkoutExecutionContext();
 
   const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlanDetails[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);

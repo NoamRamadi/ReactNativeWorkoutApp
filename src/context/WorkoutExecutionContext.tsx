@@ -29,23 +29,27 @@ interface WorkoutContextType {
 }
 
 // Create the context
-const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
+export const WorkoutExecutionContext = createContext<
+  WorkoutContextType | undefined
+>(undefined);
 
 // Custom hook to use the context
-export const useWorkoutContext = () => {
-  const context = useContext(WorkoutContext);
+export const useWorkoutExecutionContext = () => {
+  const context = useContext(WorkoutExecutionContext);
   if (!context) {
-    throw new Error("useWorkoutContext must be used within a WorkoutProvider");
+    throw new Error(
+      "useWorkoutExecutionContext must be used within a WorkoutExecutionProvider"
+    );
   }
   return context;
 };
 
 // Provider component
-export const WorkoutProvider = ({
+export function WorkoutExecutionProvider({
   children,
 }: {
   children: React.ReactNode;
-}) => {
+}) {
   const [loadedWorkoutPlan, setLoadedWorkoutPlan] = useState<any | null>(null); // Replace `any` with a proper type
   const [workoutName, setWorkoutName] = useState<string>("");
   const [currentWorkoutExercises, setCurrentWorkoutExercises] = useState<
@@ -135,7 +139,7 @@ export const WorkoutProvider = ({
   };
 
   return (
-    <WorkoutContext.Provider
+    <WorkoutExecutionContext.Provider
       value={{
         loadedWorkoutPlan,
         workoutName,
@@ -152,6 +156,6 @@ export const WorkoutProvider = ({
       }}
     >
       {children}
-    </WorkoutContext.Provider>
+    </WorkoutExecutionContext.Provider>
   );
-};
+}

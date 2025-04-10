@@ -16,7 +16,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { executeQuery } from "@/src/database";
 import CustomKeyboard from "./components/CustomKeyboard";
-import { useWorkoutContext } from "@/src/context/WorkoutContext";
+import { useWorkoutExecutionContext } from "@/src/context/WorkoutExecutionContext";
 
 type WorkoutExecutionScreenNavigationProp = StackNavigationProp<
   WorkoutStackParamList,
@@ -48,7 +48,7 @@ export default function WorkoutExecutionScreen() {
     addExercise,
     removeExercise,
     toggleSetCompletion,
-  } = useWorkoutContext();
+  } = useWorkoutExecutionContext();
 
   // Populate the currentWorkoutExercises state with activeWorkout data
   useEffect(() => {

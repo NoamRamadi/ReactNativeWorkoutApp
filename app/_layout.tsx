@@ -19,9 +19,10 @@ import { LogBox } from "react-native";
 import { FloatingBannerProvider } from "@/src/context/FloatingBannerContext";
 import FloatingBanner from "@/src/components/FloatingBanner";
 import WorkoutExecutionScreen from "./features/workout/WorkoutExecutionScreen";
-import { WorkoutProvider } from "@/src/context/WorkoutContext";
+//import { WorkoutProvider } from "@/src/context/WorkoutContext";
 import WorkoutListScreen from "./features/workout/WorkoutListScreen";
 import { WorkoutCreateProvider } from "../src/context/WorkoutCreateContext";
+import { WorkoutExecutionProvider } from "@/src/context/WorkoutExecutionContext";
 
 // Suppress the specific warning
 LogBox.ignoreLogs(["props.pointerEvents is deprecated"]);
@@ -39,8 +40,8 @@ const WorkoutStack = createStackNavigator<WorkoutStackParamList>();
 
 function WorkoutStackNavigator() {
   return (
-    <WorkoutProvider>
-      <WorkoutCreateProvider>
+    <WorkoutCreateProvider>
+      <WorkoutExecutionProvider>
         <WorkoutStack.Navigator>
           <WorkoutStack.Screen
             name="WorkoutHome"
@@ -67,8 +68,8 @@ function WorkoutStackNavigator() {
             options={{ title: "Active Workout" }}
           />
         </WorkoutStack.Navigator>
-      </WorkoutCreateProvider>
-    </WorkoutProvider>
+      </WorkoutExecutionProvider>
+    </WorkoutCreateProvider>
   );
 }
 

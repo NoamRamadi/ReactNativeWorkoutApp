@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Button } from "react-native";
 import ExerciseListBase from "./components/ExerciseListBase";
 import { useNavigation, useRoute } from "@react-navigation/native";
 //import { useNewWorkoutContext } from "../../../src/context/NewWorkoutContext";
-import { useWorkoutContext } from "../../../src/context/WorkoutContext";
+import { useWorkoutExecutionContext } from "../../../src/context/WorkoutExecutionContext";
 import { fetchQuery } from "../../../src/database/queries";
 import { useWorkoutCreateContext } from "@/src/context/WorkoutCreateContext";
 
@@ -13,12 +13,12 @@ export default function SelectExerciseScreen() {
   const { source } = (route.params as { source?: string }) || {};
 
   const workoutCreateContext = useWorkoutCreateContext();
-  const workoutContext = useWorkoutContext();
+  const workoutExecutionContext = useWorkoutExecutionContext();
 
   const isFromNewWorkoutPlan = source === "NewWorkoutPlan";
   const { addExercise } = isFromNewWorkoutPlan
     ? workoutCreateContext
-    : workoutContext;
+    : workoutExecutionContext;
 
   const [selectedExercises, setSelectedExercises] = useState<number[]>([]);
 
