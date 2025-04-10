@@ -18,7 +18,7 @@ import DatabaseManager from "./debug/DatabaseManager";
 import { LogBox } from "react-native";
 import { FloatingBannerProvider } from "@/src/context/FloatingBannerContext";
 import FloatingBanner from "@/src/components/FloatingBanner";
-import ActiveWorkoutScreen from "./features/workout/ActiveWorkoutScreen";
+import WorkoutExecutionScreen from "./features/workout/WorkoutExecutionScreen";
 import { WorkoutProvider } from "@/src/context/WorkoutContext";
 import WorkoutListScreen from "./features/workout/WorkoutListScreen";
 
@@ -62,7 +62,7 @@ function WorkoutStackNavigator() {
           />
           <WorkoutStack.Screen
             name="ActiveWorkout"
-            component={ActiveWorkoutScreen}
+            component={WorkoutExecutionScreen}
             options={{ title: "Active Workout" }}
           />
         </WorkoutStack.Navigator>

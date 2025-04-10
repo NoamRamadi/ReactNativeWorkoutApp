@@ -18,18 +18,21 @@ import { executeQuery } from "@/src/database";
 import CustomKeyboard from "./components/CustomKeyboard";
 import { useWorkoutContext } from "@/src/context/WorkoutContext";
 
-type ActiveWorkoutScreenNavigationProp =
-  StackNavigationProp<WorkoutStackParamList>;
+type WorkoutExecutionScreenNavigationProp = StackNavigationProp<
+  WorkoutStackParamList,
+  "ActiveWorkout"
+>;
 
 type WorkoutStackParamList = {
   loadedWorkoutPlan: undefined; // or whatever params it takes
   SelectExercise: { source: string }; // Add this line
   WorkoutHome: undefined;
+  ActiveWorkout: undefined;
   // ... other screens in your workout stack
 };
 
-export default function ActiveWorkoutScreen() {
-  const navigation = useNavigation<ActiveWorkoutScreenNavigationProp>();
+export default function WorkoutExecutionScreen() {
+  const navigation = useNavigation<WorkoutExecutionScreenNavigationProp>();
   const { showBanner } = useFloatingBanner();
   const [isMinimizing, setIsMinimizing] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
