@@ -323,15 +323,15 @@ export default function WorkoutExecutionScreen() {
                   {/* Table Headers */}
                   <View style={styles.headerRow}>
                     <Text style={[styles.headerCell, styles.setColumnHeader]}>
-                      Set
+                      SET
                     </Text>
                     <Text
                       style={[styles.headerCell, styles.previousColumnHeader]}
                     >
-                      Previous
+                      PREVIOUS
                     </Text>
                     <Text style={[styles.headerCell, styles.repsColumnHeader]}>
-                      Reps
+                      REPS
                     </Text>
                     <Text style={[styles.headerCell, styles.kgColumnHeader]}>
                       KG
@@ -530,13 +530,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "#6B9BFF",
     borderTopWidth: 1,
-    borderTopColor: "#ccc",
+    borderTopColor: "#6B9BFF",
     borderLeftWidth: 1,
-    borderLeftColor: "#ccc",
+    borderLeftColor: "#6B9BFF",
     borderRightWidth: 1,
-    borderRightColor: "#ccc",
+    borderRightColor: "#6B9BFF",
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
   },
@@ -550,16 +550,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: "#6B9BFF",
     backgroundColor: "#fff",
     borderLeftWidth: 1,
-    borderLeftColor: "#ccc",
+    borderLeftColor: "#6B9BFF",
     borderRightWidth: 1,
-    borderRightColor: "#ccc",
+    borderRightColor: "#6B9BFF",
   },
   cell: {
     textAlign: "center",
     fontSize: 14,
+    fontWeight: "bold",
   },
   inputWrapper: {
     flex: 3,
@@ -570,6 +571,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     fontSize: 14,
+    fontWeight: "bold",
     borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 4,
@@ -581,6 +583,7 @@ const styles = StyleSheet.create({
     color: "#aaa",
     textAlign: "center",
     width: "100%",
+    fontWeight: "bold",
   },
   deleteAction: {
     backgroundColor: "#ff4d4d", // Red background
@@ -640,12 +643,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "#6B9BFF",
     backgroundColor: "#fff",
     borderLeftWidth: 1,
-    borderLeftColor: "#ccc",
+    borderLeftColor: "#6B9BFF",
     borderRightWidth: 1,
-    borderRightColor: "#ccc",
+    borderRightColor: "#6B9BFF",
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
   },
