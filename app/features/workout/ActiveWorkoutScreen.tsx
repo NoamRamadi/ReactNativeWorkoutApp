@@ -195,6 +195,20 @@ export default function ActiveWorkoutScreen() {
     try {
       setIsSaving(true);
 
+      // Check if all sets are completed
+      const allSetsCompleted = currentWorkoutExercises.every((exercise) =>
+        exercise.sets.every((set) => set.isCompleted)
+      );
+
+      if (!allSetsCompleted) {
+        Alert.alert(
+          "Incomplete Workout",
+          "Please complete all sets before saving the workout.",
+          [{ text: "OK" }]
+        );
+        return;
+      }
+
       const workoutPlanId = loadedWorkoutPlan[0]?.workout_plan_id || null;
       let currentWorkoutPlanId = workoutPlanId;
 
