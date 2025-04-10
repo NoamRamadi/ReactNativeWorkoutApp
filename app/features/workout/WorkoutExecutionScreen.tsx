@@ -342,6 +342,7 @@ export default function WorkoutExecutionScreen() {
                   </View>
                   {/* Table Rows */}
                   {item.sets.map((set, setIndex) => {
+                    const isLastRow = setIndex === item.sets.length - 1;
                     return (
                       <ReanimatedSwipeable
                         key={setIndex}
@@ -358,7 +359,7 @@ export default function WorkoutExecutionScreen() {
                       >
                         <View
                           style={[
-                            styles.row,
+                            isLastRow ? styles.lastRow : styles.row,
                             set.isCompleted && { backgroundColor: "#d1e7dd" },
                           ]}
                         >
@@ -489,11 +490,25 @@ const styles = StyleSheet.create({
   },
   exerciseContainer: {
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   exerciseName: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginBottom: 12,
+    color: "#333",
   },
   headerRow: {
     flexDirection: "row",
@@ -502,6 +517,14 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+    borderTopWidth: 1,
+    borderTopColor: "#ccc",
+    borderLeftWidth: 1,
+    borderLeftColor: "#ccc",
+    borderRightWidth: 1,
+    borderRightColor: "#ccc",
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
   },
   headerCell: {
     textAlign: "center",
@@ -511,11 +534,14 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
     backgroundColor: "#fff",
+    borderLeftWidth: 1,
+    borderLeftColor: "#ccc",
+    borderRightWidth: 1,
+    borderRightColor: "#ccc",
   },
   cell: {
     textAlign: "center",
@@ -594,5 +620,19 @@ const styles = StyleSheet.create({
   vColumnHeader: {
     width: "15%", // 20% of the width
     justifyContent: "center",
+  },
+  lastRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    backgroundColor: "#fff",
+    borderLeftWidth: 1,
+    borderLeftColor: "#ccc",
+    borderRightWidth: 1,
+    borderRightColor: "#ccc",
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
   },
 });
