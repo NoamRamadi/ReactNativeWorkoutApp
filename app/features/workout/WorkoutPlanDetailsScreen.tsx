@@ -9,28 +9,39 @@ import {
 } from "@react-navigation/native";
 import { getWorkoutPlanDetails } from "../../../src/database/queries";
 import { useWorkoutContext } from "../../../src/context/WorkoutContext";
-import { WorkoutStackParamList } from "@/app/_layout";
+import { WorkoutStackParamList } from "@/src/types/navigation/navigation.types";
+import {
+  WorkoutPlan,
+  Exercise,
+  WorkoutSet,
+  GroupedExercise,
+  WorkoutPlanDetails,
+} from "@/src/types/workout/workout.types";
 
 type WorkoutPlanDetailsRouteProp = RouteProp<
   WorkoutStackParamList,
   "WorkoutPlanDetails"
 >;
 
-export default function WorkoutPlanDetails() {
+export default function WorkoutPlanDetailsScreen() {
   const route = useRoute<WorkoutPlanDetailsRouteProp>();
   const { planId } = route.params;
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  const { setLoadedWorkoutPlan } = useWorkoutContext(); // Access the workout context
+  const { setLoadedWorkoutPlan } = useWorkoutContext();
 
-  // State to hold the workout plan details
-  const [workoutPlan, setWorkoutPlan] = useState<any>(null);
+  const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlanDetails[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [groupedExercises, setGroupedExercises] = useState<GroupedExercise[]>(
+    []
+  );
 
   useEffect(() => {
     const fetchWorkoutPlanDetails = async () => {
       try {
-        const plan = await getWorkoutPlanDetails(planId);
-        setWorkoutPlan(plan); // Update state with the fetched plan
+        const plan = (await getWorkoutPlanDetails(
+          planId
+        )) as WorkoutPlanDetails[];
+        setWorkoutPlan(plan);
       } catch (error) {
         console.error("Failed to fetch workout plan details:", error);
       } finally {
@@ -41,16 +52,16 @@ export default function WorkoutPlanDetails() {
     fetchWorkoutPlanDetails();
   }, [planId]);
 
-  const [groupedExercises, setGroupedExercises] = useState<any[]>([]); // State to hold grouped exercises
-
   useEffect(() => {
     const fetchWorkoutPlanDetails = async () => {
       try {
-        const plan = await getWorkoutPlanDetails(planId);
+        const plan = (await getWorkoutPlanDetails(
+          planId
+        )) as WorkoutPlanDetails[];
 
         // Group exercises by exercise_id and display_order
         const grouped = plan?.length
-          ? plan.reduce((acc: any[], row: any) => {
+          ? plan.reduce((acc: GroupedExercise[], row: WorkoutPlanDetails) => {
               const uniqueKey = `${row.exercise_id}-${row.display_order}`;
 
               let exerciseEntry = acc.find((ex) => ex.uniqueKey === uniqueKey);
@@ -71,6 +82,7 @@ export default function WorkoutPlanDetails() {
                 exerciseEntry.sets.push({
                   reps: row.planned_reps?.toString() || "",
                   kg: row.planned_weight?.toString() || "",
+                  isCompleted: false,
                 });
               }
 
@@ -89,23 +101,19 @@ export default function WorkoutPlanDetails() {
     fetchWorkoutPlanDetails();
   }, [planId]);
 
-  // Handle loading state
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
 
-  // Handle empty data case
   if (!workoutPlan || workoutPlan.length === 0) {
     return <Text>No exercises found for this workout plan.</Text>;
   }
 
-  // Extract the plan name from the first object in the array
   const planName = workoutPlan[0]?.plan_name;
 
-  // Function to handle starting the workout
   const handleStartWorkout = () => {
-    setLoadedWorkoutPlan(workoutPlan); // Load the workout plan into the context
-    navigation.navigate("ActiveWorkout"); // Navigate to the Active Workout screen
+    setLoadedWorkoutPlan(workoutPlan);
+    navigation.navigate("ActiveWorkout");
   };
 
   return (

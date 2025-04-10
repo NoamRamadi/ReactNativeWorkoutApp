@@ -32,3 +32,25 @@ export interface ActiveWorkout {
   workoutName: string;
   exercises: WorkoutExercise[];
 }
+
+export interface GroupedExercise {
+  uniqueKey: string;
+  exerciseId: number;
+  name: string;
+  bodyPart: string;
+  equipment: string;
+  sets: WorkoutSet[];
+}
+
+export interface WorkoutPlanDetails {
+  workout_plan_id: number;
+  plan_name: string;
+  exercise_id: number;
+  exercise_name: string;
+  body_part: string;
+  equipment: string;
+  display_order: number;
+  set_number: number | null;
+  planned_reps: number | null;
+  planned_weight: number | null;
+}
