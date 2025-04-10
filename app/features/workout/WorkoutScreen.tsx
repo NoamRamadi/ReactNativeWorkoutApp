@@ -9,7 +9,8 @@ import {
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { WorkoutStackParamList } from "../../_layout"; // Import the type definition
+import { WorkoutStackParamList } from "@/src/types/navigation/navigation.types";
+import { WorkoutPlan } from "@/src/types/workout/workout.types";
 import { getAllWorkoutPlans } from "../../../src/database/queries";
 
 export default function Workout() {
@@ -19,15 +20,14 @@ export default function Workout() {
   >;
   const navigation = useNavigation<WorkoutNavigationProp>();
 
-  // State to store workout plans
-  const [workoutPlans, setWorkoutPlans] = useState<any[]>([]);
+  // State to store workout plans with proper typing
+  const [workoutPlans, setWorkoutPlans] = useState<WorkoutPlan[]>([]);
 
-  // Fetch workout plans from the database
   // Fetch workout plans from the database
   const fetchWorkoutPlans = async () => {
     try {
-      const plans = await getAllWorkoutPlans();
-      setWorkoutPlans(plans); // Update state with fetched workout plans
+      const plans = (await getAllWorkoutPlans()) as WorkoutPlan[];
+      setWorkoutPlans(plans);
     } catch (error) {
       console.error("Failed to fetch workout plans:", error);
     }
@@ -36,7 +36,7 @@ export default function Workout() {
   // Use useFocusEffect to re-fetch data whenever the screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
-      fetchWorkoutPlans(); // Fetch data when the screen is focused
+      fetchWorkoutPlans();
     }, [])
   );
 
@@ -64,7 +64,10 @@ export default function Workout() {
             >
               <Text style={styles.workoutPlanName}>{item.plan_name}</Text>
               <Text style={styles.workoutPlanDetails}>
-                Created: {new Date(item.created_at).toLocaleDateString()}
+                Created:{" "}
+                {item.created_at
+                  ? new Date(item.created_at).toLocaleDateString()
+                  : "N/A"}
               </Text>
             </TouchableOpacity>
           )}
