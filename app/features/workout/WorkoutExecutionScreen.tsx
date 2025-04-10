@@ -305,8 +305,6 @@ export default function WorkoutExecutionScreen() {
       <View>
         <Button title="Minimize" onPress={minimizeToBanner} />
       </View>
-
-      <Text style={styles.label}>Workout Plan Name:</Text>
       <Text style={styles.label}>{loadedWorkoutPlan[0].plan_name}</Text>
 
       <View style={styles.container}>
@@ -529,8 +527,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#6B9BFF",
     borderTopWidth: 1,
     borderTopColor: "#6B9BFF",
     borderLeftWidth: 1,
@@ -549,8 +545,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#6B9BFF",
     backgroundColor: "#fff",
     borderLeftWidth: 1,
     borderLeftColor: "#6B9BFF",
