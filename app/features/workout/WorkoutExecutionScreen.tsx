@@ -365,6 +365,7 @@ export default function WorkoutExecutionScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+      {/* Display Timer View */}
       {isTimerVisible && (
         <View style={styles.timerOverlay}>
           <TouchableOpacity
