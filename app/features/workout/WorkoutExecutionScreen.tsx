@@ -179,6 +179,7 @@ export default function WorkoutExecutionScreen() {
                 clearSelectedExercises(); // Clear selected exercises
                 pauseTimer();
                 resetTimer();
+                resetWorkoutTimer();
                 navigation.dispatch(e.data.action); // Continue navigation
               },
             },
