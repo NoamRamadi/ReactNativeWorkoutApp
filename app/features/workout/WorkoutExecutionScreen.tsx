@@ -344,17 +344,16 @@ export default function WorkoutExecutionScreen() {
 
         <TouchableOpacity
           style={styles.topButton}
-          onPress={() => setIsTimerVisible(true)} // Show the countdown timer view
+          onPress={() => setIsTimerVisible(true)} // Open the countdown timer overlay
         >
-          <Text style={styles.topButtonText}>Countdown</Text>
+          <Text style={styles.topButtonText}>
+            Countdown: {remainingTime ? formatTime(remainingTime) : "00:00"}
+          </Text>
         </TouchableOpacity>
 
         <View style={styles.clockContainer}>
-          {remainingTime > 0 ? (
-            <Text style={styles.clockText}>{formatTime(remainingTime)}</Text>
-          ) : (
-            <Text style={styles.clockText}>00:00</Text>
-          )}
+          <Text style={styles.clockText}>00:00</Text>
+          {/* Placeholder for up timer */}
         </View>
 
         <TouchableOpacity
