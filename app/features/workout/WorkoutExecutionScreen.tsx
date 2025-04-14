@@ -18,6 +18,7 @@ import { executeQuery } from "@/src/database";
 import CustomKeyboard from "./components/CustomKeyboard";
 import { useWorkoutExecutionContext } from "@/src/context/WorkoutExecutionContext";
 import { useTimer } from "@/src/context/TimerContext";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type WorkoutExecutionScreenNavigationProp = StackNavigationProp<
   WorkoutStackParamList,
@@ -342,7 +343,11 @@ export default function WorkoutExecutionScreen() {
           onPress={() => setIsTimerVisible(true)} // Open the countdown timer overlay
         >
           <Text style={styles.topButtonText}>
-            Countdown: {formatTime(remainingTime)}
+            {remainingTime > 0 ? (
+              formatTime(remainingTime)
+            ) : (
+              <MaterialIcons name="timer" size={23} color="#6B9BFF" />
+            )}{" "}
           </Text>
         </TouchableOpacity>
 
@@ -834,6 +839,7 @@ const styles = StyleSheet.create({
   },
   timerButtonsContainer: {
     flexDirection: "row",
+    alignItems: "center", // Center items vertically
     gap: 10,
   },
   timerButton: {
@@ -846,5 +852,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
+  },
+  iconContainer: {
+    flex: 1, // Ensures the container takes up the full space of the button
+    justifyContent: "center", // Centers vertically
+    alignItems: "center", // Centers horizontally
   },
 });
