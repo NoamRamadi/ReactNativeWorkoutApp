@@ -17,6 +17,7 @@ import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeabl
 import { executeQuery } from "@/src/database";
 import CustomKeyboard from "./components/CustomKeyboard";
 import { useWorkoutExecutionContext } from "@/src/context/WorkoutExecutionContext";
+import { useTimer } from "@/src/context/TimerContext";
 
 type WorkoutExecutionScreenNavigationProp = StackNavigationProp<
   WorkoutStackParamList,
@@ -50,10 +51,12 @@ export default function WorkoutExecutionScreen() {
     toggleSetCompletion,
   } = useWorkoutExecutionContext();
 
-  // New state variables for the countdown timer
+  const { remainingTime, isRunning, startTimer, pauseTimer, resetTimer } =
+    useTimer();
   const [isTimerVisible, setIsTimerVisible] = useState<boolean>(false); // Controls visibility of the timer view
+
+  // New state variables for the countdown timer
   const [timerDuration, setTimerDuration] = useState<number>(0); // Duration of the countdown timer (in seconds)
-  const [remainingTime, setRemainingTime] = useState<number>(0); // Remaining time in the countdown
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false); // Tracks if the timer is running
 
   // Populate the currentWorkoutExercises state with activeWorkout data
@@ -318,19 +321,24 @@ export default function WorkoutExecutionScreen() {
       .padStart(2, "0")}`;
   };
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-    if (isTimerRunning && remainingTime > 0) {
-      interval = setInterval(() => {
-        setRemainingTime((prevTime) => prevTime - 1);
-      }, 1000);
-    } else if (remainingTime === 0) {
-      setIsTimerRunning(false);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isTimerRunning, remainingTime]);
+  // useEffect(() => {
+  //   let interval: NodeJS.Timeout | null = null;
+  //   if (isTimerRunning && remainingTime > 0) {
+  //     interval = setInterval(() => {
+  //       setRemainingTime((prevTime) => prevTime - 1);
+  //     }, 1000);
+  //   } else if (remainingTime === 0) {
+  //     setIsTimerRunning(false);
+  //   }
+  //   return () => {
+  //     if (interval) clearInterval(interval);
+  //   };
+  // }, [isTimerRunning, remainingTime]);
+
+  const handleStartTimer = (duration: number) => {
+    startTimer(duration);
+    setIsTimerVisible(false); // Close the timer overlay after starting
+  };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -347,7 +355,7 @@ export default function WorkoutExecutionScreen() {
           onPress={() => setIsTimerVisible(true)} // Open the countdown timer overlay
         >
           <Text style={styles.topButtonText}>
-            Countdown: {remainingTime ? formatTime(remainingTime) : "00:00"}
+            Countdown: {formatTime(remainingTime)}
           </Text>
         </TouchableOpacity>
 
@@ -370,7 +378,7 @@ export default function WorkoutExecutionScreen() {
         <View style={styles.timerOverlay}>
           <TouchableOpacity
             style={styles.closeButton}
-            onPress={() => setIsTimerVisible(false)}
+            onPress={() => setIsTimerVisible(false)} // Hide the countdown timer view
           >
             <Text style={styles.closeButtonText}>X</Text>
           </TouchableOpacity>
@@ -380,11 +388,7 @@ export default function WorkoutExecutionScreen() {
               <TouchableOpacity
                 key={duration}
                 style={styles.timerButton}
-                onPress={() => {
-                  setTimerDuration(duration);
-                  setRemainingTime(duration);
-                  setIsTimerRunning(true);
-                }}
+                onPress={() => handleStartTimer(duration)}
               >
                 <Text style={styles.timerButtonText}>
                   {Math.floor(duration / 60)}:

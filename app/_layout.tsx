@@ -23,7 +23,7 @@ import WorkoutExecutionScreen from "./features/workout/WorkoutExecutionScreen";
 import WorkoutListScreen from "./features/workout/WorkoutListScreen";
 import { WorkoutCreateProvider } from "../src/context/WorkoutCreateContext";
 import { WorkoutExecutionProvider } from "@/src/context/WorkoutExecutionContext";
-
+import { TimerProvider } from "@/src/context/TimerContext";
 // Suppress the specific warning
 LogBox.ignoreLogs(["props.pointerEvents is deprecated"]);
 // Create the stack navigator for the Profile and Debug screens
@@ -41,33 +41,35 @@ const WorkoutStack = createStackNavigator<WorkoutStackParamList>();
 function WorkoutStackNavigator() {
   return (
     <WorkoutCreateProvider>
-      <WorkoutExecutionProvider>
-        <WorkoutStack.Navigator>
-          <WorkoutStack.Screen
-            name="WorkoutHome"
-            component={WorkoutListScreen}
-            options={{ title: "Workout Plans" }}
-          />
-          <WorkoutStack.Screen
-            name="NewWorkoutPlan"
-            component={WorkoutPlanCreateScreen}
-            options={{ title: "Create New Workout Plan" }}
-          />
-          <WorkoutStack.Screen
-            name="WorkoutPlanDetails"
-            component={WorkoutPlanDetailsScreen}
-          />
-          <WorkoutStack.Screen
-            name="SelectExercise"
-            component={SelectExerciseScreen}
-            options={{ title: "Select Exercises" }}
-          />
-          <WorkoutStack.Screen
-            name="ActiveWorkout"
-            component={WorkoutExecutionScreen}
-          />
-        </WorkoutStack.Navigator>
-      </WorkoutExecutionProvider>
+      <TimerProvider>
+        <WorkoutExecutionProvider>
+          <WorkoutStack.Navigator>
+            <WorkoutStack.Screen
+              name="WorkoutHome"
+              component={WorkoutListScreen}
+              options={{ title: "Workout Plans" }}
+            />
+            <WorkoutStack.Screen
+              name="NewWorkoutPlan"
+              component={WorkoutPlanCreateScreen}
+              options={{ title: "Create New Workout Plan" }}
+            />
+            <WorkoutStack.Screen
+              name="WorkoutPlanDetails"
+              component={WorkoutPlanDetailsScreen}
+            />
+            <WorkoutStack.Screen
+              name="SelectExercise"
+              component={SelectExerciseScreen}
+              options={{ title: "Select Exercises" }}
+            />
+            <WorkoutStack.Screen
+              name="ActiveWorkout"
+              component={WorkoutExecutionScreen}
+            />
+          </WorkoutStack.Navigator>
+        </WorkoutExecutionProvider>
+      </TimerProvider>
     </WorkoutCreateProvider>
   );
 }
