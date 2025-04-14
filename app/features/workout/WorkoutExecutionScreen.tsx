@@ -167,6 +167,8 @@ export default function WorkoutExecutionScreen() {
               onPress: () => {
                 setWorkoutName(""); // Reset workout name
                 clearSelectedExercises(); // Clear selected exercises
+                pauseTimer();
+                resetTimer();
                 navigation.dispatch(e.data.action); // Continue navigation
               },
             },
@@ -175,7 +177,6 @@ export default function WorkoutExecutionScreen() {
         );
       } else {
         // No unsaved changes, reset data silently
-
         clearSelectedExercises();
       }
     });
@@ -320,20 +321,6 @@ export default function WorkoutExecutionScreen() {
       .toString()
       .padStart(2, "0")}`;
   };
-
-  // useEffect(() => {
-  //   let interval: NodeJS.Timeout | null = null;
-  //   if (isTimerRunning && remainingTime > 0) {
-  //     interval = setInterval(() => {
-  //       setRemainingTime((prevTime) => prevTime - 1);
-  //     }, 1000);
-  //   } else if (remainingTime === 0) {
-  //     setIsTimerRunning(false);
-  //   }
-  //   return () => {
-  //     if (interval) clearInterval(interval);
-  //   };
-  // }, [isTimerRunning, remainingTime]);
 
   const handleStartTimer = (duration: number) => {
     startTimer(duration);
