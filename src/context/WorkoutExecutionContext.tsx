@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 // Define the shape of an exercise entry
 interface ExerciseEntry {
@@ -26,6 +26,13 @@ interface WorkoutContextType {
   addSet: (exerciseIndex: number) => void;
   deleteSet: (exerciseIndex: number, setIndex: number) => void;
   toggleSetCompletion: (exerciseIndex: number, setIndex: number) => void;
+
+  // New properties for the up timer
+  workoutElapsedTime: number; // Duration of the workout in seconds
+  isWorkoutTimerRunning: boolean; // Tracks if the timer is running
+  startWorkoutTimer: () => void; // Starts the timer
+  pauseWorkoutTimer: () => void; // Pauses the timer
+  resetWorkoutTimer: () => void; // Resets the timer
 }
 
 // Create the context
@@ -55,6 +62,11 @@ export function WorkoutExecutionProvider({
   const [currentWorkoutExercises, setCurrentWorkoutExercises] = useState<
     ExerciseEntry[]
   >([]);
+
+  // New state for the up timer
+  const [workoutElapsedTime, setWorkoutElapsedTime] = useState<number>(0);
+  const [isWorkoutTimerRunning, setIsWorkoutTimerRunning] =
+    useState<boolean>(false);
 
   // Add an exercise to the selected list
   const addExercise = (exerciseId: number, name: string) => {
@@ -138,6 +150,33 @@ export function WorkoutExecutionProvider({
     });
   };
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (isWorkoutTimerRunning) {
+      interval = setInterval(() => {
+        setWorkoutElapsedTime((prevTime) => prevTime + 1);
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isWorkoutTimerRunning]);
+
+  const startWorkoutTimer = () => {
+    setIsWorkoutTimerRunning(true);
+  };
+
+  const pauseWorkoutTimer = () => {
+    setIsWorkoutTimerRunning(false);
+  };
+
+  const resetWorkoutTimer = () => {
+    setIsWorkoutTimerRunning(false);
+    setWorkoutElapsedTime(0);
+  };
+
   return (
     <WorkoutExecutionContext.Provider
       value={{
@@ -153,6 +192,11 @@ export function WorkoutExecutionProvider({
         addSet,
         deleteSet,
         toggleSetCompletion,
+        workoutElapsedTime,
+        isWorkoutTimerRunning,
+        startWorkoutTimer,
+        pauseWorkoutTimer,
+        resetWorkoutTimer,
       }}
     >
       {children}

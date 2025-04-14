@@ -50,6 +50,10 @@ export default function WorkoutExecutionScreen() {
     addExercise,
     removeExercise,
     toggleSetCompletion,
+    startWorkoutTimer,
+    pauseWorkoutTimer,
+    resetWorkoutTimer,
+    workoutElapsedTime,
   } = useWorkoutExecutionContext();
 
   const { remainingTime, isRunning, startTimer, pauseTimer, resetTimer } =
@@ -59,6 +63,11 @@ export default function WorkoutExecutionScreen() {
   // New state variables for the countdown timer
   const [timerDuration, setTimerDuration] = useState<number>(0); // Duration of the countdown timer (in seconds)
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false); // Tracks if the timer is running
+
+  // Start the timer when the screen mounts
+  useEffect(() => {
+    startWorkoutTimer();
+  }, []);
 
   // Populate the currentWorkoutExercises state with activeWorkout data
   useEffect(() => {
@@ -328,6 +337,14 @@ export default function WorkoutExecutionScreen() {
     setIsTimerVisible(false); // Close the timer overlay after starting
   };
 
+  const formatWorkoutTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.topContainer}>
@@ -352,8 +369,9 @@ export default function WorkoutExecutionScreen() {
         </TouchableOpacity>
 
         <View style={styles.clockContainer}>
-          <Text style={styles.clockText}>00:00</Text>
-          {/* Placeholder for up timer */}
+          <Text style={styles.clockText}>
+            {formatWorkoutTime(workoutElapsedTime)}
+          </Text>
         </View>
 
         <TouchableOpacity
