@@ -50,6 +50,12 @@ export default function WorkoutExecutionScreen() {
     toggleSetCompletion,
   } = useWorkoutExecutionContext();
 
+  // New state variables for the countdown timer
+  const [isTimerVisible, setIsTimerVisible] = useState<boolean>(false); // Controls visibility of the timer view
+  const [timerDuration, setTimerDuration] = useState<number>(0); // Duration of the countdown timer (in seconds)
+  const [remainingTime, setRemainingTime] = useState<number>(0); // Remaining time in the countdown
+  const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false); // Tracks if the timer is running
+
   // Populate the currentWorkoutExercises state with activeWorkout data
   useEffect(() => {
     if (loadedWorkoutPlan && loadedWorkoutPlan.length > 0) {
@@ -304,6 +310,28 @@ export default function WorkoutExecutionScreen() {
     );
   };
 
+  const formatTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (isTimerRunning && remainingTime > 0) {
+      interval = setInterval(() => {
+        setRemainingTime((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (remainingTime === 0) {
+      setIsTimerRunning(false);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isTimerRunning, remainingTime]);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.topContainer}>
@@ -314,12 +342,19 @@ export default function WorkoutExecutionScreen() {
           <Text style={styles.iconText}>▼</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.topButton} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.topButton}
+          onPress={() => setIsTimerVisible(true)} // Show the countdown timer view
+        >
           <Text style={styles.topButtonText}>Countdown</Text>
         </TouchableOpacity>
 
         <View style={styles.clockContainer}>
-          <Text style={styles.clockText}>00:00</Text>
+          {remainingTime > 0 ? (
+            <Text style={styles.clockText}>{formatTime(remainingTime)}</Text>
+          ) : (
+            <Text style={styles.clockText}>00:00</Text>
+          )}
         </View>
 
         <TouchableOpacity
@@ -331,6 +366,35 @@ export default function WorkoutExecutionScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+      {isTimerVisible && (
+        <View style={styles.timerOverlay}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setIsTimerVisible(false)}
+          >
+            <Text style={styles.closeButtonText}>X</Text>
+          </TouchableOpacity>
+          <Text style={styles.timerText}>{formatTime(remainingTime)}</Text>
+          <View style={styles.timerButtonsContainer}>
+            {[30, 60, 90, 120].map((duration) => (
+              <TouchableOpacity
+                key={duration}
+                style={styles.timerButton}
+                onPress={() => {
+                  setTimerDuration(duration);
+                  setRemainingTime(duration);
+                  setIsTimerRunning(true);
+                }}
+              >
+                <Text style={styles.timerButtonText}>
+                  {Math.floor(duration / 60)}:
+                  {(duration % 60).toString().padStart(2, "0")}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
       <View style={styles.container}>
         {/* Display Selected Exercises */}
 
@@ -746,5 +810,50 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#6B9BFF",
     fontWeight: "bold",
+  },
+
+  timerOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.8)", // Semi-transparent background
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10, // Ensure it appears above other elements
+  },
+  closeButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    padding: 10,
+    zIndex: 20, // Ensure the close button is above the overlay
+  },
+  closeButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  timerText: {
+    fontSize: 48,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 20,
+  },
+  timerButtonsContainer: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  timerButton: {
+    backgroundColor: "#fff",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  timerButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
   },
 });
