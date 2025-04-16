@@ -9,6 +9,8 @@ import {
   FlatList,
   Alert,
   Dimensions,
+  ViewStyle,
+  TextStyle,
 } from "react-native";
 import { useFloatingBanner } from "../../../src/context/FloatingBannerContext";
 import { useNavigation } from "@react-navigation/native";
@@ -23,6 +25,14 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import SetTypePopup from "./components/SetTypePopup";
 import InfoPopup from "./components/InfoPopup";
 import ExerciseRow from "./components/ExerciseRow";
+import {
+  COLORS,
+  SPACING,
+  BORDER_RADIUS,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SHADOWS,
+} from "../../constants/theme";
 
 type WorkoutExecutionScreenNavigationProp = StackNavigationProp<
   WorkoutStackParamList,
@@ -36,6 +46,161 @@ type WorkoutStackParamList = {
   ActiveWorkout: undefined;
   // ... other screens in your workout stack
 };
+
+type Styles = {
+  container: ViewStyle;
+  text: TextStyle;
+  title: TextStyle;
+  label: TextStyle;
+  input: ViewStyle;
+  topContainer: ViewStyle;
+  topButton: ViewStyle;
+  topButtonText: TextStyle;
+  clockContainer: ViewStyle;
+  clockText: TextStyle;
+  finishButton: ViewStyle;
+  finishButtonText: TextStyle;
+  iconButton: ViewStyle;
+  iconText: TextStyle;
+  timerOverlay: ViewStyle;
+  closeButton: ViewStyle;
+  closeButtonText: TextStyle;
+  timerText: TextStyle;
+  timerButtonsContainer: ViewStyle;
+  timerButton: ViewStyle;
+  timerButtonText: TextStyle;
+  iconContainer: ViewStyle;
+};
+
+const styles = StyleSheet.create<Styles>({
+  container: {
+    flex: 1,
+    width: "100%",
+    padding: SPACING.xs,
+  },
+  text: {
+    fontSize: FONT_SIZE.xxl,
+    fontWeight: FONT_WEIGHT.bold,
+    marginBottom: SPACING.lg,
+  },
+  title: {
+    fontSize: FONT_SIZE.xxl,
+    fontWeight: FONT_WEIGHT.bold,
+    marginBottom: SPACING.lg,
+  },
+  label: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.bold,
+    marginTop: SPACING.sm,
+  },
+  input: {
+    height: 40,
+    borderColor: COLORS.border.light,
+    borderWidth: 1,
+    borderRadius: BORDER_RADIUS.md,
+    paddingHorizontal: SPACING.md,
+    marginBottom: SPACING.lg,
+  },
+  topContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: SPACING.md,
+    backgroundColor: COLORS.background.primary,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border.light,
+  },
+  topButton: {
+    padding: SPACING.sm,
+    borderRadius: BORDER_RADIUS.sm,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.background.primary,
+  },
+  topButtonText: {
+    color: COLORS.primary,
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.medium,
+  },
+  clockContainer: {
+    padding: SPACING.sm,
+    borderRadius: BORDER_RADIUS.sm,
+    backgroundColor: COLORS.background.secondary,
+  },
+  clockText: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.text.primary,
+  },
+  finishButton: {
+    backgroundColor: COLORS.primary,
+  },
+  finishButtonText: {
+    color: COLORS.text.white,
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 0,
+  },
+  iconText: {
+    fontSize: FONT_SIZE.xl,
+    color: COLORS.primary,
+    fontWeight: FONT_WEIGHT.bold,
+  },
+  timerOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: COLORS.background.overlay,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+  },
+  closeButton: {
+    position: "absolute",
+    top: SPACING.xl,
+    right: SPACING.xl,
+    padding: SPACING.md,
+    zIndex: 20,
+  },
+  closeButtonText: {
+    color: COLORS.text.white,
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.bold,
+  },
+  timerText: {
+    fontSize: FONT_SIZE.xxxl,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.text.white,
+    marginBottom: SPACING.xl,
+  },
+  timerButtonsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: SPACING.md,
+  },
+  timerButton: {
+    backgroundColor: COLORS.background.primary,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.xl,
+    borderRadius: BORDER_RADIUS.xs,
+  },
+  timerButtonText: {
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.text.primary,
+  },
+  iconContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 export default function WorkoutExecutionScreen() {
   const navigation = useNavigation<WorkoutExecutionScreenNavigationProp>();
@@ -565,433 +730,3 @@ export default function WorkoutExecutionScreen() {
     </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 5,
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginTop: 8,
-  },
-  input: {
-    height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-  },
-  exerciseContainer: {
-    marginBottom: 14,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    borderRadius: 8,
-    padding: 10,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-    width: "100%",
-  },
-  exerciseName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 12,
-    color: "#333",
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderTopColor: "#6B9BFF",
-    borderLeftWidth: 1,
-    borderLeftColor: "#6B9BFF",
-    borderRightWidth: 1,
-    borderRightColor: "#6B9BFF",
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-  },
-  headerCell: {
-    textAlign: "center",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 8,
-    backgroundColor: "#fff",
-    borderLeftWidth: 1,
-    borderLeftColor: "#6B9BFF",
-    borderRightWidth: 1,
-    borderRightColor: "#6B9BFF",
-  },
-  cell: {
-    textAlign: "center",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  inputWrapper: {
-    flex: 3,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  inputCell: {
-    flex: 1,
-    textAlign: "center",
-    fontSize: 14,
-    fontWeight: "bold",
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 4,
-    padding: 4,
-    width: "95%",
-  },
-  vSymbol: {
-    fontSize: 16,
-    color: "#aaa",
-    textAlign: "center",
-    width: "100%",
-    fontWeight: "bold",
-  },
-  deleteAction: {
-    backgroundColor: "#ff4d4d", // Red background
-    justifyContent: "center",
-    alignItems: "center",
-    width: 100,
-    height: "100%",
-  },
-  deleteActionText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  setColumn: {
-    width: "15%", // 10% of the width
-    justifyContent: "center",
-  },
-  previousColumn: {
-    width: "20%", // 10% of the width
-    justifyContent: "center",
-  },
-  repsColumn: {
-    width: "25%", // 30% of the width
-    justifyContent: "center",
-  },
-  kgColumn: {
-    width: "25%", // 30% of the width
-    justifyContent: "center",
-  },
-  vColumn: {
-    width: "15%", // 20% of the width
-    justifyContent: "center",
-  },
-
-  setColumnHeader: {
-    width: "15%", // 10% of the width
-    justifyContent: "center",
-  },
-  previousColumnHeader: {
-    width: "20%", // 10% of the width
-    justifyContent: "center",
-  },
-  repsColumnHeader: {
-    width: "25%", // 30% of the width
-    justifyContent: "center",
-  },
-  kgColumnHeader: {
-    width: "25%", // 30% of the width
-    justifyContent: "center",
-  },
-  vColumnHeader: {
-    width: "15%", // 20% of the width
-    justifyContent: "center",
-  },
-  lastRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#6B9BFF",
-    backgroundColor: "#fff",
-    borderLeftWidth: 1,
-    borderLeftColor: "#6B9BFF",
-    borderRightWidth: 1,
-    borderRightColor: "#6B9BFF",
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-  },
-  buttonContainer: {
-    flexDirection: "column",
-    alignItems: "stretch",
-    marginTop: 12,
-  },
-  button: {
-    backgroundColor: "#fff",
-    padding: 8,
-    borderRadius: 6,
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#6B9BFF",
-  },
-  removeButton: {
-    backgroundColor: "#fff",
-    borderColor: "#ff6b6b",
-  },
-  buttonText: {
-    color: "#6B9BFF",
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  removeButtonText: {
-    color: "#ff6b6b",
-  },
-  buttonSpacer: {
-    height: 8,
-  },
-  topContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-  },
-  topButton: {
-    padding: 8,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: "#6B9BFF",
-    backgroundColor: "#fff",
-  },
-  topButtonText: {
-    color: "#6B9BFF",
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  clockContainer: {
-    padding: 8,
-    borderRadius: 6,
-    backgroundColor: "#f5f5f5",
-  },
-  clockText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  finishButton: {
-    backgroundColor: "#6B9BFF",
-  },
-  finishButtonText: {
-    color: "#fff",
-  },
-  iconButton: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 0,
-  },
-  iconText: {
-    fontSize: 20,
-    color: "#6B9BFF",
-    fontWeight: "bold",
-  },
-
-  timerOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.8)", // Semi-transparent background
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 10, // Ensure it appears above other elements
-  },
-  closeButton: {
-    position: "absolute",
-    top: 20,
-    right: 20,
-    padding: 10,
-    zIndex: 20, // Ensure the close button is above the overlay
-  },
-  closeButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  timerText: {
-    fontSize: 48,
-    fontWeight: "bold",
-    color: "#fff",
-    marginBottom: 20,
-  },
-  timerButtonsContainer: {
-    flexDirection: "row",
-    alignItems: "center", // Center items vertically
-    gap: 10,
-  },
-  timerButton: {
-    backgroundColor: "#fff",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  timerButtonText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  iconContainer: {
-    flex: 1, // Ensures the container takes up the full space of the button
-    justifyContent: "center", // Centers vertically
-    alignItems: "center", // Centers horizontally
-  },
-  setTypePopup: {
-    backgroundColor: "white",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#6B9BFF",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    zIndex: 1000,
-    minWidth: 176,
-  },
-  popupOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 999,
-  },
-  popupOption: {
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-  },
-  popupOptionContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  popupOptionLetter: {
-    fontSize: 16,
-    fontWeight: "bold",
-    width: 24,
-  },
-  warmupLetter: {
-    color: "#FF9F1C",
-  },
-  dropsetLetter: {
-    color: "#9B5DE5",
-  },
-  failureLetter: {
-    color: "#FF4D6D",
-  },
-  popupOptionText: {
-    color: "#333",
-    fontSize: 15,
-    flex: 1,
-    marginLeft: 12,
-  },
-  popupOptionHint: {
-    color: "#999",
-    fontSize: 25,
-    marginLeft: 5,
-    backgroundColor: "red",
-    width: 40,
-    height: 35,
-    textAlign: "center",
-    textAlignVertical: "center",
-    borderRadius: 5,
-  },
-  lastPopupOption: {
-    borderBottomWidth: 0,
-  },
-  infoPopupOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1001,
-  },
-  infoPopup: {
-    width: "80%",
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  infoPopupContent: {
-    alignItems: "center",
-  },
-  infoPopupTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 12,
-    color: "#333",
-    textAlign: "center",
-  },
-  infoPopupText: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: "#666",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  infoPopupCloseButton: {
-    backgroundColor: "#6B9BFF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  infoPopupCloseText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 14,
-  },
-});

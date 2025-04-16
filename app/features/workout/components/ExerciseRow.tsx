@@ -5,8 +5,19 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  ViewStyle,
+  TextStyle,
 } from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import {
+  COLORS,
+  SPACING,
+  BORDER_RADIUS,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SHADOWS,
+  LAYOUT,
+} from "../../../constants/theme";
 
 interface ExerciseRowProps {
   exercise: {
@@ -47,13 +58,21 @@ const ExerciseRow: React.FC<ExerciseRowProps> = ({
       <Text style={styles.exerciseName}>{exercise.name}</Text>
       {/* Table Headers */}
       <View style={styles.headerRow}>
-        <Text style={[styles.headerCell, styles.setColumnHeader]}>SET</Text>
-        <Text style={[styles.headerCell, styles.previousColumnHeader]}>
-          PREVIOUS
-        </Text>
-        <Text style={[styles.headerCell, styles.repsColumnHeader]}>REPS</Text>
-        <Text style={[styles.headerCell, styles.kgColumnHeader]}>KG</Text>
-        <Text style={[styles.headerCell, styles.vColumnHeader]}>✔</Text>
+        <View style={styles.setColumnHeader}>
+          <Text style={styles.headerCell}>SET</Text>
+        </View>
+        <View style={styles.previousColumnHeader}>
+          <Text style={styles.headerCell}>PREVIOUS</Text>
+        </View>
+        <View style={styles.repsColumnHeader}>
+          <Text style={styles.headerCell}>REPS</Text>
+        </View>
+        <View style={styles.kgColumnHeader}>
+          <Text style={styles.headerCell}>KG</Text>
+        </View>
+        <View style={styles.vColumnHeader}>
+          <Text style={styles.headerCell}>✔</Text>
+        </View>
       </View>
 
       {/* Table Rows */}
@@ -76,7 +95,7 @@ const ExerciseRow: React.FC<ExerciseRowProps> = ({
             <View
               style={[
                 isLastRow ? styles.lastRow : styles.row,
-                set.isCompleted && { backgroundColor: "#d1e7dd" },
+                set.isCompleted && { backgroundColor: COLORS.success },
               ]}
             >
               <TouchableOpacity
@@ -158,180 +177,213 @@ const ExerciseRow: React.FC<ExerciseRowProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+type Styles = {
+  exerciseContainer: ViewStyle;
+  exerciseName: TextStyle;
+  headerRow: ViewStyle;
+  headerCell: TextStyle;
+  setColumnHeader: ViewStyle;
+  previousColumnHeader: ViewStyle;
+  repsColumnHeader: ViewStyle;
+  kgColumnHeader: ViewStyle;
+  vColumnHeader: ViewStyle;
+  row: ViewStyle;
+  lastRow: ViewStyle;
+  cell: TextStyle;
+  setColumn: ViewStyle;
+  previousColumn: ViewStyle;
+  repsColumn: ViewStyle;
+  kgColumn: ViewStyle;
+  vColumn: ViewStyle;
+  inputWrapper: ViewStyle;
+  inputCell: TextStyle;
+  vSymbol: TextStyle;
+  deleteAction: ViewStyle;
+  deleteActionText: TextStyle;
+  buttonContainer: ViewStyle;
+  button: ViewStyle;
+  removeButton: ViewStyle;
+  buttonText: TextStyle;
+  removeButtonText: TextStyle;
+  buttonSpacer: ViewStyle;
+};
+
+const styles = StyleSheet.create<Styles>({
   exerciseContainer: {
-    marginBottom: 14,
+    marginBottom: SPACING.lg,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
-    borderRadius: 8,
-    padding: 10,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    borderColor: COLORS.border.light,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.md,
+    backgroundColor: COLORS.background.primary,
+    ...SHADOWS.small,
     width: "100%",
   },
   exerciseName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 12,
-    color: "#333",
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.bold,
+    marginBottom: SPACING.md,
+    color: COLORS.text.primary,
   },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.xs,
     borderTopWidth: 1,
-    borderTopColor: "#6B9BFF",
+    borderTopColor: COLORS.border.primary,
     borderLeftWidth: 1,
-    borderLeftColor: "#6B9BFF",
+    borderLeftColor: COLORS.border.primary,
     borderRightWidth: 1,
-    borderRightColor: "#6B9BFF",
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
+    borderRightColor: COLORS.border.primary,
+    borderTopLeftRadius: BORDER_RADIUS.xs,
+    borderTopRightRadius: BORDER_RADIUS.xs,
+    backgroundColor: COLORS.background.secondary,
   },
   headerCell: {
     textAlign: "center",
-    fontSize: 14,
-    fontWeight: "bold",
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.text.secondary,
+  },
+  setColumnHeader: {
+    flex: LAYOUT.columns.set,
+    alignItems: "center",
+  },
+  previousColumnHeader: {
+    flex: LAYOUT.columns.previous,
+    alignItems: "center",
+  },
+  repsColumnHeader: {
+    flex: LAYOUT.columns.reps,
+    alignItems: "center",
+  },
+  kgColumnHeader: {
+    flex: LAYOUT.columns.kg,
+    alignItems: "center",
+  },
+  vColumnHeader: {
+    flex: LAYOUT.columns.check,
+    alignItems: "center",
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
-    backgroundColor: "#fff",
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.xs,
+    backgroundColor: COLORS.background.primary,
     borderLeftWidth: 1,
-    borderLeftColor: "#6B9BFF",
+    borderLeftColor: COLORS.border.primary,
     borderRightWidth: 1,
-    borderRightColor: "#6B9BFF",
+    borderRightColor: COLORS.border.primary,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border.light,
   },
   lastRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#6B9BFF",
-    backgroundColor: "#fff",
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.xs,
+    backgroundColor: COLORS.background.primary,
     borderLeftWidth: 1,
-    borderLeftColor: "#6B9BFF",
+    borderLeftColor: COLORS.border.primary,
     borderRightWidth: 1,
-    borderRightColor: "#6B9BFF",
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
+    borderRightColor: COLORS.border.primary,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border.primary,
+    borderBottomLeftRadius: BORDER_RADIUS.xs,
+    borderBottomRightRadius: BORDER_RADIUS.xs,
   },
   cell: {
     textAlign: "center",
-    fontSize: 14,
-    fontWeight: "bold",
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.text.primary,
   },
   setColumn: {
-    width: "15%",
-    justifyContent: "center",
+    flex: LAYOUT.columns.set,
+    alignItems: "center",
   },
   previousColumn: {
-    width: "20%",
-    justifyContent: "center",
+    flex: LAYOUT.columns.previous,
+    alignItems: "center",
   },
   repsColumn: {
-    width: "25%",
-    justifyContent: "center",
+    flex: LAYOUT.columns.reps,
+    alignItems: "center",
   },
   kgColumn: {
-    width: "25%",
-    justifyContent: "center",
+    flex: LAYOUT.columns.kg,
+    alignItems: "center",
   },
   vColumn: {
-    width: "15%",
-    justifyContent: "center",
-  },
-  setColumnHeader: {
-    width: "15%",
-    justifyContent: "center",
-  },
-  previousColumnHeader: {
-    width: "20%",
-    justifyContent: "center",
-  },
-  repsColumnHeader: {
-    width: "25%",
-    justifyContent: "center",
-  },
-  kgColumnHeader: {
-    width: "25%",
-    justifyContent: "center",
-  },
-  vColumnHeader: {
-    width: "15%",
+    flex: LAYOUT.columns.check,
+    alignItems: "center",
     justifyContent: "center",
   },
   inputWrapper: {
-    flex: 3,
-    justifyContent: "center",
+    flex: LAYOUT.columns.reps,
     alignItems: "center",
+    paddingHorizontal: SPACING.xs,
   },
   inputCell: {
-    flex: 1,
+    width: "100%",
     textAlign: "center",
-    fontSize: 14,
-    fontWeight: "bold",
-    borderColor: "#ccc",
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.text.primary,
+    backgroundColor: COLORS.background.primary,
+    borderColor: COLORS.border.light,
     borderWidth: 1,
-    borderRadius: 4,
-    padding: 4,
-    width: "95%",
+    borderRadius: BORDER_RADIUS.xs,
+    paddingVertical: SPACING.xs,
+    paddingHorizontal: SPACING.sm,
   },
   vSymbol: {
-    fontSize: 16,
-    color: "#aaa",
+    fontSize: FONT_SIZE.md,
+    color: COLORS.text.light,
     textAlign: "center",
-    width: "100%",
-    fontWeight: "bold",
+    fontWeight: FONT_WEIGHT.bold,
   },
   deleteAction: {
-    backgroundColor: "#ff4d4d",
+    backgroundColor: COLORS.error,
     justifyContent: "center",
     alignItems: "center",
     width: 100,
     height: "100%",
   },
   deleteActionText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: COLORS.text.white,
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.bold,
   },
   buttonContainer: {
     flexDirection: "column",
     alignItems: "stretch",
-    marginTop: 12,
+    marginTop: SPACING.md,
   },
   button: {
-    backgroundColor: "#fff",
-    padding: 8,
-    borderRadius: 6,
+    backgroundColor: COLORS.background.primary,
+    padding: SPACING.sm,
+    borderRadius: BORDER_RADIUS.sm,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#6B9BFF",
+    borderColor: COLORS.primary,
   },
   removeButton: {
-    backgroundColor: "#fff",
-    borderColor: "#ff6b6b",
+    backgroundColor: COLORS.background.primary,
+    borderColor: COLORS.error,
   },
   buttonText: {
-    color: "#6B9BFF",
-    fontSize: 14,
-    fontWeight: "500",
+    color: COLORS.primary,
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.medium,
   },
   removeButtonText: {
-    color: "#ff6b6b",
+    color: COLORS.error,
   },
   buttonSpacer: {
-    height: 8,
+    height: SPACING.sm,
   },
 });
 
