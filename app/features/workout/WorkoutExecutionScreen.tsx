@@ -653,7 +653,13 @@ export default function WorkoutExecutionScreen() {
                 setActivePopup(null);
               }}
             >
-              <Text style={styles.popupOptionText}> W Warm up</Text>
+              <View style={styles.popupOptionContent}>
+                <Text style={[styles.popupOptionLetter, styles.warmupLetter]}>
+                  W
+                </Text>
+                <Text style={styles.popupOptionText}>Warm up</Text>
+                <Text style={styles.popupOptionHint}>?</Text>
+              </View>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.popupOption}
@@ -662,7 +668,13 @@ export default function WorkoutExecutionScreen() {
                 setActivePopup(null);
               }}
             >
-              <Text style={styles.popupOptionText}>D Drop set</Text>
+              <View style={styles.popupOptionContent}>
+                <Text style={[styles.popupOptionLetter, styles.dropsetLetter]}>
+                  D
+                </Text>
+                <Text style={styles.popupOptionText}>Drop set</Text>
+                <Text style={styles.popupOptionHint}>?</Text>
+              </View>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.popupOption, styles.lastPopupOption]}
@@ -671,7 +683,13 @@ export default function WorkoutExecutionScreen() {
                 setActivePopup(null);
               }}
             >
-              <Text style={styles.popupOptionText}>F Failure</Text>
+              <View style={styles.popupOptionContent}>
+                <Text style={[styles.popupOptionLetter, styles.failureLetter]}>
+                  F
+                </Text>
+                <Text style={styles.popupOptionText}>Failure</Text>
+                <Text style={styles.popupOptionHint}>?</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -1000,7 +1018,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     zIndex: 1000,
-    minWidth: 120,
+    minWidth: 160,
   },
   popupOverlay: {
     position: "absolute",
@@ -1011,16 +1029,42 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   popupOption: {
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
   },
-  lastPopupOption: {
-    borderBottomWidth: 0,
+  popupOptionContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  popupOptionLetter: {
+    fontSize: 16,
+    fontWeight: "bold",
+    width: 24,
+  },
+  warmupLetter: {
+    color: "#FF9F1C",
+  },
+  dropsetLetter: {
+    color: "#9B5DE5",
+  },
+  failureLetter: {
+    color: "#FF4D6D",
   },
   popupOptionText: {
     color: "#333",
+    fontSize: 15,
+    flex: 1,
+    marginLeft: 12,
+  },
+  popupOptionHint: {
+    color: "#999",
     fontSize: 14,
+    marginLeft: 8,
+  },
+  lastPopupOption: {
+    borderBottomWidth: 0,
   },
 });
