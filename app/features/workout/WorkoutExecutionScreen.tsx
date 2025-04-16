@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   FlatList,
   Alert,
+  Dimensions,
 } from "react-native";
 import { useFloatingBanner } from "../../../src/context/FloatingBannerContext";
 import { useNavigation } from "@react-navigation/native";
@@ -63,6 +64,21 @@ export default function WorkoutExecutionScreen() {
   // New state variables for the countdown timer
   const [timerDuration, setTimerDuration] = useState<number>(0); // Duration of the countdown timer (in seconds)
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false); // Tracks if the timer is running
+
+  // Add near other state declarations
+  const [activePopup, setActivePopup] = useState<{
+    exerciseIndex: number;
+    setIndex: number;
+  } | null>(null);
+
+  // Remove the complex ref system
+  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+
+  // Calculate screen width for positioning
+  const screenWidth = Dimensions.get("window").width;
+
+  // Create a properly typed ref map
+  const setButtonRefs = useRef<{ [key: string]: any }>({});
 
   // Start the timer when the screen mounts
   useEffect(() => {
@@ -346,6 +362,17 @@ export default function WorkoutExecutionScreen() {
       .padStart(2, "0")}`;
   };
 
+  useEffect(() => {
+    const handleOutsideClick = () => {
+      setActivePopup(null);
+    };
+
+    // Add the touch handler to the main container
+    return () => {
+      // Cleanup
+    };
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.topContainer}>
@@ -464,9 +491,44 @@ export default function WorkoutExecutionScreen() {
                             set.isCompleted && { backgroundColor: "#d1e7dd" },
                           ]}
                         >
-                          <Text style={[styles.cell, styles.setColumn]}>
-                            {setIndex + 1}
-                          </Text>
+                          <TouchableOpacity
+                            ref={(ref) => {
+                              if (ref) {
+                                setButtonRefs.current[`${index}-${setIndex}`] =
+                                  ref;
+                              }
+                            }}
+                            style={styles.setColumn}
+                            onPress={() => {
+                              const buttonKey = `${index}-${setIndex}`;
+                              const buttonRef =
+                                setButtonRefs.current[buttonKey];
+
+                              if (buttonRef) {
+                                buttonRef.measure(
+                                  (
+                                    fx: number,
+                                    fy: number,
+                                    width: number,
+                                    height: number,
+                                    px: number,
+                                    py: number
+                                  ) => {
+                                    setPopupPosition({
+                                      top: py - height - 10,
+                                      left: px + 10,
+                                    });
+                                    setActivePopup({
+                                      exerciseIndex: index,
+                                      setIndex: setIndex,
+                                    });
+                                  }
+                                );
+                              }
+                            }}
+                          >
+                            <Text style={styles.cell}>{setIndex + 1}</Text>
+                          </TouchableOpacity>
                           <TouchableOpacity
                             style={[styles.previousColumn]}
                             onPress={() => {}}
@@ -567,6 +629,53 @@ export default function WorkoutExecutionScreen() {
           />
         )}
       </View>
+
+      {/* Render popup at root level */}
+      {activePopup && (
+        <View
+          style={styles.popupOverlay}
+          onTouchStart={() => setActivePopup(null)}
+        >
+          <View
+            style={[
+              styles.setTypePopup,
+              {
+                position: "absolute",
+                top: popupPosition.top,
+                left: popupPosition.left,
+              },
+            ]}
+          >
+            <TouchableOpacity
+              style={styles.popupOption}
+              onPress={() => {
+                // Handle warm up set
+                setActivePopup(null);
+              }}
+            >
+              <Text style={styles.popupOptionText}> W Warm up</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.popupOption}
+              onPress={() => {
+                // Handle drop set
+                setActivePopup(null);
+              }}
+            >
+              <Text style={styles.popupOptionText}>D Drop set</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.popupOption, styles.lastPopupOption]}
+              onPress={() => {
+                // Handle failure set
+                setActivePopup(null);
+              }}
+            >
+              <Text style={styles.popupOptionText}>F Failure</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </GestureHandlerRootView>
   );
 }
@@ -876,5 +985,42 @@ const styles = StyleSheet.create({
     flex: 1, // Ensures the container takes up the full space of the button
     justifyContent: "center", // Centers vertically
     alignItems: "center", // Centers horizontally
+  },
+  setTypePopup: {
+    backgroundColor: "white",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#6B9BFF",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 1000,
+    minWidth: 120,
+  },
+  popupOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 999,
+  },
+  popupOption: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  lastPopupOption: {
+    borderBottomWidth: 0,
+  },
+  popupOptionText: {
+    color: "#333",
+    fontSize: 14,
   },
 });
