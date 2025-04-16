@@ -80,6 +80,31 @@ export default function WorkoutExecutionScreen() {
   // Create a properly typed ref map
   const setButtonRefs = useRef<{ [key: string]: any }>({});
 
+  // Add new state for info popup
+  const [infoPopup, setInfoPopup] = useState<{
+    title: string;
+    message: string;
+  } | null>(null);
+
+  // Add info messages
+  const setTypeInfo = {
+    warmup: {
+      title: "About Warm-up Sets",
+      message:
+        "Warm-up sets are intended to prepare your muscles and joints for heavier loads. They help prevent injury and improve your performance in working sets. Mark sets as warm-up to track your warm-up progression.",
+    },
+    dropset: {
+      title: "About Drop Sets",
+      message:
+        "Drop sets involve performing an exercise at a heavy weight until failure, then immediately reducing the weight and continuing. This technique helps maximize muscle fatigue and can stimulate muscle growth.",
+    },
+    failure: {
+      title: "About Failure Sets",
+      message:
+        "Training to failure means performing reps until you cannot complete another rep with proper form. This technique can help push your muscles to their limit, but should be used strategically to avoid overtraining.",
+    },
+  };
+
   // Start the timer when the screen mounts
   useEffect(() => {
     startWorkoutTimer();
@@ -634,7 +659,7 @@ export default function WorkoutExecutionScreen() {
       {activePopup && (
         <View
           style={styles.popupOverlay}
-          onTouchStart={() => setActivePopup(null)}
+          //onTouchStart={() => setActivePopup(null)}
         >
           <View
             style={[
@@ -658,7 +683,14 @@ export default function WorkoutExecutionScreen() {
                   W
                 </Text>
                 <Text style={styles.popupOptionText}>Warm up</Text>
-                <Text style={styles.popupOptionHint}>?</Text>
+                <TouchableOpacity
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    setInfoPopup(setTypeInfo.warmup);
+                  }}
+                >
+                  <Text style={styles.popupOptionHint}>?</Text>
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -673,7 +705,14 @@ export default function WorkoutExecutionScreen() {
                   D
                 </Text>
                 <Text style={styles.popupOptionText}>Drop set</Text>
-                <Text style={styles.popupOptionHint}>?</Text>
+                <TouchableOpacity
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    setInfoPopup(setTypeInfo.dropset);
+                  }}
+                >
+                  <Text style={styles.popupOptionHint}>?</Text>
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -688,9 +727,34 @@ export default function WorkoutExecutionScreen() {
                   F
                 </Text>
                 <Text style={styles.popupOptionText}>Failure</Text>
-                <Text style={styles.popupOptionHint}>?</Text>
+                <TouchableOpacity
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    setInfoPopup(setTypeInfo.failure);
+                  }}
+                >
+                  <Text style={styles.popupOptionHint}>?</Text>
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Info Popup */}
+      {infoPopup && (
+        <View style={styles.infoPopupOverlay}>
+          <View style={styles.infoPopup}>
+            <View style={styles.infoPopupContent}>
+              <Text style={styles.infoPopupTitle}>{infoPopup.title}</Text>
+              <Text style={styles.infoPopupText}>{infoPopup.message}</Text>
+              <TouchableOpacity
+                style={styles.infoPopupCloseButton}
+                onPress={() => setInfoPopup(null)}
+              >
+                <Text style={styles.infoPopupCloseText}>Got it</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       )}
@@ -1018,7 +1082,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     zIndex: 1000,
-    minWidth: 160,
+    minWidth: 176,
   },
   popupOverlay: {
     position: "absolute",
@@ -1030,7 +1094,7 @@ const styles = StyleSheet.create({
   },
   popupOption: {
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
   },
@@ -1061,10 +1125,69 @@ const styles = StyleSheet.create({
   },
   popupOptionHint: {
     color: "#999",
-    fontSize: 14,
-    marginLeft: 8,
+    fontSize: 25,
+    marginLeft: 5,
+    backgroundColor: "red",
+    width: 40,
+    height: 35,
+    textAlign: "center",
+    textAlignVertical: "center",
+    borderRadius: 5,
   },
   lastPopupOption: {
     borderBottomWidth: 0,
+  },
+  infoPopupOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1001,
+  },
+  infoPopup: {
+    width: "80%",
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  infoPopupContent: {
+    alignItems: "center",
+  },
+  infoPopupTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 12,
+    color: "#333",
+    textAlign: "center",
+  },
+  infoPopupText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  infoPopupCloseButton: {
+    backgroundColor: "#6B9BFF",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  infoPopupCloseText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });
