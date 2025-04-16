@@ -20,6 +20,8 @@ import CustomKeyboard from "./components/CustomKeyboard";
 import { useWorkoutExecutionContext } from "@/src/context/WorkoutExecutionContext";
 import { useTimer } from "@/src/context/TimerContext";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import SetTypePopup from "./components/SetTypePopup";
+import InfoPopup from "./components/InfoPopup";
 
 type WorkoutExecutionScreenNavigationProp = StackNavigationProp<
   WorkoutStackParamList,
@@ -657,116 +659,24 @@ export default function WorkoutExecutionScreen() {
 
       {/* Render popup at root level */}
       {activePopup && (
-        <View
-          style={styles.popupOverlay}
-          onTouchStart={(e) => {
-            // Only close if clicking the overlay itself, not its children
-            if (e.target === e.currentTarget) {
-              setActivePopup(null);
-            }
+        <SetTypePopup
+          position={popupPosition}
+          onClose={() => setActivePopup(null)}
+          onSetTypeSelect={(type) => {
+            // Handle set type selection
+            setActivePopup(null);
           }}
-        >
-          <TouchableOpacity
-            activeOpacity={1}
-            style={[
-              styles.setTypePopup,
-              {
-                position: "absolute",
-                top: popupPosition.top,
-                left: popupPosition.left,
-              },
-            ]}
-            onPress={(e) => {
-              // Prevent clicks on the popup from bubbling to the overlay
-              e.stopPropagation();
-            }}
-          >
-            <TouchableOpacity
-              style={styles.popupOption}
-              onPress={() => {
-                // Handle warm up set
-                setActivePopup(null);
-              }}
-            >
-              <View style={styles.popupOptionContent}>
-                <Text style={[styles.popupOptionLetter, styles.warmupLetter]}>
-                  W
-                </Text>
-                <Text style={styles.popupOptionText}>Warm up</Text>
-                <TouchableOpacity
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    setInfoPopup(setTypeInfo.warmup);
-                  }}
-                >
-                  <Text style={styles.popupOptionHint}>?</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.popupOption}
-              onPress={() => {
-                // Handle drop set
-                setActivePopup(null);
-              }}
-            >
-              <View style={styles.popupOptionContent}>
-                <Text style={[styles.popupOptionLetter, styles.dropsetLetter]}>
-                  D
-                </Text>
-                <Text style={styles.popupOptionText}>Drop set</Text>
-                <TouchableOpacity
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    setInfoPopup(setTypeInfo.dropset);
-                  }}
-                >
-                  <Text style={styles.popupOptionHint}>?</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.popupOption, styles.lastPopupOption]}
-              onPress={() => {
-                // Handle failure set
-                setActivePopup(null);
-              }}
-            >
-              <View style={styles.popupOptionContent}>
-                <Text style={[styles.popupOptionLetter, styles.failureLetter]}>
-                  F
-                </Text>
-                <Text style={styles.popupOptionText}>Failure</Text>
-                <TouchableOpacity
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    setInfoPopup(setTypeInfo.failure);
-                  }}
-                >
-                  <Text style={styles.popupOptionHint}>?</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          </TouchableOpacity>
-        </View>
+          onInfoPress={(type) => setInfoPopup(setTypeInfo[type])}
+        />
       )}
 
       {/* Info Popup */}
       {infoPopup && (
-        <View style={styles.infoPopupOverlay}>
-          <View style={styles.infoPopup}>
-            <View style={styles.infoPopupContent}>
-              <Text style={styles.infoPopupTitle}>{infoPopup.title}</Text>
-              <Text style={styles.infoPopupText}>{infoPopup.message}</Text>
-              <TouchableOpacity
-                style={styles.infoPopupCloseButton}
-                onPress={() => setInfoPopup(null)}
-              >
-                <Text style={styles.infoPopupCloseText}>Got it</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+        <InfoPopup
+          title={infoPopup.title}
+          message={infoPopup.message}
+          onClose={() => setInfoPopup(null)}
+        />
       )}
     </GestureHandlerRootView>
   );
