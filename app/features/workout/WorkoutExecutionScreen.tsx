@@ -22,6 +22,7 @@ import { useTimer } from "@/src/context/TimerContext";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import SetTypePopup from "./components/SetTypePopup";
 import InfoPopup from "./components/InfoPopup";
+import ExerciseRow from "./components/ExerciseRow";
 
 type WorkoutExecutionScreenNavigationProp = StackNavigationProp<
   WorkoutStackParamList,
@@ -400,6 +401,32 @@ export default function WorkoutExecutionScreen() {
     };
   }, []);
 
+  const handleSetPress = (
+    exerciseIndex: number,
+    setIndex: number,
+    buttonRef: any
+  ) => {
+    buttonRef.measure(
+      (
+        fx: number,
+        fy: number,
+        width: number,
+        height: number,
+        px: number,
+        py: number
+      ) => {
+        setPopupPosition({
+          top: py + height + 5,
+          left: px,
+        });
+        setActivePopup({
+          exerciseIndex,
+          setIndex,
+        });
+      }
+    );
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.topContainer}>
@@ -471,164 +498,21 @@ export default function WorkoutExecutionScreen() {
           <FlatList
             data={currentWorkoutExercises}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => {
-              return (
-                <View style={styles.exerciseContainer}>
-                  <Text style={styles.exerciseName}>{item.name}</Text>
-                  {/* Table Headers */}
-                  <View style={styles.headerRow}>
-                    <Text style={[styles.headerCell, styles.setColumnHeader]}>
-                      SET
-                    </Text>
-                    <Text
-                      style={[styles.headerCell, styles.previousColumnHeader]}
-                    >
-                      PREVIOUS
-                    </Text>
-                    <Text style={[styles.headerCell, styles.repsColumnHeader]}>
-                      REPS
-                    </Text>
-                    <Text style={[styles.headerCell, styles.kgColumnHeader]}>
-                      KG
-                    </Text>
-                    <Text style={[styles.headerCell, styles.vColumnHeader]}>
-                      ✔
-                    </Text>
-                  </View>
-                  {/* Table Rows */}
-                  {item.sets.map((set, setIndex) => {
-                    const isLastRow = setIndex === item.sets.length - 1;
-                    return (
-                      <ReanimatedSwipeable
-                        key={setIndex}
-                        friction={2}
-                        rightThreshold={40}
-                        renderRightActions={() => (
-                          <TouchableOpacity
-                            onPress={() => handleDeleteSet(index, setIndex)}
-                            style={styles.deleteAction}
-                          >
-                            <Text style={styles.deleteActionText}>Delete</Text>
-                          </TouchableOpacity>
-                        )}
-                      >
-                        <View
-                          style={[
-                            isLastRow ? styles.lastRow : styles.row,
-                            set.isCompleted && { backgroundColor: "#d1e7dd" },
-                          ]}
-                        >
-                          <TouchableOpacity
-                            ref={(ref) => {
-                              if (ref) {
-                                setButtonRefs.current[`${index}-${setIndex}`] =
-                                  ref;
-                              }
-                            }}
-                            style={styles.setColumn}
-                            onPress={() => {
-                              const buttonKey = `${index}-${setIndex}`;
-                              const buttonRef =
-                                setButtonRefs.current[buttonKey];
-
-                              if (buttonRef) {
-                                buttonRef.measure(
-                                  (
-                                    fx: number,
-                                    fy: number,
-                                    width: number,
-                                    height: number,
-                                    px: number,
-                                    py: number
-                                  ) => {
-                                    setPopupPosition({
-                                      top: py - height - 10,
-                                      left: px + 10,
-                                    });
-                                    setActivePopup({
-                                      exerciseIndex: index,
-                                      setIndex: setIndex,
-                                    });
-                                  }
-                                );
-                              }
-                            }}
-                          >
-                            <Text style={styles.cell}>{setIndex + 1}</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            style={[styles.previousColumn]}
-                            onPress={() => {}}
-                          >
-                            <Text>{"place holder"}</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() =>
-                              setFocusedInput({
-                                exerciseIndex: index,
-                                setIndex,
-                                field: "reps",
-                              })
-                            }
-                            style={[styles.inputWrapper, styles.kgColumn]}
-                          >
-                            <TextInput
-                              style={[styles.inputCell]}
-                              value={set.reps} // Ensure this is a string
-                              editable={false}
-                              placeholder="Reps"
-                            />
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() =>
-                              setFocusedInput({
-                                exerciseIndex: index,
-                                setIndex,
-                                field: "kg",
-                              })
-                            }
-                            style={styles.inputWrapper}
-                          >
-                            <TextInput
-                              style={[styles.inputCell]}
-                              value={set.kg} // Ensure this is a string
-                              editable={false}
-                              placeholder="KG"
-                            />
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            style={[styles.vColumn]}
-                            onPress={() => toggleSetCompletion(index, setIndex)}
-                          >
-                            <Text style={[styles.vSymbol]}>✔</Text>
-                          </TouchableOpacity>
-                        </View>
-                      </ReanimatedSwipeable>
-                    );
-                  })}
-                  {/* Add Set Button */}
-                  <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => addSet(index)}
-                    >
-                      <Text style={styles.buttonText}>Add Set</Text>
-                    </TouchableOpacity>
-                    <View style={styles.buttonSpacer} />
-                    <TouchableOpacity
-                      style={[styles.button, styles.removeButton]}
-                      onPress={() => removeExercise(index)}
-                    >
-                      <Text
-                        style={[styles.buttonText, styles.removeButtonText]}
-                      >
-                        Remove Exercise
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              );
-            }}
+            renderItem={({ item, index }) => (
+              <ExerciseRow
+                exercise={item}
+                index={index}
+                setButtonRefs={setButtonRefs}
+                onSetPress={handleSetPress}
+                onInputPress={(exerciseIndex, setIndex, field) =>
+                  setFocusedInput({ exerciseIndex, setIndex, field })
+                }
+                onToggleCompletion={toggleSetCompletion}
+                onDeleteSet={handleDeleteSet}
+                onAddSet={addSet}
+                onRemoveExercise={removeExercise}
+              />
+            )}
           />
         ) : (
           <Text>No exercises selected yet.</Text>
