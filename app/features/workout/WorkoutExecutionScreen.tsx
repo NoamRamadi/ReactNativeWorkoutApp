@@ -659,9 +659,15 @@ export default function WorkoutExecutionScreen() {
       {activePopup && (
         <View
           style={styles.popupOverlay}
-          //onTouchStart={() => setActivePopup(null)}
+          onTouchStart={(e) => {
+            // Only close if clicking the overlay itself, not its children
+            if (e.target === e.currentTarget) {
+              setActivePopup(null);
+            }
+          }}
         >
-          <View
+          <TouchableOpacity
+            activeOpacity={1}
             style={[
               styles.setTypePopup,
               {
@@ -670,6 +676,10 @@ export default function WorkoutExecutionScreen() {
                 left: popupPosition.left,
               },
             ]}
+            onPress={(e) => {
+              // Prevent clicks on the popup from bubbling to the overlay
+              e.stopPropagation();
+            }}
           >
             <TouchableOpacity
               style={styles.popupOption}
@@ -737,7 +747,7 @@ export default function WorkoutExecutionScreen() {
                 </TouchableOpacity>
               </View>
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </View>
       )}
 
